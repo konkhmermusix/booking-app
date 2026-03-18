@@ -19,6 +19,7 @@ use App\Http\Controllers\AboutWebController;
 use App\Http\Controllers\ContactWebController;
 use App\Http\Controllers\FacilitiWebController;
 use App\Http\Controllers\BookingWebController;
+use App\Http\Controllers\ReviewWebController;
 
 
 // for admin
@@ -30,6 +31,7 @@ use App\Http\Controllers\Admin\RoomTypeController;
 use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\SlideshowController;
+use App\Http\Controllers\Admin\TourController;
 
 
 
@@ -58,23 +60,39 @@ Route::post('/logout', function () {
 })->name('logout');
 
 
-// ផ្នែក Website (Frontend)
+
+// =======================================
+// Frontend Website Routes
+// =======================================
+
+// Home Page
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Static Pages
 Route::get('/facilities', [FacilitiWebController::class, 'index'])->name('frontend.facilities');
 Route::get('/about', [AboutWebController::class, 'index'])->name('frontend.about');
 Route::get('/contact', [ContactWebController::class, 'index'])->name('frontend.contact');
 
+// Hotels & Rooms
 Route::get('/hotels', [HotelFrontendController::class, 'index'])->name('frontend.hotels.index');
-Route::get('/rooms/{id}', [ShowController::class, 'show'])->name('frontend.show');
+Route::get('/hotel/{id}', [HomeController::class, 'showHotel'])->name('frontend.details'); // Hotel details
 Route::get('/rooms', [RoomWebController::class, 'index'])->name('frontend.rooms');
+Route::get('/room-type/{id}', [HomeController::class, 'roomTypeDetails'])->name('frontend.room_type'); // Room type details
+
+// Meeting Page
 Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.meeting');
+
+// Booking Routes
 Route::get('/booking', [BookingWebController::class, 'index'])->name('booking.index');
-Route::post('/booking/store', [BookingWebController::class, 'store'])->name('booking.store');
+Route::post('/booking/storecart', [BookingWebController::class, 'storecart'])->name('booking.storecart');
 Route::get('/booking/history', [BookingWebController::class, 'history'])->name('booking.history');
-Route::get('/room-type/{id}', [HomeController::class, 'roomTypeDetails'])->name('frontend.room_type');
 
+// Checkout & Payment
+Route::get('/bookings/{id}/checkout', [BookingWebController::class, 'checkout'])->name('bookings.checkout');
+Route::post('/bookings/{id}/payment', [BookingWebController::class, 'processPayment'])->name('bookings.payment');
 
-
+// Reviews
+Route::post('/reviews', [ReviewWebController::class, 'store'])->name('reviews.store');
 
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -101,6 +119,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('hotels', HotelController::class)->except(['destroy']);
         Route::resource('facilities', FacilityController::class);
         Route::resource('slideshows', SlideshowController::class);
+        Route::resource('tours', TourController::class);
 
 
         Route::delete('rooms_types/images/{id}', [RoomTypeController::class, 'destroyImage'])->name('room_types.image.destroy');

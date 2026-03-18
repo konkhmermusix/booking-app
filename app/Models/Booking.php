@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Booking extends Model
 {
+    // Mass assignable fields
     protected $fillable = [
         'user_id',
         'hotel_id',
@@ -15,22 +16,34 @@ class Booking extends Model
         'check_out',
         'total_price',
         'status',
-        'booking_code'
+        'booking_code',
     ];
 
+    // Relationships
+
+    // Booking ត្រូវបានបង្កើតដោយ User ម្នាក់
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    // Booking ត្រូវបានធ្វើនៅ Hotel មួយ
     public function hotel(): BelongsTo
     {
         return $this->belongsTo(Hotel::class);
     }
 
+    // Booking ត្រូវបាន assign ទៅ Room មួយ
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
     }
 
+    // Optional: Accessor for number of nights
+    public function getNightsAttribute(): int
+    {
+        return $this->check_in && $this->check_out
+            ? \Carbon\Carbon::parse($this->check_in)->diffInDays($this->check_out)
+            : 0;
+    }
 }

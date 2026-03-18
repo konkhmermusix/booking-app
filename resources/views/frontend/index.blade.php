@@ -120,7 +120,7 @@
                 @foreach($roomTypes as $type)
                 <div class="group bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col">
 
-                    <div class="relative h-72 overflow-hidden">
+                    <div class="relative aspect-[4/3] overflow-hidden">
                         @php
                         // ទាញយករូបភាព Primary របស់ប្រភេទបន្ទប់នោះ
                         $image = $type->images->where('is_primary', true)->first() ?? $type->images->first();
@@ -143,6 +143,13 @@
                                 <span class="text-xs opacity-80">/យប់</span>
                             </div>
                         </div>
+                        <div class="relative h-72 overflow-hidden">
+                            @if($type->reviews_avg_rating >= 4.5)
+                            <div class="absolute top-5 left-5 bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
+                                <i class="fas fa-fire mr-1"></i> Popular
+                            </div>
+                            @endif
+                        </div>
                     </div>
 
                     <div class="p-8 flex flex-col flex-grow">
@@ -153,20 +160,29 @@
                         </p>
 
                         <div class="grid grid-cols-3 gap-2 mb-8 text-center text-gray-500">
-                            <div class="bg-gray-50 dark:bg-gray-700/50 p-2 rounded-xl">
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-2 rounded-xl border border-gray-100 dark:border-gray-600">
                                 <i class="fas fa-bed text-blue-500 block mb-1"></i>
-                                <span class="text-[10px]">{{ $type->beds }} គ្រែ</span>
+                                <span class="text-[10px] font-medium">{{ $type->beds }} គ្រែ</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-2 rounded-xl border border-gray-100 dark:border-gray-600">
+                                <i class="fas fa-users text-blue-500 block mb-1"></i>
+                                <span class="text-[10px] font-medium">{{ $type->max_guests }} នាក់</span>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700/50 p-2 rounded-xl border border-gray-100 dark:border-gray-600">
+                                <i class="fas fa-expand text-blue-500 block mb-1"></i>
+                                <span class="text-[10px] font-medium">{{ $type->size }}m²</span>
                             </div>
                         </div>
 
                         <div class="mt-auto">
-                            <a href="{{ route('frontend.room_type', $type->id) }}"
+                            <a href="{{ route('frontend.details', $type->id) }}"
                                 class="flex items-center justify-center w-full bg-blue-900 text-white font-bold py-4 rounded-2xl hover:bg-blue-600 transition-all">
                                 <span>ជ្រើសរើសប្រភេទនេះ</span>
                             </a>
                         </div>
                         <div class="mt-auto">
-                            <a href="{{ route('frontend.room_type', $type->id) }}"
+                            {{-- route('frontend.room_type', $type->id) --}}
+                            <a href=""
                                 class="group/btn flex items-center justify-center w-full bg-blue-900 dark:bg-blue-700 text-white font-bold py-4 rounded-2xl hover:bg-blue-600 transition-all shadow-lg hover:shadow-blue-500/25">
                                 <span>ជ្រើសរើសប្រភេទនេះ</span>
                                 <i class="fas fa-arrow-right ml-2 group-hover/btn:translate-x-2 transition-transform"></i>
@@ -503,7 +519,8 @@
                         <span class="text-xs text-gray-400">
                             <i class="fas fa-users mr-1"></i> {{ $room->roomType->max_guests }} នាក់
                         </span>
-                        <a href="{{ route('frontend.show', $room->id) }}"
+                        {{-- route('frontend.show', $room->id) --}}
+                        <a href=""
                             class="inline-flex items-center px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-bold rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300">
                             មើលលម្អិត <i class="fas fa-arrow-right ml-2 text-xs"></i>
                         </a>

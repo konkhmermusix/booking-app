@@ -58,19 +58,53 @@ class HomeController extends Controller
         return view('frontend.index', compact('slides', 'roomTypes', 'availableRooms', 'check_in', 'check_out'));
     }
 
+    // public function showHotel($id)
+    // {
+    //     return view('frontend.hotel-details');
+    // }
+
     public function showHotel($id)
     {
-        return view('frontend.hotel-details');
+        $roomType = RoomType::with([
+            'images',
+            'facilities',
+            'rooms',
+            'hotel'
+        ])->findOrFail($id);
+
+        $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
+            ->where('id', '!=', $roomType->id)
+            ->take(3)
+            ->get();
+
+        return view('frontend.details', compact(
+            'roomType',
+            'similarRooms'
+        ));
     }
+
+    // public function roomTypeDetails($id)
+    // {
+    //     // ទាញយកប្រភេទបន្ទប់ដែលមាន ID ត្រូវគ្នា
+    //     $roomType = RoomType::with(['images', 'rooms' => function ($q) {
+    //         $q->where('status', 'available'); // បង្ហាញតែបន្ទប់ណាដែលទំនេរ
+    //     }])->findOrFail($id);
+
+    //     return view('frontend.details', compact('roomType'));
+    // }
 
     public function roomTypeDetails($id)
     {
-        // ទាញយកប្រភេទបន្ទប់ដែលមាន ID ត្រូវគ្នា
         $roomType = RoomType::with(['images', 'rooms' => function ($q) {
-            $q->where('status', 'available'); // បង្ហាញតែបន្ទប់ណាដែលទំនេរ
-        }])->findOrFail($id);
+            $q->where('status', 'available');
+        }, 'facilities'])->findOrFail($id);
 
-        return view('frontend.room_type_details', compact('roomType'));
+        // ទាញយក Room Types ដែលស្រដៀងគ្នា (Similar Rooms)
+        $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
+            ->where('id', '!=', $roomType->id)
+            ->take(3)
+            ->get();
+
+        return view('frontend.details', compact('roomType', 'similarRooms'));
     }
-
 }

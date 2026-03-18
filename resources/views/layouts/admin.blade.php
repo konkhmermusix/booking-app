@@ -152,6 +152,10 @@
                         class="block p-2 text-sm {{ request()->routeIs('facilities.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white transition-colors">
                         បញ្ជីគ្រឿងបរិក្ខារ
                     </a>
+                    <a href="{{ route('tours.index') }}"
+                        class="block p-2 text-sm {{ request()->routeIs('tours.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white transition-colors">
+                        បញ្ជីកន្លែងទេសចរណ៍
+                    </a>
                     <a href="{{ route('room_types.index') }}"
                         class="block p-2 text-sm {{ request()->routeIs('room_types.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white transition-colors">
                         បញ្ជីប្រភេទបន្ទប់

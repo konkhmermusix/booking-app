@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('booking_rooms', function (Blueprint $table) {
+        Schema::create('tours', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->foreignId('room_id')->constrained();
-            $table->decimal('price_at_booking', 10, 2); // តម្លៃនៅពេលកក់
+            $table->string('name');
+            $table->string('image')->nullable();
+            $table->string('distance')->nullable();
+            $table->string('google_map_link')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('booking_rooms');
+        Schema::dropIfExists('tours');
     }
 };

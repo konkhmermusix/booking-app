@@ -33,6 +33,11 @@ class RoomType extends Model
         return $this->belongsTo(RoomType::class, 'room_type_id');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
 
     public function facilities()
     {

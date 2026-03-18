@@ -8,6 +8,8 @@ use App\Models\RoomType;
 use App\Models\Room;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
 
 class BookingWebController extends Controller
 {
@@ -19,17 +21,35 @@ class BookingWebController extends Controller
         return view('frontend.booking', compact('roomTypes'));
     }
 
-    // Save Booking (Ajax)
-    public function store(Request $request)
+    public function storecart(Request $request)
     {
+        // 1️⃣ Check if user is logged in
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'សូមចូលប្រើប្រាស់ (Login) ជាមុនសិន!'
+            ]);
+        }
+
+        // 2️⃣ Validate input
         $request->validate([
-            'room_type_id' => 'required',
-            'check_in' => 'required|date',
-            'check_out' => 'required|date',
-            'guests' => 'required|integer'
+            'room_type_id' => 'required|exists:room_types,id',
+            'check_in'     => 'required|date|after_or_equal:today',
+            'check_out'    => 'required|date|after:check_in',
+            'guests'       => 'required|integer|min:1'
         ]);
 
-        // រកបន្ទប់ដែលនៅសល់
+        // 3️⃣ Find RoomType and check base_price
+        $roomType = RoomType::with('hotel')->findOrFail($request->room_type_id);
+
+        if (!$roomType->base_price) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ប្រភេទបន្ទប់នេះមិនមានតម្លៃកំណត់នៅទេ!'
+            ]);
+        }
+
+        // 4️⃣ Find available Room
         $room = Room::where('room_type_id', $request->room_type_id)
             ->where('status', 'available')
             ->first();
@@ -37,26 +57,67 @@ class BookingWebController extends Controller
         if (!$room) {
             return response()->json([
                 'success' => false,
-                'message' => 'អត់មានបន្ទប់ទេ'
+                'message' => 'សុំទោស! ប្រភេទបន្ទប់នេះត្រូវបានគេកក់អស់ហើយ។'
             ]);
         }
 
-        // បង្កើត Booking
-        $booking = Booking::create([
-            'booking_number' => 'BK-' . strtoupper(Str::random(8)),
-            'user_id' => Auth::id(),
-            'room_id' => $room->id,
-            'check_in' => $request->check_in,
-            'check_out' => $request->check_out,
-            'guests' => $request->guests,
-            'status' => 'pending'
-        ]);
+        // 5️⃣ Calculate total price
+        $checkIn  = Carbon::parse($request->check_in);
+        $checkOut = Carbon::parse($request->check_out);
+        $nights   = max(1, $checkIn->diffInDays($checkOut));
+        $totalPrice = $nights * $roomType->base_price;
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Booking Successful',
-            'booking_id' => $booking->id
-        ]);
+        // 6️⃣ Create Booking
+        try {
+            $booking = Booking::create([
+                'booking_code' => 'BK-' . strtoupper(Str::random(8)),
+                'user_id'      => Auth::id(),
+                'hotel_id'     => $roomType->hotel_id,
+                'room_id'      => $room->id,
+                'check_in'     => $request->check_in,
+                'check_out'    => $request->check_out,
+                'total_price'  => $totalPrice,
+                'status'       => 'pending',
+            ]);
+
+            return response()->json([
+                'success'    => true,
+                'booking_id' => $booking->id
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'មានបញ្ហាក្នុងការកក់: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // បន្ថែមក្នុង Class BookingWebController
+    public function checkout($id)
+    {
+        $booking = Booking::with('room.roomType')->findOrFail($id);
+        return view('frontend.checkout', compact('booking'));
+    }
+
+    public function processPayment(Request $request, $id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        // បើគាត់រើសបង់តាម QR យើងទុក status ជា pending សិន (រង់ចាំ Admin ឆែក Screenshot)
+        // បើគាត់រើសបង់នៅសណ្ឋាគារ យើងដូរទៅ confirmed_at_hotel
+        if ($request->payment_method == 'pay_at_hotel') {
+            $booking->update(['status' => 'confirmed']);
+        } else {
+            $booking->update(['status' => 'pending']); // ឬ 'awaiting_payment'
+        }
+
+        return redirect()->route('bookings.success', $booking->id);
+    }
+
+    public function success($id)
+    {
+        $booking = Booking::findOrFail($id);
+        return view('frontend.booking_success', compact('booking'));
     }
 
     // Booking History
@@ -66,6 +127,6 @@ class BookingWebController extends Controller
             ->latest()
             ->get();
 
-        return view('frontend.booking.history', compact('bookings'));
+        return view('frontend.history', compact('bookings'));
     }
 }

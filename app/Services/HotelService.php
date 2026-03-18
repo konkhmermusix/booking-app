@@ -4,41 +4,52 @@ namespace App\Services;
 
 use App\Repositories\HotelRepository;
 use App\Traits\UploadTrait;
-use Illuminate\Support\Facades\DB;
 
 class HotelService
 {
     use UploadTrait;
 
-    public function __construct(protected HotelRepository $repo) {}
+    protected $hotelRepo;
 
-    public function store(array $data)
+    public function __construct(HotelRepository $hotelRepo)
     {
-        return DB::transaction(function () use ($data) {
-            if (isset($data['logo'])) {
-                $data['logo'] = $this->uploadFile($data['logo'], 'hotels/logos');
-            }
-            return $this->repo->create($data);
-        });
+        $this->hotelRepo = $hotelRepo;
     }
 
-    public function update($id, array $data)
+    public function listHotels($filters)
     {
-        return DB::transaction(function () use ($id, $data) {
-            $hotel = $this->repo->find($id);
-            if (isset($data['logo'])) {
-                if ($hotel->logo) $this->deleteFile($hotel->logo);
-                $data['logo'] = $this->uploadFile($data['logo'], 'hotels/logos');
-            }
-            return $this->repo->update($id, $data);
-        });
+        return $this->hotelRepo->getAll($filters);
     }
 
-    public function delete($id)
+    public function storeHotel(array $data)
     {
-        $hotel = $this->repo->find($id);
-        if ($hotel->logo) $this->deleteFile($hotel->logo);
-        return $this->repo->delete($id);
+        if (isset($data['logo'])) {
+            $data['logo'] = $this->uploadFile($data['logo'], 'hotels/logos');
+        }
+
+        return $this->hotelRepo->create($data);
     }
-    
+
+    public function updateHotel($id, array $data)
+    {
+        $hotel = $this->hotelRepo->findById($id);
+
+        if (isset($data['logo'])) {
+            $data['logo'] = $this->uploadFile($data['logo'], 'hotels/logos', $hotel->logo);
+        }
+
+        return $this->hotelRepo->update($id, $data);
+    }
+
+    public function deleteHotel($id)
+    {
+        $hotel = $this->hotelRepo->findById($id);
+        
+        // លុបរូបភាពចេញពី Storage មុននឹងលុបទិន្នន័យ
+        if ($hotel->logo) {
+            $this->deleteFile($hotel->logo);
+        }
+
+        return $this->hotelRepo->delete($id);
+    }
 }

@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+   
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('hotel_id')->constrained()->onDelete('cascade');
+            $table->foreignId('room_id')->nullable()->constrained()->onDelete('set null');
             $table->date('check_in');
             $table->date('check_out');
             $table->decimal('total_price', 10, 2);
@@ -22,7 +24,6 @@ return new class extends Migration
             $table->string('booking_code')->unique();
             $table->timestamps();
 
-            // បន្ថែម Index សម្រាប់ Speed ពេល Search ថ្ងៃ Check-in/out
             $table->index(['check_in', 'check_out']);
         });
     }
