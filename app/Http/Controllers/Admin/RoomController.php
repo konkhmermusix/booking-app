@@ -20,11 +20,29 @@ class RoomController extends Controller
         $this->roomService = $roomService;
     }
 
+    // public function index(Request $request)
+    // {
+    //     // ប្រើ Service ដើម្បីទាញទិន្នន័យ (Service នឹងហៅ Repository ដែលមាន Eager Loading រួចជាស្រេច)
+    //     $rooms = $this->roomService->getAllRooms($request->all());
+
+    //     $hotels = Hotel::all();
+    //     $roomTypes = RoomType::all();
+
+    //     return view('admin.rooms.index', compact('rooms', 'hotels', 'roomTypes'));
+    // }
+
     public function index(Request $request)
     {
-        // ប្រើ Service ដើម្បីទាញទិន្នន័យ (Service នឹងហៅ Repository ដែលមាន Eager Loading រួចជាស្រេច)
+        // ១. ទាញយកទិន្នន័យតាមរយៈ Service (វាហៅ Repository ដែលមាន Search/Filter រួចហើយ)
+        // បញ្ជាក់៖ ក្នុង Repository របស់អ្នកមាន paginate(4) ដូច្នេះអ្នកអាចដូរវាជា 10 ឬ 12 តាមតម្រូវការ
         $rooms = $this->roomService->getAllRooms($request->all());
 
+        // ២. ប្រសិនបើជាការហៅតាមរយៈ AJAX (Axios)
+        if ($request->ajax()) {
+            return view('admin.rooms.partials.rooms-list', compact('rooms'))->render();
+        }
+
+        // ៣. ទាញទិន្នន័យសម្រាប់ Select Options ក្នុង Modals
         $hotels = Hotel::all();
         $roomTypes = RoomType::all();
 

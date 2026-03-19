@@ -13,8 +13,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="{{ asset('css/tailwind.css') }}"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- <script src="{{ asset('css/tailwind.css') }}"></script> -->
     <link rel="stylesheet" href="{{ asset('fontawesome-icon/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('swiper/swiper-bundle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('tailwind.css') }}">

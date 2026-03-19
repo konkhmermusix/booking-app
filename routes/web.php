@@ -86,13 +86,20 @@ Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.m
 Route::get('/booking', [BookingWebController::class, 'index'])->name('booking.index');
 Route::post('/booking/storecart', [BookingWebController::class, 'storecart'])->name('booking.storecart');
 Route::get('/booking/history', [BookingWebController::class, 'history'])->name('booking.history');
+Route::get('/booking/details/{id}', [BookingWebController::class, 'show'])->name('booking.show');
+Route::get('/show/{id}', [BookingWebController::class, 'show'])->name('show');
+Route::get('/success/{id}', [BookingWebController::class, 'success'])->name('success');
 
 // Checkout & Payment
-Route::get('/bookings/{id}/checkout', [BookingWebController::class, 'checkout'])->name('bookings.checkout');
-Route::post('/bookings/{id}/payment', [BookingWebController::class, 'processPayment'])->name('bookings.payment');
+Route::get('/booking/{id}/checkout', [BookingWebController::class, 'checkout'])->name('booking.checkout');
+Route::post('/booking/{id}/payment', [BookingWebController::class, 'processPayment'])->name('booking.payment');
 
 // Reviews
 Route::post('/reviews', [ReviewWebController::class, 'store'])->name('reviews.store');
+
+// Success
+Route::get('/booking/success/{id}', [BookingWebController::class, 'success'])
+    ->name('booking.success');
 
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

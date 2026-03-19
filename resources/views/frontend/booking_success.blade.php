@@ -10,7 +10,7 @@
         <p class="text-gray-500 mb-8">លេខកូដកក់របស់អ្នកគឺ: <span class="font-bold text-blue-600">{{ $booking->booking_code }}</span></p>
 
         <div class="space-y-3">
-            <a href="{{ route('bookings.history') }}" class="block w-full bg-blue-600 text-white py-3 rounded-xl font-bold">មើលប្រវត្តិកក់</a>
+            <a href="{{ route('booking.history') }}" class="block w-full bg-blue-600 text-white py-3 rounded-xl font-bold">មើលប្រវត្តិកក់</a>
             <a href="/" class="block w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold">ត្រឡប់ទៅទំព័រដើម</a>
         </div>
     </div>

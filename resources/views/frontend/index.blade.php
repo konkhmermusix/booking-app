@@ -106,11 +106,11 @@
         <div class="container mx-auto px-4">
             <div class="max-w-3xl mx-auto text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-6 tracking-tight">
-                    ប្រភេទបន្ទប់ដ៏ប្រណីតសម្រាប់អ្នក
+                    បន្ទប់
                 </h2>
                 <div class="h-1.5 w-20 bg-blue-600 mx-auto rounded-full mb-6"></div>
                 <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                    ជ្រើសរើសប្រភេទបន្ទប់ដែលស័ក្តិសមបំផុតសម្រាប់ដំណើរកម្សាន្តរបស់អ្នក ជាមួយរចនាប័ទ្មបែបទំនើប និងផាសុកភាពខ្ពស់បំផុត។
+                    បន្ទប់ដែលស័ក្តិសមបំផុតសម្រាប់ដំណើរកម្សាន្តរបស់អ្នក ជាមួយរចនាប័ទ្មបែបទំនើប និងផាសុកភាពខ្ពស់បំផុត។
                 </p>
             </div>
 
@@ -176,15 +176,8 @@
 
                         <div class="mt-auto">
                             <a href="{{ route('frontend.details', $type->id) }}"
-                                class="flex items-center justify-center w-full bg-blue-900 text-white font-bold py-4 rounded-2xl hover:bg-blue-600 transition-all">
-                                <span>ជ្រើសរើសប្រភេទនេះ</span>
-                            </a>
-                        </div>
-                        <div class="mt-auto">
-                            {{-- route('frontend.room_type', $type->id) --}}
-                            <a href=""
                                 class="group/btn flex items-center justify-center w-full bg-blue-900 dark:bg-blue-700 text-white font-bold py-4 rounded-2xl hover:bg-blue-600 transition-all shadow-lg hover:shadow-blue-500/25">
-                                <span>ជ្រើសរើសប្រភេទនេះ</span>
+                                <span>មើលលម្អិត</span>
                                 <i class="fas fa-arrow-right ml-2 group-hover/btn:translate-x-2 transition-transform"></i>
                             </a>
                         </div>
@@ -196,9 +189,7 @@
                     <div class="bg-gray-100 dark:bg-gray-800/50 p-8 rounded-full mb-6">
                         <i class="fas fa-bed-pulse text-6xl text-gray-400 dark:text-gray-600"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                        សោកស្ដាយ! មិនមានបន្ទប់ទំនេរទេ
-                    </h3>
+                   
                     <p class="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
                         បច្ចុប្បន្នមិនទាន់មានបន្ទប់ដែលត្រូវនឹងការស្វែងរករបស់អ្នកឡើយ។
                     </p>

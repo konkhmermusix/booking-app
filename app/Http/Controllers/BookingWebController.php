@@ -70,7 +70,7 @@ class BookingWebController extends Controller
         // 6️⃣ Create Booking
         try {
             $booking = Booking::create([
-                'booking_code' => 'BK-' . strtoupper(Str::random(8)),
+                'booking_code' => 'PNT-' . strtoupper(Str::random(8)),
                 'user_id'      => Auth::id(),
                 'hotel_id'     => $roomType->hotel_id,
                 'room_id'      => $room->id,
@@ -111,7 +111,7 @@ class BookingWebController extends Controller
             $booking->update(['status' => 'pending']); // ឬ 'awaiting_payment'
         }
 
-        return redirect()->route('bookings.success', $booking->id);
+        return redirect()->route('booking.success', $booking->id);
     }
 
     public function success($id)
@@ -125,8 +125,29 @@ class BookingWebController extends Controller
     {
         $bookings = Booking::where('user_id', Auth::id())
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('frontend.history', compact('bookings'));
     }
+
+    public function show($id)
+    {
+        $roomType = RoomType::with([
+            'images',
+            'facilities',
+            'rooms',
+            'hotel'
+        ])->findOrFail($id);
+
+        $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
+            ->where('id', '!=', $roomType->id)
+            ->take(3)
+            ->get();
+
+        return view('frontend.details', compact(
+            'roomType',
+            'similarRooms'
+        ));
+    }
+
 }

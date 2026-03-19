@@ -4,7 +4,7 @@
 <div class="bg-gray-50 dark:bg-gray-900 min-h-screen pb-20">
 
     <div class="relative group">
-        <div class="swiper roomGallerySwiper h-[400px] md:h-[600px]">
+        <div class="swiper roomGallerySwiper h-[400px] md:h-[600px] rounded-xl shadow-xl">
             <div class="swiper-wrapper">
                 @foreach($roomType->images as $image)
                 <div class="swiper-slide">
@@ -16,6 +16,7 @@
             <div class="swiper-button-prev text-white after:text-2xl"></div>
             <div class="swiper-pagination"></div>
         </div>
+        
     </div>
 
     <div class="container mx-auto px-4 mt-8">
@@ -127,14 +128,29 @@
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-gray-400 uppercase ml-1">កាលបរិច្ឆេទ</label>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <input type="date" name="check_in" class="bg-gray-50 dark:bg-gray-900 border-none rounded-xl p-3 text-sm font-bold dark:text-white" required>
-                                    <input type="date" name="check_out" class="bg-gray-50 dark:bg-gray-900 border-none rounded-xl p-3 text-sm font-bold dark:text-white" required>
+                                    <div class="flex flex-col">
+                                        <label class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase ml-2 mb-2">
+                                            <i class="fas fa-calendar-alt mr-1 text-blue-500"></i>
+                                            <span data-key="label-checkin">ថ្ងៃចូលស្នាក់នៅ</span>
+                                        </label>
+                                        <input type="date" name="check_in" id="check_in" value="{{ request('check_in', date('Y-m-d')) }}"
+                                            class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]" required>
+                                    </div>
+
+                                    <div class="flex flex-col">
+                                        <label class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase ml-2 mb-2">
+                                            <i class="fas fa-calendar-check mr-1 text-blue-500"></i>
+                                            <span data-key="label-checkout">ថ្ងៃចាកចេញ</span>
+                                        </label>
+                                        <input type="date" name="check_out" id="check_out" value="{{ request('check_out', date('Y-m-d')) }}"
+                                            class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]" required>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="space-y-1">
                                 <label class="text-xs font-bold text-gray-400 uppercase ml-1">ចំនួនភ្ញៀវ</label>
-                                <select name="guests" class="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-xl p-3 text-sm font-bold dark:text-white">
+                                <select name="guests" class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                                     @for($i=1; $i<=$roomType->max_guests; $i++)
                                         <option value="{{ $i }}">{{ $i }} នាក់</option>
                                         @endfor
@@ -209,7 +225,6 @@
     });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.getElementById('bookingForm').onsubmit = async function(e) {
         e.preventDefault();
@@ -236,7 +251,7 @@
 
             if (result.success) {
                 // ២. បើជោគជ័យ បញ្ជូនទៅទំព័រ Checkout
-                window.location.href = "/bookings/" + result.booking_id + "/checkout";
+                window.location.href = "/booking/" + result.booking_id + "/checkout";
             } else {
                 // ៣. បើមានបញ្ហា (ដូចជាបាត់ទិន្នន័យ ឬបន្ទប់ពេញ)
                 Swal.fire({

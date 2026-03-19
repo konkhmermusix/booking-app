@@ -133,6 +133,12 @@
                         </div>
                     </div>
 
+                    <div>
+                        <div>
+                            <textarea name="description" x-model="currentType.description"></textarea>
+                        </div>
+                    </div>
+
                     <div class="mt-6 border-t dark:border-gray-800 pt-4">
                         <label class="block text-sm font-bold dark:text-gray-300 uppercase text-[11px] tracking-wider mb-3">រូបភាពដែលមានស្រាប់</label>
                         <div class="grid grid-cols-3 gap-3">

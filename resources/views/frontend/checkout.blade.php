@@ -8,19 +8,15 @@
         <div class="max-w-5xl mx-auto">
 
             <div class="flex items-center gap-4 mb-8">
-                <a href="{{ route('booking.history') }}" class="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm text-gray-600 hover:text-blue-600">
-                    <i class="fas fa-arrow-left"></i>
-                </a>
-                <h1 class="text-3xl font-extrabold text-gray-900">ការទូទាត់ប្រាក់ (Checkout)</h1>
+
+                <h1 class="text-3xl font-extrabold text-gray-900">ការទូទាត់ប្រាក់</h1>
             </div>
 
             <div class="grid lg:grid-cols-3 gap-8">
 
                 <div class="lg:col-span-1">
-                    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div class="p-6 border-b border-gray-50 bg-gray-50/50">
-                            <h3 class="font-bold text-gray-800">សេចក្ដីសង្ខេបនៃការកក់</h3>
-                        </div>
+                    <div class="bg-white  rounded-3xl shadow-lg border border-gray-100 overflow-hidden p-8">
+                        <h3 class="font-bold text-gray-800">ជ្រើសរើសវិធីទូទាត់</h3>
                         <div class="p-6">
                             <div class="space-y-4">
                                 <div>
@@ -33,11 +29,13 @@
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Check In</p>
+                                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">ថ្ងៃចូលស្នាក់នៅ
+                                        </p>
                                         <p class="font-semibold text-sm">{{ \Carbon\Carbon::parse($booking->check_in)->format('d M, Y') }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider">Check Out</p>
+                                        <p class="text-xs text-gray-400 uppercase font-bold tracking-wider"> ថ្ងៃចាក់ចេញ
+                                        </p>
                                         <p class="font-semibold text-sm">{{ \Carbon\Carbon::parse($booking->check_out)->format('d M, Y') }}</p>
                                     </div>
                                 </div>
@@ -53,9 +51,9 @@
 
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-8">
-                        <h3 class="text-xl font-bold text-gray-800 mb-6">ជ្រើសរើសវិធីទូទាត់</h3>
+                        <h3 class="font-bold text-gray-800">ជ្រើសរើសវិធីទូទាត់</h3>
 
-                        <form action="{{ route('bookings.payment', $booking->id) }}" method="POST">
+                        <form action="{{ route('booking.payment', $booking->id) }}" method="POST">
                             @csrf
                             <div class="grid gap-4 mb-8">
 
@@ -63,20 +61,16 @@
                                     <input type="radio" name="payment_method" value="khqr" checked class="w-5 h-5 text-blue-600 focus:ring-blue-500">
                                     <div class="ml-4 flex-1">
                                         <div class="flex items-center justify-between">
-                                            <span class="block font-bold text-gray-900">បង់តាម KHQR (ABA / Bakong / Wing)</span>
-                                            <div class="flex gap-1">
-                                                <span class="px-2 py-0.5 bg-red-500 text-[10px] text-white rounded font-bold uppercase">Popular</span>
-                                            </div>
+                                            <span class="block font-bold text-gray-900">បង់តាម KHQR </span>
                                         </div>
-                                        <span class="text-sm text-gray-500 italic">ស្កេន QR Code ដើម្បីទូទាត់ភ្លាមៗ</span>
+
                                     </div>
                                 </label>
 
                                 <label class="relative flex items-center p-5 border border-gray-200 rounded-2xl cursor-pointer hover:bg-gray-50 transition group">
                                     <input type="radio" name="payment_method" value="pay_at_hotel" class="w-5 h-5 text-blue-600 focus:ring-blue-500">
                                     <div class="ml-4 flex-1">
-                                        <span class="block font-bold text-gray-700 group-hover:text-gray-900">បង់ប្រាក់នៅសណ្ឋាគារ (Pay at Hotel)</span>
-                                        <span class="text-sm text-gray-500 italic">អ្នកអាចបង់ប្រាក់ផ្ទាល់នៅពេលមកដល់</span>
+                                        <span class="block font-bold text-gray-700 group-hover:text-gray-900">បង់ប្រាក់នៅសណ្ឋាគារ</span>
                                     </div>
                                 </label>
 
@@ -98,12 +92,7 @@
                         </form>
 
                     </div>
-
-                    <p class="text-center text-gray-400 text-xs mt-6 italic">
-                        <i class="fas fa-shield-alt mr-1"></i> ការទូទាត់ប្រាក់របស់អ្នកមានសុវត្ថិភាព និងរក្សាការសម្ងាត់ខ្ពស់
-                    </p>
                 </div>
-
             </div>
         </div>
     </div>

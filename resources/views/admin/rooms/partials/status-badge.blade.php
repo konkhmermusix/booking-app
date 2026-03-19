@@ -1,4 +1,17 @@
+@php
+$badges = [
+'available' => ['color' => 'bg-emerald-50 text-emerald-600 border-emerald-100', 'text' => 'ទំនេរ'],
+'booked' => ['color' => 'bg-rose-50 text-rose-600 border-rose-100', 'text' => 'មានភ្ញៀវ'],
+'maintenance' => ['color' => 'bg-amber-50 text-amber-600 border-amber-100', 'text' => 'ជួសជុល'],
+][$status] ?? ['color' => 'bg-gray-50 text-gray-500 border-gray-100', 'text' => $status];
+@endphp
 
+<span class="px-2 py-0.5 rounded-full border {{ $badges['color'] }} text-[13px] font-black uppercase tracking-tighter">
+    {{ $badges['text'] }}
+</span>
+
+
+<!-- 
 
 @php
     $config = [
@@ -11,4 +24,4 @@
 
 <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider {{ $current['class'] }}">
     {{ $current['label'] }}
-</span>
+</span> -->
