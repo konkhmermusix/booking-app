@@ -9,7 +9,7 @@ class Facility extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'icon', 'type'];
+    protected $fillable = ['name', 'icon', 'type', 'is_active'];
 
     public function roomTypes()
     {

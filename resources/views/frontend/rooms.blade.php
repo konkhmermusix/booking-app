@@ -3,159 +3,227 @@
 
 @section('content')
 
-<header class="relative h-[40vh] flex items-center justify-center text-white">
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1920"
-            class="w-full h-full object-cover brightness-[0.4]" alt="Banner">
-    </div>
-    <div class="relative z-10 text-center px-4" data-aos="zoom-in">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">បន្ទប់ស្នាក់នៅប្រណីត</h1>
-        <p class="text-lg opacity-80">ស្វែងរកកន្លែងសម្រាកដ៏ល្អឥតខ្ចោះសម្រាប់អ្នក</p>
-    </div>
-</header>
+{{-- បង្ហាញ Message Alerts --}}
+<div class="container mx-auto px-4 mt-4">
+    <x-alert />
+</div>
 
-<section class="sticky top-[60px] z-[90] bg-white/95 dark:bg-gray-950/95 backdrop-blur border-b dark:border-gray-800 py-4 shadow-sm">
-    <div class="container mx-auto px-4 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex gap-2 overflow-x-auto no-scrollbar">
-            {{-- ប៊ូតុង "ទាំងអស់" --}}
-            <a href="{{ route('frontend.rooms', request()->except('type')) }}"
-                class="px-6 py-2 rounded-full text-sm font-bold transition whitespace-nowrap {{ !request('type') ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800' }}">
-                ទាំងអស់
-            </a>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            {{-- បង្ហាញប៊ូតុងតាមឈ្មោះដែល Admin បានបញ្ចូលក្នុង Database --}}
-            @foreach($categories as $category)
-            <a href="{{ route('frontend.rooms', array_merge(request()->query(), ['type' => $category->name])) }}"
-                class="px-6 py-2 rounded-full text-sm font-bold transition whitespace-nowrap 
-            {{ request('type') == $category->name ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300' }}">
-                {{ $category->name }}
-            </a>
-            @endforeach
+{{-- Wrapper ធំជាមួយ Alpine.js សម្រាប់គ្រប់គ្រង State នៃការ Filter --}}
+<div x-data="{ 
+    view: 'grid',
+    loading: false, 
+    currentUrl: '{{ request()->fullUrl() }}',
+    fetchRooms(url) {
+        this.loading = true;
+        this.currentUrl = url;
+        
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('room-list-container').innerHTML = html;
+                window.history.pushState({ path: url }, '', url);
+                this.loading = false;
+            })
+            .catch(err => {
+                console.error(err);
+                this.loading = false;
+            });
+    }
+}" @popstate.window="location.reload()"> {{-- បើភ្ញៀវចុច Back ឱ្យវា Reload យក State ចាស់ --}}
+
+    <header class="group relative h-[55vh] w-full overflow-hidden flex items-center justify-center rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 transition-all duration-500 ease-in-out cursor-default">
+        <div class="absolute inset-0 z-0 animate-grid-move opacity-60 dark:opacity-20 will-change-transform"
+            style="background-image: linear-gradient(to right, #cfdae1 1px, transparent 1px), linear-gradient(to bottom, #fbd5e1 1px, transparent 1px); background-size: 80px 80px;">
         </div>
 
-        <form action="{{ route('frontend.rooms') }}" method="GET" id="sortForm" class="flex items-center gap-2">
-            @if(request('type')) <input type="hidden" name="type" value="{{ request('type') }}"> @endif
-            <label class="text-xs font-bold text-gray-400 uppercase">តម្រៀបតាម:</label>
-            <select name="sort" onchange="this.form.submit()" class="bg-gray-100 dark:bg-gray-800 border-none rounded-xl text-sm font-bold px-4 py-2 focus:ring-2 focus:ring-blue-500">
-                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>តម្លៃ: ទាប → ខ្ពស់</option>
-                <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>តម្លៃ: ខ្ពស់ → ទាប</option>
-            </select>
-        </form>
-    </div>
-</section>
+        <div class="absolute inset-0 z-[1] backdrop-blur-[2px] bg-[radial-gradient(circle_at_center,transparent_30%,rgba(255,255,255,0.9)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_30%,rgba(2,6,23,0.95)_100%)]"></div>
 
-<section class="py-16 container mx-auto px-4">
-    <div id="room-container" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        @forelse($roomTypes as $type)
-        <div class="room-card group bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden shadow-xl border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row transition hover:shadow-2xl"
-            data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+        <div class="relative z-10 text-center px-4">
+            <h4 class="text-4xl md:text-5xl font-black mb-4 text-blue-900 dark:text-white tracking-tight transition-all duration-500 group-hover:scale-105">
+                បន្ទប់ស្នាក់នៅទាំងអស់
+            </h4>
+            <p class="text-lg font-bold text-slate-600 dark:text-slate-400">
+                ស្វែងរកកន្លែងដ៏ល្អសម្រាប់អ្នក
+            </p>
+        </div>
+    </header>
 
-            <div class="md:w-2/5 h-64 md:h-auto overflow-hidden relative">
-                <img src="{{ $type->images->isNotEmpty() ? asset('storage/' . $type->images->first()->image_path) : 'https://via.placeholder.com/800x600?text=No+Image' }}"
-                    class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+    {{-- ================= SEARCH FORM (Normal Submit) ================= --}}
+    <section class="container mx-auto px-4 -mt-10 relative z-50">
+        <form action="{{ route('frontend.rooms') }}" method="GET">
+            <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flex flex-col">
+                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">ថ្ងៃចូលស្នាក់នៅ</label>
+                    <input type="date" name="check_in" value="{{ $check_in }}" class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl dark:text-white text-sm h-[52px]">
+                </div>
 
-                <span class="absolute top-5 left-5 bg-white/90 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold text-blue-600 uppercase shadow-sm">
-                    {{ $type->name }}
-                </span>
-            </div>
+                <div class="flex flex-col">
+                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">ថ្ងៃចាកចេញ</label>
+                    <input type="date" name="check_out" value="{{ $check_out }}" class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl dark:text-white text-sm h-[52px]">
+                </div>
 
-            <div class="md:w-3/5 p-8 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-2xl font-bold">{{ $type->name }}</h3>
-                        <div class="text-right">
-                            <span class="text-2xl font-black text-blue-600">${{ number_format($type->base_price, 2) }}</span>
-                            <p class="text-[10px] text-gray-400 uppercase">ក្នុងមួយយប់</p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-4 mb-6 text-xs font-medium">
-                        <span class="text-gray-500"><i class="fas fa-user-group mr-1"></i> {{ $type->max_guests }} នាក់</span>
-                        @if($type->available_rooms_count > 0)
-                        <span class="text-green-500"><i class="fas fa-check-circle mr-1"></i> សល់ {{ $type->available_rooms_count }} បន្ទប់</span>
-                        @else
-                        <span class="text-red-500"><i class="fas fa-times-circle mr-1"></i> អស់បន្ទប់</span>
-                        @endif
-                    </div>
-
-                    <ul class="grid grid-cols-2 gap-y-2 mb-8 text-sm text-gray-600 dark:text-gray-400">
-                        @foreach($type->facilities->take(4) as $facility)
-                        <li><i class="{{ $facility->icon ?? 'fas fa-check-circle' }} text-blue-500 mr-2"></i> {{ $facility->name }}</li>
+                <div class="flex flex-col">
+                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">ប្រភេទបន្ទប់</label>
+                    <select name="type" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl dark:text-white text-sm h-[52px]">
+                        <option value="">គ្រប់ប្រភេទទាំងអស់</option>
+                        @foreach($categories as $category)
+                        <option value="{{ $category->name }}" {{ request('type') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
-                    </ul>
+                    </select>
                 </div>
 
-                <div class="flex gap-3">
-                    <a href="{{ route('frontend.details', $type->id) }}"
-                        class="flex-1 text-center py-3 rounded-2xl border-2 border-blue-600 text-blue-600 font-bold hover:bg-blue-50 transition text-sm">
-                        ព័ត៌មានលម្អិត
+                <div class="flex flex-col">
+                    <label class="hidden lg:block text-[11px] mb-2 opacity-0">Search</label>
+                    <button type="submit" class="w-full bg-blue-900 text-white font-bold rounded-xl hover:bg-blue-800 transition-all h-[52px] flex items-center justify-center gap-2">
+                        <i class="fas fa-search text-xs"></i> ស្វែងរក
+                    </button>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    {{-- ================= FILTER + SORT (Alpine AJAX) ================= --}}
+    <section class="sticky top-[60px] z-[90] dark:bg-gray-950  py-4 mt-4 ">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+
+                {{-- 1. CATEGORY FILTER (Scrollable) --}}
+                <div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0 no-scrollbar flex-grow lg:flex-grow-0">
+                    <a href="{{ route('frontend.rooms', request()->except(['type', 'page'])) }}"
+                        @click.prevent="fetchRooms($el.href)"
+                        :class="!currentUrl.includes('type=') ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300'"
+                        class="px-5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap">
+                        ទាំងអស់
                     </a>
 
-                    @auth
-                    @if($type->available_rooms_count > 0)
-                    <button onclick="openBookingModal({{ $type->id }}, '{{ $type->name }}')"
-                        class="flex-1 py-3 rounded-2xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition text-sm">
-                        កក់ឥឡូវនេះ
-                    </button>
-                    @else
-                    <button disabled class="flex-1 py-3 rounded-2xl bg-gray-400 text-white font-bold cursor-not-allowed text-sm">
-                        អស់បន្ទប់ហើយ
-                    </button>
-                    @endif
-                    @else
-                    <a href="{{ route('login') }}" class="flex-1 text-center py-3 rounded-2xl bg-orange-500 text-white font-bold hover:bg-orange-600 transition text-sm">
-                        សូមចូលប្រើដើម្បីកក់
+                    @foreach($categories as $category)
+                    @php
+                    $catUrl = route('frontend.rooms', array_merge(request()->query(), ['type' => $category->name, 'page' => 1]));
+                    @endphp
+                    <a href="{{ $catUrl }}"
+                        @click.prevent="fetchRooms($el.href)"
+                        :class="currentUrl.includes('type={{ urlencode($category->name) }}') ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 dark:bg-gray-800 dark:text-gray-300'"
+                        class="px-5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap">
+                        {{ $category->name }}
                     </a>
-                    @endauth
+                    @endforeach
+                </div>
+
+                {{-- 2. ADDITIONAL FILTERS --}}
+                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+
+                    {{-- SEARCH INPUT (Live Search) --}}
+                    <div class="relative flex-grow sm:flex-grow-0">
+                        <input type="text"
+                            placeholder="ស្វែងរកឈ្មោះបន្ទប់..."
+                            @input.debounce.500ms="
+                            let url = new URL(currentUrl);
+                            url.searchParams.set('search', $event.target.value);
+                            url.searchParams.set('page', 1);
+                            fetchRooms(url.toString());
+                        "
+                            class="w-full sm:w-48 pl-9 pr-4 py-2 border rounded-xl text-sm bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none focus:ring-2 ring-blue-500">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    </div>
+
+                    {{-- CAPACITY FILTER --}}
+                    <select @change="
+                        let url = new URL(currentUrl);
+                        url.searchParams.set('guests', $event.target.value);
+                        url.searchParams.set('page', 1);
+                        fetchRooms(url.toString());
+                    " class="border rounded-xl px-4 py-2 text-sm bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700 outline-none">
+                        <option value="">ចំនួនភ្ញៀវ</option>
+                        @for($i=1; $i<=5; $i++)
+                            <option value="{{ $i }}" {{ request('guests') == $i ? 'selected' : '' }}>{{ $i }} នាក់{{ $i == 5 ? '+' : '' }}</option>
+                            @endfor
+                    </select>
+
+                    {{-- SORT PRICE --}}
+                    <div class="relative">
+                        <select @change="
+                            let url = new URL(currentUrl);
+                            url.searchParams.set('sort', $event.target.value);
+                            fetchRooms(url.toString());
+                        " class="border rounded-xl pl-4 pr-10 py-2 text-sm bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700 appearance-none outline-none">
+                            <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>តម្លៃ: ទាប → ខ្ពស់</option>
+                            <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>តម្លៃ: ខ្ពស់ → ទាប</option>
+                        </select>
+                        <i class="fas fa-sort-amount-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
+
+                    <div class="flex items-center border dark:border-gray-700 rounded-xl p-0 bg-gray-50 dark:bg-gray-800">
+                        {{-- Grid View Button --}}
+                        <button @click="view = 'grid'"
+                            :class="view === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'"
+                            class="p-2 px-2 rounded-lg transition-all">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+
+                        {{-- List View Button --}}
+                        <button @click="view = 'list'"
+                            :class="view === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'"
+                            class="p-2 px-2 rounded-lg transition-all">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+
+                    {{-- RESET BUTTON --}}
+                    <button @click="fetchRooms('{{ route('frontend.rooms') }}')"
+                        class="p-2 text-gray-500 hover:text-red-500 transition-colors" title="លុប Filter ទាំងអស់">
+                        <i class="fas fa-undo-alt"></i>
+                    </button>
+
                 </div>
             </div>
         </div>
-        @empty
-        <div class="col-span-full text-center py-20">
-            <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
-            <p class="text-gray-500">មិនមានបន្ទប់ដែលអ្នកស្វែងរកឡើយ។</p>
+    </section>
+
+
+    {{-- ================= ROOM LIST ================= --}}
+    <section class="py-16 container mx-auto px-4 relative">
+        {{-- Loading Overlay --}}
+        <div x-show="loading" class="absolute inset-0 bg-white/50 dark:bg-gray-900/50 z-10 flex justify-center py-20 transition-opacity">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-900 border-t-transparent"></div>
         </div>
-        @endforelse
-    </div>
 
-    <div class="mt-16 flex justify-center">
-        {{ $roomTypes->links() }}
-    </div>
-</section>
+        <div id="room-list-container">
+            @include('frontend.partials.room_list')
+        </div>
+    </section>
+</div>
 
-<div id="bookingModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[9999] backdrop-blur-sm">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl p-8 w-full max-w-md shadow-2xl scale-95 transition-transform duration-300">
-        <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-            <i class="fas fa-calendar-check text-blue-600"></i> កក់បន្ទប់
-        </h2>
+{{-- ================= BOOKING MODAL ================= --}}
+<div id="bookingModal" class="fixed inset-0 hidden items-center justify-center bg-black/60 z-[100] backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-gray-900 p-8 rounded-3xl w-full max-w-md shadow-2xl transform transition-all scale-95 opacity-0 duration-300" id="modalContainer">
+        <h2 class="text-2xl font-bold mb-6 dark:text-white">បញ្ជាក់ការកក់</h2>
 
-        <form id="bookingForm" class="space-y-4">
+        <form id="bookingForm">
+            @csrf
             <input type="hidden" id="room_type_id" name="room_type_id">
-
-            <div>
-                <label class="block text-sm font-bold mb-1">ប្រភេទបន្ទប់</label>
-                <input type="text" id="modal_room_name" class="w-full bg-gray-50 dark:bg-gray-800 border-none rounded-xl p-3" readonly>
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">បន្ទប់ដែលរើស</label>
+                <input type="text" id="modal_room_name" readonly class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3 rounded-xl dark:text-white">
             </div>
-
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="block text-sm font-bold mb-1">Check In</label>
-                    <input type="date" name="check_in" min="{{ date('Y-m-d') }}" class="w-full border-gray-200 dark:border-gray-700 rounded-xl p-3" required>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1 text-blue-500">ថ្ងៃចូល</label>
+                    <input type="date" name="check_in" value="{{ $check_in }}" class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3 rounded-xl dark:text-white text-sm" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-bold mb-1">Check Out</label>
-                    <input type="date" name="check_out" min="{{ date('Y-m-d', strtotime('+1 day')) }}" class="w-full border-gray-200 dark:border-gray-700 rounded-xl p-3" required>
+                    <label class="block text-xs font-bold text-gray-400 uppercase mb-1 text-red-500">ថ្ងៃចេញ</label>
+                    <input type="date" name="check_out" value="{{ $check_out }}" class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3 rounded-xl dark:text-white text-sm" required>
                 </div>
             </div>
-
-            <div>
-                <label class="block text-sm font-bold mb-1">ចំនួនអ្នកស្នាក់នៅ</label>
-                <input type="number" name="guests" min="1" value="1" class="w-full border-gray-200 dark:border-gray-700 rounded-xl p-3" required>
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-400 uppercase mb-1">ចំនួនភ្ញៀវ</label>
+                <input type="number" name="guests" value="1" min="1" class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3 rounded-xl dark:text-white" required>
             </div>
-
-            <div class="flex gap-3 mt-6">
-                <button type="button" onclick="closeBookingModal()" class="flex-1 bg-gray-100 dark:bg-gray-800 py-3 rounded-xl font-bold">បោះបង់</button>
-                <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">បញ្ជាក់ការកក់</button>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeBookingModal()" class="flex-1 bg-gray-100 dark:bg-gray-800 dark:text-white py-3 rounded-2xl font-bold hover:bg-gray-200 transition">បោះបង់</button>
+                <button type="submit" class="flex-1 bg-blue-600 text-white py-3 rounded-2xl font-bold hover:bg-blue-700 shadow-lg transition">យល់ព្រមកក់</button>
             </div>
         </form>
     </div>
@@ -165,48 +233,70 @@
 
 @push('scripts')
 <script>
+    const modal = document.getElementById('bookingModal');
+    const modalContainer = document.getElementById('modalContainer');
+    const bookingForm = document.getElementById('bookingForm');
+
     function openBookingModal(id, name) {
-        document.getElementById("room_type_id").value = id;
-        document.getElementById("modal_room_name").value = name;
-        const modal = document.getElementById("bookingModal");
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
-        setTimeout(() => modal.querySelector('div').classList.add('scale-100'), 10);
+        document.getElementById('room_type_id').value = id;
+        document.getElementById('modal_room_name').value = name;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            modalContainer.classList.remove('scale-95', 'opacity-0');
+            modalContainer.classList.add('scale-100', 'opacity-100');
+        }, 10);
     }
 
     function closeBookingModal() {
-        const modal = document.getElementById("bookingModal");
-        modal.querySelector('div').classList.remove('scale-100');
+        modalContainer.classList.remove('scale-100', 'opacity-100');
+        modalContainer.classList.add('scale-95', 'opacity-0');
         setTimeout(() => {
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }, 200);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
     }
 
-    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    bookingForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const btn = e.target.querySelector('button[type="submit"]');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> កំពុងបញ្ជូន...';
-        btn.disabled = true;
+        Swal.fire({
+            title: 'កំពុងផ្ញើទិន្នន័យ...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            }
+        });
 
-        let formData = new FormData(this);
-        fetch("/booking/store", {
+        fetch("{{ route('frontend.bookings.store') }}", {
                 method: "POST",
                 headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Accept": "application/json"
                 },
-                body: formData
+                body: new FormData(this)
             })
             .then(res => res.json())
             .then(data => {
-                alert(data.message || "ការកក់ទទួលបានជោគជ័យ!");
-                location.reload();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ជោគជ័យ!',
+                        text: data.message
+                    });
+                    closeBookingModal();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'បរាជ័យ!',
+                        text: data.message
+                    });
+                }
             })
-            .catch(err => alert("មានបញ្ហាអ្វីមួយបានកើតឡើង!"))
-            .finally(() => {
-                btn.innerHTML = 'បញ្ជាក់ការកក់';
-                btn.disabled = false;
-            });
+            .catch(() => Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'មានបញ្ហាបច្ចេកទេស!'
+            }));
     });
 </script>
 @endpush

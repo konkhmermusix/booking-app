@@ -29,10 +29,11 @@ use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\HotelController;
 use App\Http\Controllers\Admin\RoomTypeController;
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\SlideshowController;
 use App\Http\Controllers\Admin\TourController;
-
+use App\Http\Controllers\Admin\PromotionController;
 
 
 // Authentication Routes
@@ -64,7 +65,6 @@ Route::post('/logout', function () {
 // =======================================
 // Frontend Website Routes
 // =======================================
-
 // Home Page
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -72,6 +72,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/facilities', [FacilitiWebController::class, 'index'])->name('frontend.facilities');
 Route::get('/about', [AboutWebController::class, 'index'])->name('frontend.about');
 Route::get('/contact', [ContactWebController::class, 'index'])->name('frontend.contact');
+Route::post('/contact', [ContactWebController::class, 'store'])->name('frontend.contact.store');
+
 
 // Hotels & Rooms
 Route::get('/hotels', [HotelFrontendController::class, 'index'])->name('frontend.hotels.index');
@@ -84,6 +86,7 @@ Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.m
 
 // Booking Routes
 Route::get('/booking', [BookingWebController::class, 'index'])->name('booking.index');
+Route::post('/bookings/store', [RoomWebController::class, 'storeBooking'])->name('frontend.bookings.store')->middleware('auth'); // អនុញ្ញាតឱ្យតែកាលណាបាន Login រួច
 Route::post('/booking/storecart', [BookingWebController::class, 'storecart'])->name('booking.storecart');
 Route::get('/booking/history', [BookingWebController::class, 'history'])->name('booking.history');
 Route::get('/booking/details/{id}', [BookingWebController::class, 'show'])->name('booking.show');
@@ -127,6 +130,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('facilities', FacilityController::class);
         Route::resource('slideshows', SlideshowController::class);
         Route::resource('tours', TourController::class);
+        Route::resource('contact', ContactController::class);
+        Route::resource('promotions', PromotionController::class);
 
 
         Route::delete('rooms_types/images/{id}', [RoomTypeController::class, 'destroyImage'])->name('room_types.image.destroy');

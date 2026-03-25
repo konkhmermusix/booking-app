@@ -9,17 +9,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
 
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <script src="{{ asset('css/tailwind.css') }}"></script> -->
+
     <link rel="stylesheet" href="{{ asset('fontawesome-icon/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('swiper/swiper-bundle.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('tailwind.css') }}">
-    <link rel="stylesheet" href="{{ asset('style/font.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/header_style.css') }}">
+    <link rel="stylesheet" href="{{ asset('fonts/font.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <script>
@@ -145,12 +142,12 @@
                             </div>
                             <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg overflow-hidden border-2 border-white dark:border-gray-800">
                                 @if(Auth::user()->avatar)
-                                {{-- បង្ហាញរូបភាពពី Folder storage/avatars (ប្រសិនបើអ្នកទុកក្នុងនោះ) --}}
+
                                 <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
                                     alt="{{ Auth::user()->name }}"
                                     class="w-full h-full object-cover">
                                 @else
-                                {{-- បើគ្មានរូបទេ បង្ហាញអក្សរកាត់នៃឈ្មោះ ឬ Icon --}}
+
                                 <div class="flex items-center justify-center w-full h-full bg-blue-500 text-white font-bold text-sm">
                                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                 </div>
@@ -247,6 +244,9 @@
                 <div class="flex gap-4">
                     <a href="#" class="w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-sky-500 hover:text-white transition-all"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="#" class="w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-400 hover:text-white transition-all"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-red-700 hover:text-white transition-all"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="w-11 h-11 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-emerald-900 hover:text-white transition-all"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
         </div>
@@ -255,13 +255,95 @@
         </div>
     </footer>
 
+    <div x-data="{ openChat: false }" class="fixed bottom-8 right-1 z-[100] flex flex-col items-end gap-4">
+
+        <div x-show="openChat"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-10 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-10 scale-95"
+            class="w-[330px] md:w-[370px] bg-white dark:bg-gray-900 rounded-[1.5rem] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-2"
+            x-cloak>
+
+            <div class="bg-blue-600 p-3 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
+                        <i class="fab fa-facebook-messenger text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">P&T Palace Support</h4>
+                        <p class="text-[10px] opacity-80 uppercase tracking-wider">Online (Reply in minutes)</p>
+                    </div>
+                </div>
+                <button @click="openChat = false" class="hover:bg-black/10 w-8 h-8 rounded-full transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+
+            <div id="chat-messages" class="h-80 p-6 overflow-y-auto bg-gray-50 dark:bg-slate-950/50 flex flex-col gap-3">
+                <div class="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-2xl rounded-tl-none text-sm text-blue-900 dark:text-blue-100 max-w-[85%]">
+                    សួស្តី! អ្នកអាចផ្ញើសារ ឬរូបភាពមកយើងបាន។
+                </div>
+
+                <div id="image-preview-area" class="hidden flex flex-wrap gap-2 p-2 bg-white dark:bg-gray-800 rounded-xl border-2 border-dashed border-blue-200">
+                </div>
+            </div>
+
+            <div class="p-4 bg-white dark:bg-gray-900 border-t dark:border-gray-800">
+                <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-2 rounded-2xl">
+                    <button class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-blue-600 transition-colors">
+                        <label class="cursor-pointer">
+                            <input type="file" id="chat-file-input" class="hidden" accept="image/*" onchange="previewImages(this)">
+                            <i class="fas fa-image text-lg"></i>
+                        </label>
+                    </button>
+
+                    <input type="text" id="chat-text-input" placeholder="សរសេរសារ..."
+                        class="flex-1 bg-transparent border-none focus:ring-0 text-sm dark:text-white outline-none">
+
+                    <button onclick="sendMessage()" class="w-10 h-10 bg-blue-600 text-white rounded-xl shadow-lg flex items-center justify-center hover:bg-blue-700 transition-all">
+                        <i class="fas fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <button @click="openChat = !openChat"
+            class="w-12 h-12 bg-[#0084FF] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all relative group">
+
+            <span x-show="!openChat" class="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-20"></span>
+
+            <i x-show="!openChat" class="fab fa-facebook-messenger text-2xl"></i>
+            <i x-show="openChat" class="fas fa-chevron-down text-xl" x-cloak></i>
+
+            <span x-show="!openChat" class="absolute right-full mr-1 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                ឆាតមកយើងខ្ញុំ
+            </span>
+        </button>
+
+
+        <button id="scrollTopBtn"
+            onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+            class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-400 text-white rounded-full shadow-[0_10px_25px_-5px_rgba(37,99,235,0.4)] transition-all duration-500 translate-y-20 opacity-0 group hover:shadow-[0_20px_30px_-10px_rgba(37,99,235,0.6)] hover:-translate-y-1 active:scale-90 pointer-events-none">
+            <span class="absolute inset-0 rounded-full bg-blue-500 animate-ping opacity-20 group-hover:opacity-40"></span>
+            <i class="fas fa-arrow-up text-lg relative z-10 transition-transform duration-300 group-hover:-translate-y-1"></i>
+        </button>
+
+    </div>
+
     <!-- scroll up btn -->
-    <button id="scrollTopBtn"
+    <!-- <button id="scrollTopBtn"
         class="fixed bottom-8 right-8 z-50 flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-400 text-white rounded-full shadow-[0_10px_25px_-5px_rgba(37,99,235,0.4)] transition-all duration-500 translate-y-20 opacity-0 group hover:shadow-[0_20px_30px_-10px_rgba(37,99,235,0.6)] hover:-translate-y-1 active:scale-90">
         <span class="absolute inset-0 rounded-full bg-blue-500 animate-ping opacity-20 group-hover:opacity-40"></span>
         <i
             class="fas fa-arrow-up text-lg relative z-10 transition-transform duration-300 group-hover:-translate-y-1"></i>
-    </button>
+    </button> -->
+
+
 
     <!-- <script src="//unpkg.com/alpinejs" defer></script> -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -290,6 +372,73 @@
                     }
                 })
                 .catch(error => console.error('Language Switch Error:', error));
+        }
+    </script>
+
+    <script>
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                // បង្ហាញប៊ូតុង Scroll Top
+                scrollTopBtn.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+                scrollTopBtn.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+            } else {
+                // លាក់ប៊ូតុង Scroll Top
+                scrollTopBtn.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+                scrollTopBtn.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+            }
+        };
+    </script>
+
+    <script>
+        function previewImages(input) {
+            const previewArea = document.getElementById('image-preview-area');
+            const files = input.files;
+
+            if (files && files.length > 0) {
+                previewArea.classList.remove('hidden'); // បង្ហាញ Area
+
+                for (let i = 0; i < files.length; i++) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // បង្កើត HTML សម្រាប់រូបភាពនីមួយៗ
+                        const div = document.createElement('div');
+                        div.className = "relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 shadow-sm";
+                        div.innerHTML = `
+                    <img src="${e.target.result}" class="w-full h-full object-cover">
+                    <button onclick="this.parentElement.remove(); checkPreviewArea();" 
+                        class="absolute top-0 right-0 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-bl-lg hover:bg-red-600 transition-colors">
+                        <i class="fas fa-times text-[8px]"></i>
+                    </button>
+                `;
+                        previewArea.appendChild(div);
+                    };
+                    reader.readAsDataURL(files[i]);
+                }
+            }
+        }
+
+        // មុខងារពិនិត្យមើល បើអស់រូបភាព ត្រូវលាក់ Area វិញ
+        function checkPreviewArea() {
+            const previewArea = document.getElementById('image-preview-area');
+            if (previewArea.children.length === 0) {
+                previewArea.classList.add('hidden');
+                document.getElementById('chat-file-input').value = ""; // Clear input
+            }
+        }
+
+        function sendMessage() {
+            const textInput = document.getElementById('chat-text-input');
+            const msg = textInput.value.trim();
+
+            if (msg !== "") {
+                // បន្ថែម Logic ផ្ញើសារទៅកាន់ Server នៅទីនេះ (Pusher/Reverb)
+                alert("សាររបស់អ្នក: " + msg);
+                textInput.value = ""; // Clear text
+                document.getElementById('image-preview-area').innerHTML = ""; // Clear images
+                document.getElementById('image-preview-area').classList.add('hidden');
+            }
         }
     </script>
 

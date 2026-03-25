@@ -10,6 +10,10 @@ class Room extends Model
 {
     protected $fillable = ['hotel_id', 'room_type_id', 'room_number', 'floor', 'status'];
 
+    protected $casts = [
+        'gallery' => 'array', // វានឹងបំប្លែង JSON ទៅ Array ឱ្យយើងអូតូ
+    ];
+    
     public function hotel(): BelongsTo
     {
         return $this->belongsTo(Hotel::class);

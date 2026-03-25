@@ -20,17 +20,6 @@ class RoomController extends Controller
         $this->roomService = $roomService;
     }
 
-    // public function index(Request $request)
-    // {
-    //     // ប្រើ Service ដើម្បីទាញទិន្នន័យ (Service នឹងហៅ Repository ដែលមាន Eager Loading រួចជាស្រេច)
-    //     $rooms = $this->roomService->getAllRooms($request->all());
-
-    //     $hotels = Hotel::all();
-    //     $roomTypes = RoomType::all();
-
-    //     return view('admin.rooms.index', compact('rooms', 'hotels', 'roomTypes'));
-    // }
-
     public function index(Request $request)
     {
         // ១. ទាញយកទិន្នន័យតាមរយៈ Service (វាហៅ Repository ដែលមាន Search/Filter រួចហើយ)
@@ -43,7 +32,7 @@ class RoomController extends Controller
         }
 
         // ៣. ទាញទិន្នន័យសម្រាប់ Select Options ក្នុង Modals
-        $hotels = Hotel::all();
+        $hotels = Hotel::where('status', '1')->get();
         $roomTypes = RoomType::all();
 
         return view('admin.rooms.index', compact('rooms', 'hotels', 'roomTypes'));

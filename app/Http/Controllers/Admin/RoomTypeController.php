@@ -24,25 +24,31 @@ class RoomTypeController extends Controller
 
     public function index(Request $request)
     {
-        // ប្រើ Repository សម្រាប់ទាញទិន្នន័យ (Search/Filter)
-        $roomTypes = $this->roomTypeRepository->getRoomTypes($request->all());
-        $hotels = Hotel::all();
-        // ៣. បន្ថែមការទាញយកគ្រឿងបរិក្ខារ (ចំណុចដែលខ្វះ)
-        $facilities = Facility::all();
+        // ១. ទាញយក Filter ទាំងអស់ពី Request (រួមមាន search, hotel_id, ...)
+        $filters = $request->all();
+
+        // ២. ហៅ Service ឱ្យទាញទិន្នន័យតាម Filter
+        $roomTypes = $this->roomTypeService->getAllRoomType($filters);
+
+        // ៣. បើជា AJAX (ពេលវាយ Search) ឱ្យបោះទៅ Partial List
+        if ($request->ajax()) {
+            return view('admin.room_types.partials.room-type-list', compact('roomTypes'))->render();
+        }
+
+        $hotels = Hotel::where('status', 1)->get();
+        $facilities = Facility::where('is_active', 1)->get();
 
         return view('admin.room_types.index', compact('roomTypes', 'hotels', 'facilities'));
     }
 
+    
     public function store(RoomTypeRequest $request)
     {
         try {
-            // បោះការងារឱ្យ Service អ្នកចាត់ចែង (ទាំង DB និង Upload រូបភាព)
-            $this->roomTypeService->storeRoomType($request->validated());
-
-            return back()->with('success', 'បង្កើតប្រភេទបន្ទប់ជោគជ័យ!');
+            $roomType = $this->roomTypeService->storeRoomType($request->validated());
+            return response()->json(['message' => 'បង្កើតបានជោគជ័យ', 'data' => $roomType], 201);
         } catch (\Exception $e) {
-            Log::error("RoomType Store Error: " . $e->getMessage());
-            return back()->with('error', 'មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage());
+            return response()->json(['message' => 'មានបញ្ហា: ' . $e->getMessage()], 500);
         }
     }
 

@@ -28,11 +28,6 @@ class RoomType extends Model
         return $this->hasMany(RoomImage::class, 'room_type_id');
     }
 
-    public function roomType(): BelongsTo
-    {
-        return $this->belongsTo(RoomType::class, 'room_type_id');
-    }
-
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -42,6 +37,11 @@ class RoomType extends Model
     public function facilities()
     {
         return $this->belongsToMany(Facility::class, 'room_type_facility');
+    }
+
+    public function promotions()
+    {
+        return $this->hasMany(Promotion::class);
     }
     
     protected static function boot()

@@ -3,15 +3,25 @@
 
 @section('content')
 
-<!-- banner -->
-<header class="relative h-[35vh] flex items-center justify-center text-white">
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1920"
-            class="absolute inset-0 w-full h-full object-cover brightness-50">
+<header class="group relative h-[55vh] w-full overflow-hidden flex items-center justify-center rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 transition-all duration-500 ease-in-out cursor-default">
+
+    <!-- Animated Grid Background -->
+    <div class="absolute inset-0 z-0 animate-grid-move opacity-60 dark:opacity-20 will-change-transform"
+        style="background-image: linear-gradient(to right, #cfdae1 1px, transparent 1px), linear-gradient(to bottom, #fbd5e1 1px, transparent 1px); background-size: 80px 80px;">
     </div>
+
+    <!-- Soft Gradient Overlay -->
+    <div class="absolute inset-0 z-[1] backdrop-blur-[2px] bg-[radial-gradient(circle_at_center,transparent_30%,rgba(255,255,255,0.9)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_30%,rgba(2,6,23,0.95)_100%)]"></div>
+
+    <!-- Content -->
     <div class="relative z-10 text-center px-4">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">សាលប្រជុំ និងកម្មវិធីផ្សេងៗ</h1>
-        <p class="text-lg opacity-80">ទីកន្លែងដ៏ល្អឥតខ្ចោះសម្រាប់ភាពជោគជ័យនៃអាជីវកម្មរបស់អ្នក</p>
+        <h4 class="text-4xl md:text-5xl font-black mb-4 text-pnt-blue dark:text-white tracking-tight transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:text-[#9e8efc] group-hover:drop-shadow-[0_0_20px_rgba(107,218,225,0.5)]">
+            បន្ទប់ប្រជុំទាំងអស់
+        </h4>
+
+        <p class="text-lg font-bold text-slate-600 dark:text-slate-400 transition-all duration-500 ease-in-out delay-75 **:group-hover:text-[#9e8efc] group-hover:translate-y-1">
+            ព្រឹត្ដិការណ៍សំខាន់ៗ
+        </p>
     </div>
 </header>
 

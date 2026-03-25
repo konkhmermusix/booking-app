@@ -1,0 +1,22 @@
+@keyframes moveLargeGrid {
+    0% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 40px 40px;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+.animate-grid-move {
+    animation: moveLargeGrid 30s ease-in-out infinite;
+}
+
+/* Hover = smooth acceleration (not too fast) */
+header:hover .animate-grid-move {
+    animation-duration: 18s;
+}

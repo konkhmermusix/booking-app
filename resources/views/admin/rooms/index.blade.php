@@ -23,7 +23,7 @@
         }
     }">
 
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-[1.5rem] border dark:border-gray-800 shadow-sm mb-6">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-[1.5rem] shadow-sm mb-6">
         <div>
             <h2 class="text-lg font-bold dark:text-white">គ្រប់គ្រងបន្ទប់</h2>
             <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Live Room Management</p>
@@ -36,16 +36,17 @@
                     class="w-full pl-8 pr-4 h-10 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500/50 dark:text-white transition-all">
             </div>
 
-            <div class="w-full sm:w-40">
+            <div class="w-full sm:w-25">
                 <select x-model="status" @change="fetchRooms()" class="w-full h-10 px-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm font-medium cursor-pointer">
-                    <option value="">ស្ថានភាពទាំងអស់</option>
-                    <option value="available">ស្ថានភាពទំនេរ</option>
-                    <option value="booked">ស្ថានភាពមានភ្ញៀវ</option>
-                    <option value="maintenance">ស្ថានភាពជួសជុល</option>
+                    <option value="">ទាំងអស់</option>
+                    <option value="available">ទំនេរ</option>
+                    <option value="booked">មានភ្ញៀវ</option>
+                    <option value="maintenance">ជួសជុល</option>
                 </select>
             </div>
 
-            <div class="flex bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl h-10 items-center border dark:border-gray-700">
+            <div class="flex bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl h-10 items-center">
+                <button @click="viewMode = 'table'; localStorage.setItem('roomView', 'table')" :class="viewMode === 'table' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]"><i class="fas fa-table-list"></i></button>
                 <button @click="viewMode = 'list'; localStorage.setItem('roomView', 'list')" :class="viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]"><i class="fas fa-list-ul"></i></button>
                 <button @click="viewMode = 'grid'; localStorage.setItem('roomView', 'grid')" :class="viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]"><i class="fas fa-th-large"></i></button>
             </div>

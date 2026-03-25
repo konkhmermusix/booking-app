@@ -60,7 +60,7 @@ class RoomRepository extends BaseRepository
             })
 
             // 7. បែងចែកទំព័រ និងរក្សាទុកលក្ខខណ្ឌ Search ក្នុង URL
-            ->paginate($filters['per_page'] ?? 5)
+            ->paginate($filters['per_page'] ?? 8)
             ->withQueryString();
     }
     /**

@@ -7,6 +7,10 @@ use App\Models\Room;
 use App\Models\RoomType;
 use Carbon\Carbon;
 use App\Models\Slideshow;
+use App\Models\Promotion;
+use App\Models\Facility;
+use App\Models\Tour;
+use App\Models\RoomImage;
 
 class HomeController extends Controller
 {
@@ -49,19 +53,44 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        $roomTypes = RoomType::with(['images', 'rooms'])
+        $roomTypes = RoomType::with(['images', 'facilities', 'rooms']) // ថែម facilities ដើម្បីបង្ហាញ Icon
+            ->withCount(['rooms as available_rooms_count' => function ($query) {
+                $query->where('status', 'available');
+            }])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->whereHas('rooms', function ($query) {
-                $query->where('status', 'available'); // បង្ហាញតែប្រភេទណាដែលមានបន្ទប់ទំនេរ
+                $query->where('status', 'available');
             })
             ->get();
 
-        return view('frontend.index', compact('slides', 'roomTypes', 'availableRooms', 'check_in', 'check_out'));
+        $promotions = Promotion::with(['roomType.rooms' => function ($q) {
+            $q->where('status', 'available'); // យកតែបន្ទប់ណាដែលទំនេរ
+        }])
+            ->where('status', 1)
+            ->where('expiry_date', '>=', now())
+            ->latest()
+            ->get();
+
+        $facilities = Facility::where('is_active', '1')->get();
+
+        $tours = Tour::where('status', 1)->latest()->get();
+
+        $roomTypeImage = RoomType::with('images')->has('images', '>=', 4)->first();
+
+        // បើរកមិនឃើញ RoomType ដែលមានរូបភាពគ្រប់ ៤ ទេ យើងទាញយកធម្មតាមកវិញ
+        if (!$roomTypeImage) {
+            $roomTypeImage = RoomType::with('images')->first();
+        }
+
+        $displayImages = RoomImage::with('roomType')
+            ->latest()
+            ->take(8)
+            ->get();
+
+        return view('frontend.index', compact('slides', 'roomTypes', 'availableRooms', 'check_in', 'check_out', 'promotions', 'facilities', 'tours', 'roomTypeImage', 'displayImages'));
     }
 
-    // public function showHotel($id)
-    // {
-    //     return view('frontend.hotel-details');
-    // }
 
     public function showHotel($id)
     {
@@ -77,21 +106,11 @@ class HomeController extends Controller
             ->take(3)
             ->get();
 
-        return view('frontend.details', compact(
+        return view('frontend.index', compact(
             'roomType',
             'similarRooms'
         ));
     }
-
-    // public function roomTypeDetails($id)
-    // {
-    //     // ទាញយកប្រភេទបន្ទប់ដែលមាន ID ត្រូវគ្នា
-    //     $roomType = RoomType::with(['images', 'rooms' => function ($q) {
-    //         $q->where('status', 'available'); // បង្ហាញតែបន្ទប់ណាដែលទំនេរ
-    //     }])->findOrFail($id);
-
-    //     return view('frontend.details', compact('roomType'));
-    // }
 
     public function roomTypeDetails($id)
     {
@@ -106,5 +125,17 @@ class HomeController extends Controller
             ->get();
 
         return view('frontend.details', compact('roomType', 'similarRooms'));
+    }
+    // នៅក្នុង HotelController.php ឬ HomeController.php ត្រង់ Method ដែលបង្ហាញ Hotel Detail
+    public function show($id)
+    {
+        $hotel = Hotel::find($id);
+
+        // ទាញយករូបភាពពី RoomImage ដែលជារបស់ Hotel នេះមកធ្វើជា Slide
+        $slides = RoomImage::whereHas('roomType', function ($query) use ($id) {
+            $query->where('hotel_id', $id);
+        })->get();
+
+        return view('frontend.index', compact('hotel', 'slides'));
     }
 }

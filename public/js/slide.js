@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     const swiper = new Swiper(".Slideshow", {
         loop: true,
+        grabCursor: true,
+        touchEventsTarget: "container",
         speed: 1500, // ល្បឿនដូររូបភាព
         effect: "fade", // បែប Fade (រលាយ)
         fadeEffect: {

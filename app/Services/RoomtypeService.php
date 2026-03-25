@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\RoomTypeRepository;
 use App\Traits\UploadTrait;
 use App\Models\RoomType;
+use App\Models\RoomImage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -60,24 +61,24 @@ class RoomTypeService
     {
         return DB::transaction(function () use ($id, $data) {
             $roomType = $this->repository->find($id);
+            if (!$roomType) throw new \Exception("Room Type not found.");
 
-            // ១. Update ទិន្នន័យមេ
+            // ១. Update data
             $this->repository->update($id, $data);
 
-            // ២. Sync គ្រឿងបរិក្ខារ (លុបអាចាស់ ថែមអាថ្មីតាមការដូរ)
+            // ២. Sync Facilities
             if (isset($data['facilities'])) {
                 $roomType->facilities()->sync($data['facilities']);
             }
 
-            // ៣. បន្ថែមរូបភាពថ្មីៗ (បើមាន)
-            if (isset($data['images'])) {
+            // ៣. Handle Images
+            if (!empty($data['images'])) {
                 foreach ($data['images'] as $image) {
                     $path = $this->uploadFile($image, 'room_types');
                     $roomType->images()->create(['image_path' => $path]);
                 }
             }
-
-            return $roomType;
+            return $roomType->load(['facilities', 'images']);
         });
     }
 
@@ -103,5 +104,16 @@ class RoomTypeService
             // ៣. លុប Room Type (មេ)
             return $this->repository->delete($id);
         });
+    }
+
+    // បន្ថែមក្នុង RoomTypeService.php
+    public function deleteRoomImage($imageId)
+    {
+        $image = RoomImage::find($imageId);
+        if ($image) {
+            $this->deleteFile($image->image_path); // លុបឯកសារចេញពី Storage
+            return $image->delete(); // លុប Record ចេញពី DB
+        }
+        return false;
     }
 }

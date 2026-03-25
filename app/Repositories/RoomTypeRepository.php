@@ -15,42 +15,28 @@ class RoomTypeRepository extends BaseRepository
     /**
      * ទាញយកបញ្ជីប្រភេទបន្ទប់ ជាមួយការ Search និង Filter តាមលក្ខខណ្ឌស្មុគស្មាញ
      */
+    // នៅក្នុង RoomTypeRepository.php
     public function getRoomTypes(array $filters = []): LengthAwarePaginator
     {
-        return $this->model->newQuery()
-            // កំណត់ឱ្យទាញយក Relation មកជាមួយ (facilities មកតាមរយៈ $with ក្នុង Model)
-            ->with(['hotel', 'images'])
+        // បន្ថែម withCount('rooms') ដើម្បីបង្ហាញចំនួនបន្ទប់ក្នុងតារាងបញ្ជីតែម្ដង
+        $query = $this->model->newQuery()->with(['hotel', 'images'])->withCount('rooms');
 
-            // 1. Search តាមឈ្មោះប្រភេទបន្ទប់ ឬ ឈ្មោះសណ្ឋាគារ
-            ->when(!empty($filters['search']), function ($query) use ($filters) {
-                $search = $filters['search'];
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                        ->orWhereHas('hotel', function ($h) use ($search) {
-                            $h->where('name', 'like', "%{$search}%");
-                        });
-                });
-            })
+        if (!empty($filters['hotel_id'])) {
+            $query->where('hotel_id', $filters['hotel_id']);
+        }
 
-            // 2. Filter តាមសណ្ឋាគារ (Dropdown)
-            ->when(!empty($filters['hotel_id']), function ($query) use ($filters) {
-                $query->where('hotel_id', $filters['hotel_id']);
-            })
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('hotel', function ($h) use ($search) {
+                        $h->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
 
-            // 3. Filter តាមចំនួនភ្ញៀវអតិបរមា
-            ->when(!empty($filters['max_guests']), function ($query) use ($filters) {
-                $query->where('max_guests', '>=', $filters['max_guests']);
-            })
-
-            // 4. តម្រៀបទិន្នន័យតាមតម្លៃ (Sort by Price)
-            ->when(!empty($filters['sort_price']), function ($query) use ($filters) {
-                $query->orderBy('base_price', $filters['sort_price']); // asc ឬ desc
-            }, function ($query) {
-                $query->latest(); // បើគ្មានការ sort ទេ យកអាថ្មីបំផុតមកមុន
-            })
-
-            // 5. បែងចែកទំព័រ (Pagination)
-            ->paginate($filters['per_page'] ?? 4)
+        return $query->latest()
+            ->paginate($filters['per_page'] ?? 8)
             ->withQueryString();
     }
 
