@@ -94,19 +94,22 @@ class HomeController extends Controller
 
     public function showHotel($id)
     {
-        $roomType = RoomType::with([
-            'images',
-            'facilities',
-            'rooms',
-            'hotel'
-        ])->findOrFail($id);
+        // $roomType = RoomType::with([
+        //     'images',
+        //     'facilities',
+        //     'rooms',
+        //     'hotel'
+        // ])->findOrFail($id);
+
+        $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
+            ->findOrFail($id);
 
         $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
             ->where('id', '!=', $roomType->id)
             ->take(3)
             ->get();
 
-        return view('frontend.index', compact(
+        return view('frontend.details', compact(
             'roomType',
             'similarRooms'
         ));

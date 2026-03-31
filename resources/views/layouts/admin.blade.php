@@ -117,7 +117,7 @@
                 </div>
             </div>
 
-            <div x-data="{ open: {{ request()->routeIs('slideshows.*', 'tours.*') ? 'true' : 'false' }} }">
+            <div x-data="{ open: {{ request()->routeIs('slideshows.*', 'tours.*', 'abouts.*', 'contacts_sett.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open" class="w-full flex items-center gap-4 p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
                     <i class="fas fa-globe w-6 text-center"></i>
                     <span x-show="sidebarOpen" class="flex-1 text-left font-medium" x-transition>គ្រប់គ្រងគេហទំព័រ</span>
@@ -126,6 +126,8 @@
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition>
                     <a href="{{ route('slideshows.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('slideshows.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីបដារ</a>
                     <a href="{{ route('tours.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('tours.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីកន្លែងទេសចរណ៍</a>
+                    <a href="{{ route('abouts.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('abouts.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីគ្រប់គ្រងអំពីក្រុមហ៊ុន</a>
+                    <a href="{{ route('contacts_sett.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('contacts_sett.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">គ្រប់គ្រងព័ត៌មានទំនាក់ទំនង</a>
                 </div>
             </div>
 
@@ -233,7 +235,7 @@
 
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" @click.away="open = false" class="flex items-center gap-3 p-1">
-                        <div class="hidden sm:block text-right"> {{-- ប្តូរពី md:block មក sm:block --}}
+                        <div class="hidden sm:block text-right">
                             <p class="text-sm font-bold leading-none dark:text-white">{{ Auth::user()->name }}</p>
                             <p class="text-[10px] text-gray-500 mt-1 uppercase tracking-tight">{{ Auth::user()->role }}</p>
                         </div>
@@ -245,7 +247,7 @@
                         x-transition:enter="transition ease-out duration-100"
                         x-transition:enter-start="transform opacity-0 scale-95"
                         x-transition:leave="transition ease-in duration-75"
-                        class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border dark:border-gray-700 py-2 z-50">
+                        class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl dark:border-gray-700 py-2 z-50">
 
                         <div class="px-4 py-2 border-b dark:border-gray-700 mb-1">
                             <p class="text-[10px] font-bold text-gray-400 uppercase">គណនីគ្រប់គ្រង</p>

@@ -28,6 +28,9 @@
 <div class="container mx-auto px-4 mt-[-50px] relative z-20 mb-20">
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
         <div class="space-y-6">
+            <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                {{ $settings['welcome_description'] ?? 'Default description...' }}
+            </p>
             <span class="text-blue-600 font-bold tracking-widest uppercase text-sm">ស្វាគមន៍មកកាន់ P&T Palace</span>
             <h2 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white">បទពិសោធន៍សម្រាកលំហែកាយ កម្រិតខ្ពស់បំផុត</h2>
             <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">

@@ -220,10 +220,11 @@
         </div>
     </nav>
 
-    <main class="min-h-screen flex items-center justify-center py-3">
-        <div class="container mx-auto px-4">
-            <x-alert /> @yield('content')
-        </div>
+    <main>
+        <x-alert /> @yield('content')
+        <!-- </main> class="min-h-screen flex items-center justify-center py-3"> -->
+        <!-- <div class="container mx-auto px-4"> -->
+        <!-- </div> -->
     </main>
 
     <footer class="py-16 bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">

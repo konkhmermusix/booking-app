@@ -83,6 +83,7 @@
             </div>
         </form>
     </section>
+    
 
     {{-- ================= FILTER + SORT (Alpine AJAX) ================= --}}
     <section class="sticky top-[60px] z-[90] dark:bg-gray-950  py-4 mt-4 ">

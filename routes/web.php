@@ -34,6 +34,9 @@ use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\SlideshowController;
 use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ContactSettingController;
+use App\Http\Controllers\Admin\AboutHistoryController;
+// use App\Http\Controllers\Admin\
 
 
 // Authentication Routes
@@ -122,21 +125,24 @@ Route::middleware(['auth'])->group(function () {
 
     // សម្រាប់តែ Admin ប៉ុណ្ណោះ (សិទ្ធិខ្ពស់បំផុត)
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
+        // --- About Us Section ---
+
+        // Route::resource('about-settings', AboutSettingController::class);
+
+        // --- Core Resources ---
         Route::resource('users', UserController::class);
+        Route::resource('hotels', HotelController::class); // រួមបញ្ចូលទាំង destroy ក្នុងនេះតែម្ដង
         Route::resource('rooms', RoomController::class);
-        Route::resource('hotels', HotelController::class);
-        Route::resource('rooms_types', RoomTypeController::class);
-        Route::resource('hotels', HotelController::class)->except(['destroy']);
+        Route::resource('room_types', RoomTypeController::class);
         Route::resource('facilities', FacilityController::class);
         Route::resource('slideshows', SlideshowController::class);
         Route::resource('tours', TourController::class);
-        Route::resource('contact', ContactController::class);
         Route::resource('promotions', PromotionController::class);
-
-
-        Route::delete('rooms_types/images/{id}', [RoomTypeController::class, 'destroyImage'])->name('room_types.image.destroy');
-        Route::resource('room_types', RoomTypeController::class);
         Route::resource('bookings', BookingController::class);
+        Route::resource('abouts', AboutHistoryController::class);
+        // --- Settings & Contacts ---
+        Route::resource('contact', ContactController::class);
+        Route::resource('contacts_sett', ContactSettingController::class);
 
         Route::get('bookings/invoice/{booking}', [BookingWebController::class, 'downloadInvoice'])->name('bookings.invoice');
         Route::delete('/hotels/{hotel}', [HotelController::class, 'destroy'])->name('hotels.destroy');

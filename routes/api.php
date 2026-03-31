@@ -7,11 +7,14 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\RoomTypeController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\SlideshowController;
 
 /* --- Public Routes --- */
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/slideshows', [SlideshowController::class, 'index']);
 
 Route::get('/hotels', [HotelController::class, 'index']);
 Route::get('/hotels/{id}', [HotelController::class, 'show']);

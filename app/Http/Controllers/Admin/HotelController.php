@@ -21,7 +21,7 @@ class HotelController extends Controller
         $filters = $request->only(['search', 'status']);
         $hotels = $this->hotelService->listHotels($filters);
 
-        return view('admin.hotels.index', compact('hotels'));
+        return view('frontend.index', compact('hotels'));
     }
 
     public function store(HotelRequest $request)
