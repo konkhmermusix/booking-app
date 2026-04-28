@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;700&display=swap" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/spotlight.js@0.7.8/dist/spotlight.bundle.js"></script>
     <style>
         [x-cloak] {
             display: none !important;
@@ -77,8 +77,10 @@
         <!-- Logo Section -->
         <div class="h-16 flex items-center px-6 border-b border-white/10 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-yellow-400 rounded-lg shadow-lg text-blue-900 font-bold flex items-center justify-center">P</div>
-                <span class="text-xl font-bold tracking-wider" x-show="sidebarOpen" x-transition>PNT <span class="text-yellow-400">ADMIN</span></span>
+                <div class="w-8 h-8 bg-yellow-400 rounded-lg shadow-lg text-blue-900 font-bold flex items-center justify-center">
+                    <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="">
+                </div>
+                <span class="text-xl font-bold tracking-wider" x-show="sidebarOpen" x-transition>ភីអេនធី <span class="text-yellow-400">គ្រប់គ្រង</span></span>
             </div>
         </div>
 
@@ -99,7 +101,6 @@
             </a>
             @endforeach
 
-
             {{-- សម្រាប់ Dropdown Links ក៏ត្រូវថែម @click ដូចគ្នា --}}
             <div x-data="{ open: {{ request()->routeIs('hotels.*', 'room_types.*', 'rooms.*', 'facilities.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open" class="w-full flex items-center gap-4 p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
@@ -112,12 +113,10 @@
                     <a href="{{ route('room_types.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('room_types.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីប្រភេទបន្ទប់</a>
                     <a href="{{ route('rooms.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('rooms.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីបន្ទប់</a>
                     <a href="{{ route('facilities.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('facilities.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីគ្រឿងបរិក្ខារ</a>
-                    <a href="" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីបន្ទប់និងបរិក្ខារ</a>
-                    <a href="" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីរូបភាព</a>
                 </div>
             </div>
 
-            <div x-data="{ open: {{ request()->routeIs('slideshows.*', 'tours.*', 'abouts.*', 'contacts_sett.*') ? 'true' : 'false' }} }">
+            <div x-data="{ open: {{ request()->routeIs('slideshows.*', 'tours.*', 'abouts.*', 'contacts_sett.*', 'galleries.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open" class="w-full flex items-center gap-4 p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
                     <i class="fas fa-globe w-6 text-center"></i>
                     <span x-show="sidebarOpen" class="flex-1 text-left font-medium" x-transition>គ្រប់គ្រងគេហទំព័រ</span>
@@ -125,9 +124,10 @@
                 </button>
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition>
                     <a href="{{ route('slideshows.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('slideshows.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីបដារ</a>
-                    <a href="{{ route('tours.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('tours.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីកន្លែងទេសចរណ៍</a>
-                    <a href="{{ route('abouts.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('abouts.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីគ្រប់គ្រងអំពីក្រុមហ៊ុន</a>
-                    <a href="{{ route('contacts_sett.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('contacts_sett.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">គ្រប់គ្រងព័ត៌មានទំនាក់ទំនង</a>
+                    <a href="{{ route('tours.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('tours.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីទេសចរណ៍</a>
+                    <a href="{{ route('abouts.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('abouts.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីអំពីយើង</a>
+                    <a href="{{ route('contacts_sett.index') }}" @click="if(window.innerWidth < 768) mobileOpen = false" class="block p-2 text-sm {{ request()->routeIs('contacts_sett.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីទំនាក់ទំនង</a>
+                    <a href="{{ route('galleries.index') }}" @click=" if(window.innerWidth < 768) mobileOpen=false" class="block p-2 text-sm {{ request()->routeIs('galleries.index') ? 'text-white font-bold' : 'text-gray-400' }} hover:text-white">បញ្ជីរូបភាព</a>
                 </div>
             </div>
 

@@ -3,22 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\AboutHistory;
+use App\Models\AboutContent;
+use App\Models\HotelHistory;
 
 class AboutWebController extends Controller
 {
+
     public function index()
     {
+        // ទាញយកប្រវត្តិដែល Active និងរៀបតាមលំដាប់លេខរៀង
+        $histories = HotelHistory::active()->orderBy('order_priority', 'asc')->get();
 
-        // ទាញយកតែទិន្នន័យណាដែល Active (status = 1)
-        $histories = AboutHistory::where('status', true)
-            ->orderBy('sort_order', 'asc')
-            ->get();
+        // ទាញយកមាតិកាផ្សេងៗ (Vision, Mission...)
+        $contents = AboutContent::where('status', true)->get()->keyBy('key');
 
-        // $facilities = Galleries::where('type', 'facility')
-        //     ->where('status', true)
-        //     ->get();
-
-        return view('frontend.about', compact('histories'));
+        return view('frontend.about', compact('histories', 'contents'));
     }
 }

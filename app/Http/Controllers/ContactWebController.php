@@ -33,34 +33,19 @@ class ContactWebController extends Controller
     public function store(ContactRequest $request)
     {
         try {
-            $this->contactService->handleContactSubmission($request->validated());
+            $data = $request->validated();
 
-            // បង្កើត Session Flash សម្រាប់ <x-alert /> បង្ហាញក្រោយពេល Reload
-            session()->flash('success', 'សាររបស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ!');
+            // កំណត់ Status ដំបូងឱ្យត្រូវតាម Enum ('unread')
+            $data['status'] = 'unread';
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'ជោគជ័យ!'
-            ], 200);
+            // រក្សាទុកទិន្នន័យ
+            $this->contactService->handleContactSubmission($data);
+
+            // បញ្ជូនសារជោគជ័យទៅកាន់ Frontend
+            return back()->with('success', 'សាររបស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ!');
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage()
-            ], 500);
+            // ប្រសិនបើមានបញ្ហា (ឧទាហរណ៍ DB Error)
+            return back()->withInput()->with('error', 'មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage());
         }
     }
-    
-    // public function store(ContactRequest $request)
-    // {
-    //     try {
-    //         // ហៅ Service ឱ្យចាត់ចែងការរក្សាទុកទិន្នន័យ
-    //         $this->contactService->handleContactSubmission($request->validated());
-
-    //         // បញ្ជូនសារទៅកាន់ទំព័រដើមវិញជាមួយ Success Message
-    //         return back()->with('success', 'សាររបស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ! យើងនឹងទាក់ទងទៅវិញឆាប់ៗ។');
-    //     } catch (\Exception $e) {
-    //         // បង្ហាញសារ Error ប្រសិនបើមានបញ្ហាបច្ចេកទេស
-    //         return back()->with('error', 'សូមអភ័យទោស! មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage());
-    //     }
-    // }
 }

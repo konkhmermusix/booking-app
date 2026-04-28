@@ -1,8 +1,8 @@
-<div x-show="showAddModal" class="fixed inset-0 z-[100] overflow-y-auto" x-cloak>
+<div x-show="showAddModal" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showAddModal = true" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
 
-        <div class="bg-white dark:bg-gray-900 rounded-[1.5rem] shadow-2xl w-full max-w-2xl relative border-none overflow-hidden transition-all"
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl relative border-none overflow-hidden transition-all"
             x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
@@ -119,7 +119,7 @@
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showEditModal = true" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
 
-        <div class="bg-white dark:bg-gray-900 rounded-[1.5rem] shadow-2xl w-full max-w-2xl relative border-none overflow-hidden transition-all"
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl relative border-none overflow-hidden transition-all"
             x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
@@ -194,21 +194,21 @@
                             <div class="grid grid-cols-3 gap-4">
                                 <label class="relative group">
                                     <input type="radio" name="status" value="available" x-model="currentRoom.status" class="peer sr-only">
-                                    <div class="flex flex-col items-center justify-center py-2 rounded-[1.0rem] border-2 border-transparent bg-gray-50 dark:bg-gray-800 dark:text-gray-400 peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-500/10 peer-checked:text-green-600 cursor-pointer transition-all">
+                                    <div class="flex flex-col items-center justify-center py-2 rounded-2xl border-2 border-transparent bg-gray-50 dark:bg-gray-800 dark:text-gray-400 peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-500/10 peer-checked:text-green-600 cursor-pointer transition-all">
                                         <i class="fa-solid fa-circle-check mb-1 text-sm"></i>
                                         <span class="text-[11px] font-black uppercase tracking-widest">ទំនេរ</span>
                                     </div>
                                 </label>
                                 <label class="relative group">
                                     <input type="radio" name="status" value="booked" x-model="currentRoom.status" class="peer sr-only">
-                                    <div class="flex flex-col items-center justify-center py-2 rounded-[1.0rem] border-2 border-transparent bg-gray-50 dark:bg-gray-800 dark:text-gray-400 peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-500/10 peer-checked:text-blue-600 cursor-pointer transition-all">
+                                    <div class="flex flex-col items-center justify-center py-2 rounded-2xl border-2 border-transparent bg-gray-50 dark:bg-gray-800 dark:text-gray-400 peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-500/10 peer-checked:text-blue-600 cursor-pointer transition-all">
                                         <i class="fa-solid fa-user-tag mb-1 text-sm"></i>
                                         <span class="text-[11px] font-black uppercase tracking-widest">មានភ្ញៀវ</span>
                                     </div>
                                 </label>
                                 <label class="relative group">
                                     <input type="radio" name="status" value="maintenance" x-model="currentRoom.status" class="peer sr-only">
-                                    <div class="flex flex-col items-center justify-center py-2 rounded-[1.0rem] border-2 border-transparent bg-gray-50 dark:bg-gray-800 dark:text-gray-400 peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-500/10 peer-checked:text-orange-600 cursor-pointer transition-all">
+                                    <div class="flex flex-col items-center justify-center py-2 rounded-2xl border-2 border-transparent bg-gray-50 dark:bg-gray-800 dark:text-gray-400 peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-500/10 peer-checked:text-orange-600 cursor-pointer transition-all">
                                         <i class="fa-solid fa-tools mb-1 text-sm"></i>
                                         <span class="text-[11px] font-black uppercase tracking-widest">ជួសជុល</span>
                                     </div>
@@ -218,7 +218,7 @@
                     </div>
                 </div>
 
-                <div class="px-7 py-3 bg-gray-50 dark:bg-gray-800/50 flex justify-end items-center gap-4 rounded-b-[1.5rem] border-t dark:border-gray-800">
+                <div class="px-7 py-3 bg-gray-50 dark:bg-gray-800/50 flex justify-end items-center gap-4 dark:border-gray-800">
                     <button type="button" @click="showEditModal = false"
                         class="px-8 h-10 font-black text-sm uppercase tracking-[0.2em] text-gray-400 hover:text-red-500 transition-all italic">
                         បោះបង់
@@ -237,7 +237,7 @@
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showDetailModal = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
 
-        <div class="bg-white dark:bg-gray-900 rounded-[1.5rem] shadow-2xl w-full max-w-lg relative border-none overflow-hidden transition-all"
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative border-none overflow-hidden transition-all"
             x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
             <div class="h-32 bg-gradient-to-r from-blue-600 to-indigo-700 relative">
@@ -246,7 +246,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <div class="absolute -bottom-10 left-10">
-                    <div class="w-20 h-20 bg-white dark:bg-gray-900 rounded-[2rem] shadow-xl flex items-center justify-center text-blue-600 border-4 border-white dark:border-gray-900">
+                    <div class="w-20 h-20 bg-white dark:bg-gray-900 rounded-2xl shadow-xl flex items-center justify-center text-blue-600 border-4 border-white dark:border-gray-900">
                         <i class="fa-solid fa-door-open text-3xl"></i>
                     </div>
                 </div>

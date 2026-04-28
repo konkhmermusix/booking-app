@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTourRequest extends FormRequest
+class GalleryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,18 +19,13 @@ class StoreTourRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-
     public function rules(): array
     {
         return [
-            'name'            => 'required|max:255',
-            'distance'        => 'nullable|max:100',
-            'google_map_link' => 'nullable|url',
-            // images ក្នុងទម្រង់ array
-            'images'          => 'nullable|array',
-            'images.*'        => 'image|mimes:jpeg,JPEG,png,PNG,jpg,JPG|max:2048',
-            'description'     => 'nullable',
-            'status'          => 'required'
+            'hotel_id' => 'required|exists:hotels,id',
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,JPEG,png,PNG,jpg,JPG,webp,WEBP|max:20480',
+            'is_active' => 'nullable|boolean'
         ];
     }
 }

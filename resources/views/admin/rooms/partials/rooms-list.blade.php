@@ -1,6 +1,6 @@
 <div x-show="viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" x-transition>
     @forelse($rooms as $room)
-    <div class="bg-white dark:bg-gray-800 rounded-[1.5rem] p-5 shadow-sm hover:shadow-md transition-all group border-none">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group border-none">
         <div class="flex justify-between items-start mb-4">
             <div class="w-20 h-12 rounded-2xl flex items-center justify-center font-bold text-lg 
                 @if($room->status === 'available') 
@@ -122,7 +122,7 @@
     @endforelse
 </div>
 
-<div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-sm overflow-hidden" x-transition>
+<div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden" x-transition>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-50/50 dark:bg-gray-900/50">
@@ -190,7 +190,7 @@
     </div>
 </div>
 
-<div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-[1.5rem] shadow-sm border-none transition-colors">
+<div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border-none transition-colors">
     <div class="dark:text-white">
         {{ $rooms->links() }}
     </div>

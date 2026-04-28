@@ -23,7 +23,7 @@
         }
     }">
 
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-[1.5rem] shadow-sm mb-6">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6">
         <div>
             <h2 class="text-lg font-bold dark:text-white">គ្រប់គ្រងបន្ទប់</h2>
             <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Live Room Management</p>

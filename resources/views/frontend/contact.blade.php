@@ -53,7 +53,7 @@
                         <div class="relative">
                             <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <input type="text" name="name" placeholder="ឈ្មោះរបស់អ្នក" required
-                                class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 pl-12 p-4 rounded-2xl outline-none transition-all">
+                                class="w-full py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 pl-12 p-4 rounded-2xl outline-none transition-all">
                         </div>
                     </div>
                     <div class="space-y-2">
@@ -61,7 +61,7 @@
                         <div class="relative">
                             <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <input type="email" name="email" placeholder="example@mail.com" required
-                                class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 pl-12 p-4 rounded-2xl outline-none transition-all">
+                                class="w-full py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 pl-12 p-4 rounded-2xl outline-none transition-all">
                         </div>
                     </div>
                 </div>
@@ -70,18 +70,18 @@
                     <div class="relative">
                         <i class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                         <input type="text" name="tell" placeholder="012345678" required
-                            class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 pl-12 p-4 rounded-2xl outline-none transition-all">
+                            class="w-full py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 pl-12 p-4 rounded-2xl outline-none transition-all">
                     </div>
                 </div>
 
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">សាររបស់អ្នក</label>
                     <textarea rows="4" name="description" placeholder="តើមានអ្វីឱ្យយើងជួយលោកអ្នក?" required
-                        class="w-full bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 p-4 rounded-2xl outline-none transition-all resize-none"></textarea>
+                        class="w-full py-3 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 p-4 rounded-2xl outline-none transition-all resize-none"></textarea>
                 </div>
 
                 <button type="submit" id="submitBtn"
-                    class="group w-full md:w-max bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    class="group w-full py-3 md:w-max bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
                     <span id="btnText">ផ្ញើសារឥឡូវនេះ</span>
                     <i class="fas fa-arrow-right transition-transform group-hover:translate-x-1"></i>
                 </button>
@@ -118,7 +118,6 @@
         axios.post('{{ route("contact.store") }}', formData)
             .then(response => {
                 if (response.data.status === 'success') {
-                    // Reload ទំព័រដើម្បីឱ្យ <x-alert /> ចាប់យក Session មកបង្ហាញ
                     window.location.reload();
                 }
             })

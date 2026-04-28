@@ -3,72 +3,127 @@
 
 @section('content')
 <div class="p-2 sm:p-2"
-    x-data="{ 
-        viewMode: localStorage.getItem('roomTypeView') || 'grid', 
-        showAddModal: false, 
-        showEditModal: false, 
-        showDetailModal: false, 
-        previews: [], 
-        selectedFacilities: [], // ត្រូវតែប្រកាសនៅទីនេះសម្រាប់ Edit Checkbox
-        currentRoomType: { id: null, hotel_id: '', name: '', base_price: 0, max_guests: 0, description: '', images: [], facilities: [] },
-        
-        search: '{{ request('search') }}', 
-        hotel_id: '{{ request('hotel_id') }}',
-        loading: false,
+    x-data="{
+    viewMode: localStorage.getItem('roomTypeView') || 'grid',
+    showAddModal: false,
+    showEditModal: false,
+    showDetailModal: false,
 
-        // មុខងារបើក Edit Modal និងបោះទិន្នន័យចូល
-        openEditModal(roomType) {
-            // បង្កើតកូពីនៃទិន្នន័យដើម្បីកុំឱ្យវាប៉ះពាល់ដល់ List ខាងក្រៅភ្លាមៗ
-            this.currentRoomType = JSON.parse(JSON.stringify(roomType)); 
-            this.previews = []; 
-            
-            // ទាញយកតែ ID របស់ Facility ដើម្បីឱ្យ Checkbox លោត Tick ស្វ័យប្រវត្តិ
-            this.selectedFacilities = roomType.facilities.map(f => f.id);
-            
-            this.showEditModal = true;
-        },
+    previews: [],
+    selectedFacilities: [],
 
-        // មុខងារសម្រាប់បង្ហាញរូបភាពដែលទើបនឹងរើសថ្មី
-        handleFileSelect(event) {
-            const files = Array.from(event.target.files);
-            this.previews = []; 
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => { this.previews.push(e.target.result); };
-                reader.readAsDataURL(file);
+    currentRoomType: {
+        id: null,
+        hotel_id: '',
+        name: '',
+        base_price: 0,
+        max_guests: 0,
+        description: '',
+        images: [],
+        facilities: []
+    },
+
+    search: '{{ request('search') }}',
+    hotel_id: '{{ request('hotel_id') }}',
+    loading: false,
+
+    openEditModal(roomType) {
+        this.currentRoomType = JSON.parse(JSON.stringify(roomType));
+        this.previews = [];
+        this.selectedFacilities = roomType.facilities.map(f => f.id);
+        this.showEditModal = true;
+    },
+
+    handleFileSelect(event) {
+        const files = Array.from(event.target.files);
+        this.previews = [];
+
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => this.previews.push(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    },
+
+    async updateRoomType() {
+        try {
+            let formData = new FormData();
+
+            formData.append('_method', 'PUT');
+            formData.append('hotel_id', this.currentRoomType.hotel_id);
+            formData.append('name', this.currentRoomType.name);
+            formData.append('base_price', this.currentRoomType.base_price);
+            formData.append('max_guests', this.currentRoomType.max_guests);
+            formData.append('description', this.currentRoomType.description);
+
+            // Facilities
+            this.selectedFacilities.forEach(f => {
+                formData.append('facilities[]', f);
             });
-        },
 
-        // មុខងារ Fetch Data តាមរយៈ Ajax
-        async fetchRoomTypes(url = null) {
-            this.loading = true;
-            let fetchUrl = url || '{{ route('room_types.index') }}';
-            try {
-                const response = await axios.get(fetchUrl, {
-                    params: { search: this.search, hotel_id: this.hotel_id },
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                document.getElementById('room-types-container').innerHTML = response.data;
-            } catch (error) { 
-                console.error('Error:', error); 
+            // Images
+            let files = document.getElementById('edit_images').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('images[]', files[i]);
             }
-            this.loading = false;
-        },
 
-        async deleteExistingImage(imageId) {
-            try {
-                const response = await axios.delete(`/admin/room_types/images/${imageId}`);
-                if (response.data.success) {
-                    // លុបរូបភាពចេញពី list ដែលកំពុងបង្ហាញក្នុង Modal
-                    this.currentRoomType.images = this.currentRoomType.images.filter(img => img.id !== imageId);
+            await axios.post(`/admin/room_types/${this.currentRoomType.id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
-            } catch (error) {
-                alert('ការលុបមិនជោគជ័យ!');
-            }
-        }
-    }">
+            });
 
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-[1.5rem] shadow-sm mb-6">
+            Swal.fire('ជោគជ័យ', 'កែប្រែបានជោគជ័យ!', 'success');
+
+            this.showEditModal = false;
+            this.fetchRoomTypes();
+
+        } catch (error) {
+            console.error(error);
+            Swal.fire('បរាជ័យ', 'Update មិនជោគជ័យ!', 'error');
+        }
+    },
+
+    async deleteExistingImage(imageId) {
+        
+        try {
+            const response = await axios.delete(`/admin/room_types/images/${imageId}`, {
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            });
+
+            if (response.data.success) {
+                this.currentRoomType.images =
+                    this.currentRoomType.images.filter(img => img.id !== imageId);
+
+                Swal.fire('ជោគជ័យ', 'រូបភាពត្រូវបានលុប', 'success');
+            }
+
+        } catch (error) {
+            Swal.fire('បរាជ័យ', 'ការលុបមិនជោគជ័យ!', 'error');
+        }
+    },
+
+    
+
+    async fetchRoomTypes(url = null) {
+        this.loading = true;
+
+        let fetchUrl = url || '{{ route('room_types.index') }}';
+
+        const response = await axios.get(fetchUrl, {
+            params: {
+                search: this.search,
+                hotel_id: this.hotel_id
+            }
+        });
+
+        document.getElementById('room-types-container').innerHTML = response.data;
+        this.loading = false;
+    }
+}">
+
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6">
         <div>
             <h2 class="text-lg font-bold dark:text-white">គ្រប់គ្រងប្រភេទបន្ទប់</h2>
             <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Room Category Management</p>
@@ -97,7 +152,7 @@
             </div>
 
             <button @click="showAddModal = true" class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md text-sm font-bold flex items-center gap-2 transition-all active:scale-95">
-                <i class="fas fa-plus-circle"></i> បន្ថែមប្រភេទបន្ទប់
+                <i class="fas fa-plus-circle"></i> បន្ថែម
             </button>
         </div>
     </div>
@@ -121,4 +176,57 @@
         }
     });
 </script>
+
+<script>
+    function roomTypeAddHandler() {
+        return {
+            previews: [],
+            handleFileSelect(event) {
+                const files = Array.from(event.target.files);
+                // បើចង់ឱ្យរើសថែមរូបភាពថ្មីចូលជាមួយរូបចាស់ ដកបន្ទាត់ previews = [] ចេញ
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => this.previews.push(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            },
+            removeFile(index) {
+                // ១. លុបចេញពី UI
+                this.previews.splice(index, 1);
+
+                // ២. លុបចេញពី Input File ជាក់ស្តែង
+                const input = document.querySelector('input[name="images[]"]');
+                const dt = new DataTransfer();
+                const files = input.files;
+
+                for (let i = 0; i < files.length; i++) {
+                    if (i !== index) dt.items.add(files[i]);
+                }
+                input.files = dt.files;
+            },
+            clearAll() {
+                this.previews = [];
+                document.querySelector('input[name="images[]"]').value = "";
+            }
+        }
+    }
+</script>
+
+<script>
+    function confirmDelete(id) {
+        if (confirm('តើអ្នកប្រាកដថាចង់លុបប្រភេទបន្ទប់នេះមែនទេ?')) {
+            // បង្កើត Form មួយដើម្បីផ្ញើ DELETE Request
+            let form = document.createElement('form');
+            form.action = `/admin/room_types/${id}`;
+            form.method = 'POST';
+            form.innerHTML = `
+                @csrf
+                @method('DELETE')
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+
 @endsection

@@ -1,8 +1,8 @@
 <div x-show="viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" x-transition>
     @forelse($roomTypes as $type)
-    <div class="bg-white dark:bg-gray-800 rounded-[1.5rem] p-5 shadow-sm hover:shadow-md transition-all group border-none">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group border-none">
 
-        <div class="h-44 -mx-5 -mt-5 mb-4 overflow-hidden rounded-t-[1.5rem] relative group/img">
+        <div class="h-44 -mx-5 -mt-5 mb-4 overflow-hidden rounded-t-2xl relative group/img">
             @if($type->images->count() > 0)
             <img src="{{ asset('storage/' . $type->images->first()->image_path) }}"
                 class="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500">
@@ -30,8 +30,8 @@
                 </button>
 
                 <button @click="openEditModal({{ $type->load(['facilities', 'images']) }})"
-                    class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-all">
-                    <i class="fa-solid fa-pen"></i>
+                    class="w-10 h-10 bg-white/20 backdrop-blur-md text-white rounded-xl hover:bg-white hover:text-red-500 transition-all">
+                    <i class="fas fa-edit"></i>
                 </button>
 
                 <button onclick="confirmDelete('{{ $type->id }}')"
@@ -103,12 +103,12 @@
                     facilities: {{ $type->facilities->toJson() }},
                            
                     images: {{ $type->images->map(fn($img) => ['id' => $img->id, 'url' => asset('storage/'.$img->image_path)])->toJson() }}
-                    }; showDetailModal = true" class="text-indigo-500 p-2"><i class="fas fa-eye"></i></button>
+                    }; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលម្អិត"><i class="fas fa-eye text-sm"></i></button>
                 <button @click="openEditModal({{ $type->load(['facilities', 'images']) }})"
-                    class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-all">
-                    <i class="fa-solid fa-pen"></i>
+                    class="p-2 text-gray-400 hover:text-amber-500 transition-colors">
+                    <i class="fas fa-edit text-sm"></i>
                 </button>
-                <button onclick="confirmDelete('{{ $type->id }}')" class="text-red-500 p-2"><i class="fas fa-trash"></i></button>
+                <button onclick="confirmDelete('{{ $type->id }}')" class="btn-delete hover:text-red-500 dark:hover:text-red-400 p-2 transition-colors"><i class="fas fa-trash text-sm"></i></button>
             </div>
         </div>
     </div>
@@ -117,7 +117,7 @@
     @endforelse
 </div>
 
-<div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-sm overflow-hidden" x-transition>
+<div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden" x-transition>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-50/50 dark:bg-gray-900/50">
@@ -158,12 +158,12 @@
                             facilities: {{ $type->facilities->toJson() }},
                             
                             images: {{ $type->images->map(fn($img) => ['id' => $img->id, 'url' => asset('storage/'.$img->image_path)])->toJson() }}
-                         }; showDetailModal=true" class="text-indigo-500 hover:scale-110 transition-transform"><i class="fas fa-eye"></i></button>
+                         }; showDetailModal=true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលម្អិត"><i class="fas fa-eye text-sm"></i></button>
                         <button @click="openEditModal({{ $type->load(['facilities', 'images']) }})"
-                            class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-all">
-                            <i class="fa-solid fa-pen"></i>
+                            class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ">
+                            <i class="fas fa-edit text-sm"></i>
                         </button>
-                        <button onclick="confirmDelete('{{ $type->id }}')" class="text-red-500 hover:scale-110 transition-transform"><i class="fas fa-trash"></i></button>
+                        <button onclick="confirmDelete('{{ $type->id }}')" class="btn-delete hover:text-red-500 dark:hover:text-red-400 p-2 transition-colors"><i class="fas fa-trash text-sm"></i></button>
                     </td>
                 </tr>
                 @empty
@@ -174,7 +174,7 @@
     </div>
 </div>
 
-<div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-[1.5rem] shadow-sm border-none">
+<div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border-none">
     <div class="dark:text-white">
         {{ $roomTypes->links() }}
     </div>

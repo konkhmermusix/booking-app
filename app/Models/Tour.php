@@ -14,4 +14,9 @@ class Tour extends Model
         'description',
         'status'
     ];
+
+    protected $casts = [
+        'image' => 'array',
+        'status' => 'boolean'
+    ];
 }

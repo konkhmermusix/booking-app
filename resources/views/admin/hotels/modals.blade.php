@@ -1,67 +1,110 @@
-<div x-show="showAddModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
-    <div class="flex items-center justify-center min-h-screen px-4">
+<div x-show="showAddModal" class="fixed inset-0 z-[100] overflow-y-auto" x-cloak>
+
+    <div class="flex items-center justify-center min-h-screen px-4 py-3">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showAddModal = true"></div>
-        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl relative border dark:border-gray-800 overflow-hidden">
-            <div class="px-8 py-6 border-b dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
-                <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">បន្ថែមសណ្ឋាគារថ្មី</h3>
+
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-4xl relative border-none overflow-hidden transition-all"
+            x-data="{ logoPreview: null }">
+
+            <div class="px-4 py-3 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
+                <div>
+                    <h3 class="font-black text-2xl dark:text-white uppercase tracking-tight">បន្ថែមសណ្ឋាគារថ្មី</h3>
+                    <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest font-bold">បញ្ចូលព័ត៌មានលម្អិតខាងក្រោម</p>
+                </div>
                 <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 text-3xl transition-transform hover:rotate-90">&times;</button>
             </div>
 
             <form action="{{ route('hotels.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="p-6 grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">ឈ្មោះសណ្ឋាគារ</label>
-                        <input type="text" name="name" required placeholder="បញ្ចូលឈ្មោះសណ្ឋាគារ"
-                            class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
-                    </div>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">អ៊ីមែល</label>
-                        <input type="email" name="email" placeholder="example@gmail.com" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">លេខទូរស័ព្ទ</label>
-                        <input type="text" name="phone" placeholder="012 345 678" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                    </div>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">ឈ្មោះសណ្ឋាគារ</label>
+                                <input type="text" name="name" required placeholder="P&T Palace"
+                                    class="w-full h-14 px-6 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white dark:focus:bg-gray-900 outline-none transition-all">
+                            </div>
 
-                    <div class="col-span-2">
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">អាសយដ្ឋាន</label>
-                        <input type="text" name="address" placeholder="ផ្ទះលេខ... ផ្លូវ... ខណ្ឌ... រាជធានីភ្នំពេញ" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                    </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">លេខទូរស័ព្ទ</label>
+                                    <input type="text" name="phone" placeholder="012 345 678"
+                                        class="w-full h-14 px-6 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">អ៊ីមែល</label>
+                                    <input type="email" name="email" placeholder="hotel@example.com"
+                                        class="w-full h-14 px-6 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all">
+                                </div>
+                            </div>
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">Latitude (រយៈទទឹង)</label>
-                        <input type="text" name="latitude" placeholder="ឧទាហរណ៍៖ 11.5564" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">Longitude (រយៈបណ្ដោយ)</label>
-                        <input type="text" name="longitude" placeholder="ឧទាហរណ៍៖ 104.9282" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                    </div>
+                            <div>
+                                <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">អាសយដ្ឋាន</label>
+                                <textarea name="address" rows="2" placeholder="ទីតាំងសណ្ឋាគារ..."
+                                    class="w-full p-5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all"></textarea>
+                            </div>
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">រូបភាព Logo (1x1)</label>
-                        <input type="file" name="logo" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">ស្ថានភាព</label>
-                        <select name="status" class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none cursor-pointer">
-                            <option value="1">សកម្ម (បើកដំណើរការ)</option>
-                            <option value="0">ផ្អាក (ផ្អាកដំណើរការ)</option>
-                        </select>
-                    </div>
+                        <div class="space-y-5">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">Latitude</label>
+                                    <input type="text" name="latitude" placeholder="11.5564"
+                                        class="w-full h-14 px-6 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">Longitude</label>
+                                    <input type="text" name="longitude" placeholder="104.9282"
+                                        class="w-full h-14 px-6 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all">
+                                </div>
+                            </div>
 
-                    <div class="col-span-2">
-                        <label class="block text-sm font-medium mb-1 dark:text-gray-300">ព័ត៌មានលម្អិតសណ្ឋាគារ</label>
-                        <textarea name="description" rows="3" placeholder="រៀបរាប់ខ្លីៗអំពីសណ្ឋាគាររបស់អ្នក..."
-                            class="w-full px-4 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none"></textarea>
+                            <div>
+                                <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">រូបភាព Logo</label>
+                                <div class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border-2 border-dashed border-gray-200 dark:border-gray-700">
+                                    <div class="w-16 h-16 rounded-xl bg-white dark:bg-gray-900 flex items-center justify-center overflow-hidden border dark:border-gray-700">
+                                        <template x-if="logoPreview">
+                                            <img :src="logoPreview" class="w-full h-full object-cover">
+                                        </template>
+                                        <template x-if="!logoPreview">
+                                            <i class="fa-solid fa-image text-gray-300 text-xl"></i>
+                                        </template>
+                                    </div>
+                                    <div class="flex-1">
+                                        <input type="file" name="logo" class="hidden" id="hotel_logo"
+                                            accept="image/*"
+                                            @change="const file = $event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => { logoPreview = e.target.result; }; reader.readAsDataURL(file); }">
+                                        <label for="hotel_logo" class="cursor-pointer px-4 py-2 bg-white dark:bg-gray-900 text-[10px] font-black uppercase rounded-lg shadow-sm hover:bg-blue-500 hover:text-white transition-all inline-block">
+                                            ជ្រើសរើសរូបភាព
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" name="status" value="1" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-xs font-black uppercase text-gray-500 dark:text-gray-400 tracking-widest">បើកដំណើរការ</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 mb-2 tracking-widest">ព័ត៌មានលម្អិត</label>
+                            <textarea name="description" rows="3" placeholder="រៀបរាប់ខ្លីៗ..."
+                                class="w-full p-5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-2 rounded-b-2xl border-t dark:border-gray-800">
-                    <button type="button" @click="showAddModal = false" class="px-5 py-2 text-gray-500 hover:text-gray-700 font-medium">បោះបង់</button>
-                    <button type="submit" class="px-8 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all active:scale-95">
-                        <i class="fas fa-save mr-2"></i>រក្សាទុក
+                <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-3">
+                    <button type="button" @click="showAddModal = false"
+                        class="px-6 py-3 text-[11px] font-black uppercase text-gray-400 hover:text-gray-600 transition-all tracking-widest">បោះបង់</button>
+                    <button type="submit"
+                        class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-lg shadow-blue-500/25 transition-all active:scale-95">
+                        រក្សាទុកទិន្នន័យ
                     </button>
                 </div>
             </form>
@@ -69,7 +112,7 @@
     </div>
 </div>
 
-<div x-show="showEditModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
+<div x-show="showEditModal" class="fixed inset-0 z-[100] overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showEditModal = true"></div>
         <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl relative border dark:border-gray-800 overflow-hidden">
@@ -151,7 +194,7 @@
                         class="px-5 py-2 text-gray-500 hover:text-gray-700 font-medium transition-colors">បោះបង់</button>
                     <button type="submit"
                         class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/20 transition-all active:scale-95">
-                        <i class="fas fa-sync-alt mr-2"></i>ធ្វើបច្ចុប្បន្នភាព
+                        ធ្វើបច្ចុប្បន្នភាព
                     </button>
                 </div>
             </form>

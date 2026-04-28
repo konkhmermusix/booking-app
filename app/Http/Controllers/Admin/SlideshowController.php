@@ -27,7 +27,7 @@ class SlideshowController extends Controller
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'required|image|mimes:jpeg,JPEG,png,PNG,jpg,JPG|max:20480',
             'order_column' => 'required|integer',
         ]);
 
@@ -40,7 +40,7 @@ class SlideshowController extends Controller
         $data = $request->validate([
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:22048',
+            'image' => 'nullable|image|mimes:jpeg,JPEG,png,PNG,jpg,JPG|max:20480',
             'order_column' => 'required|integer',
             'is_active' => 'boolean'
         ]);

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('about_settings', function (Blueprint $table) {
+        Schema::create('about_contents', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->unique(); // ឧទាហរណ៍: 'welcome_text', 'vision'
-            $table->text('value_kh');
-            $table->text('value_en')->nullable();
-            $table->string('image')->nullable();
+            $table->string('key')->unique(); // ឧទាហរណ៍: welcome_text, vision, mission
+            $table->string('title_kh')->nullable();
+            $table->text('content_kh');
+            $table->string('image')->nullable(); // សម្រាប់ទុក Path រូបភាព
             $table->boolean('status')->default(true); // true = បង្ហាញ, false = លាក់
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('about_settings');
+        Schema::dropIfExists('about_contents');
     }
 };

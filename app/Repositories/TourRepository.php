@@ -6,19 +6,24 @@ use App\Models\Tour;
 
 class TourRepository
 {
+
     public function getAll($request)
     {
         $query = Tour::query();
 
-        if ($request->search) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+        // បន្ថែមការ search ឱ្យកាន់តែឆ្លាត
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
         }
 
-        if ($request->status !== null) {
+        if ($request->status !== null && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
-        return $query->latest()->paginate(10);
+        return $query->latest()->paginate(8);
     }
 
     public function store($data)

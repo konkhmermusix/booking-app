@@ -261,10 +261,10 @@
                 @forelse($tours as $tour)
                 <div class="relative rounded-3xl overflow-hidden h-96 group shadow-lg cursor-pointer">
                     <a href="{{ $tour->google_map_link }}" target="_blank">
-                        <img src="{{ asset('storage/' . $tour->image) }}"
+                        <img src="{{ asset('storage/' . ($tour->image[0] ?? 'default.jpg')) }}"
                             class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                             alt="{{ $tour->name }}">
-
+                       
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-6">
                             <h4 class="text-xl font-bold text-white">{{ $tour->name }}</h4>
                             <p class="text-sm text-gray-300">{{ $tour->distance }} នាទីពីសណ្ឋាគារ</p>
@@ -358,7 +358,7 @@
                         {{ __('Grab these exclusive deals before they expire!') }}
                     </p>
                 </div>
-               
+
             </div>
 
             <!-- Offers Grid -->

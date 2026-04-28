@@ -18,7 +18,7 @@ class Contact extends Model
         'email',
         'tell',
         'description',
-        'status',
+        'status'
     ];
 
     public function scopeUnread($query)
@@ -26,5 +26,3 @@ class Contact extends Model
         return $query->where('status', 'unread');
     }
 }
-
-

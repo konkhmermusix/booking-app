@@ -1,101 +1,195 @@
-<div x-show="showAddModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" x-cloak>
-    <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-[1.5rem] shadow-2xl border border-gray-100 dark:border-gray-800">
-        <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-            <h3 class="font-bold dark:text-white uppercase text-sm tracking-wider">បន្ថែមព័ត៌មានថ្មី</h3>
-            <button @click="showAddModal = false" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
-        </div>
-        <form action="{{ route('contacts_sett.store') }}" method="POST" class="p-6 space-y-4">
-            @csrf
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Key (Unique)</label>
-                    <input type="text" name="key" placeholder="e.g. telegram_link" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm dark:text-white" required>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Label</label>
-                    <input type="text" name="label" placeholder="e.g. តេឡេក្រាម" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm dark:text-white" required>
-                </div>
+<div x-show="showAddModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showAddModal = true"></div>
+
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative dark:border-gray-800 overflow-hidden font-kantumruy">
+            <div class="px-4 py-3 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
+                <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">បន្ថែមព័ត៌មានថ្មី</h3>
+                <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 text-3xl transition-transform hover:rotate-90">&times;</button>
             </div>
-            <input type="hidden" name="status" value="1">
-            <button type="submit" class="w-full py-3 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-all">រក្សាទុកទិន្នន័យ</button>
-        </form>
+
+            <form action="{{ route('contacts_sett.store') }}" method="POST">
+                @csrf
+                <div class="p-6 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">Key (សម្គាល់)</label>
+                            <input type="text" name="key" placeholder="phone" required
+                                class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">Label (បង្ហាញ)</label>
+                            <input type="text" name="label" placeholder="លេខទូរស័ព្ទ" required
+                                class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">តម្លៃ (Value)</label>
+                        <textarea name="value" placeholder="បញ្ចូលលេខ ឬ Link ផែនទី..." required rows="3"
+                            class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">រូបតំណាង (Icon)</label>
+                            <input type="text" name="icon" placeholder="fas fa-phone"
+                                class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">ពណ៌ (Theme)</label>
+                            <select name="color" class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer">
+                                <option value="blue">Blue</option>
+                                <option value="emerald">Emerald</option>
+                                <option value="red">Red</option>
+                                <option value="amber">Amber</option>
+                                <option value="purple">Purple</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="status" value="1" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            <span class="ms-3 text-sm font-medium dark:text-gray-300">បើកបង្ហាញ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-2 dark:border-gray-800">
+                    <button type="button" @click="showAddModal = false" class="px-4 py-2 text-gray-500 font-medium">បោះបង់</button>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20 font-bold">រក្សាទុក</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
+<div x-show="showEditModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showEditModal = true"></div>
 
-<div x-show="showEditModal"
-    class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0 scale-95"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-end="opacity-0 scale-95"
-    x-cloak>
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative dark:border-gray-800 overflow-hidden font-kantumruy">
+            <div class="px-4 py-3 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
+                <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">កែប្រែ៖ <span x-text="currentSetting.label" class="text-blue-500"></span></h3>
+                <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 text-3xl transition-transform hover:rotate-90">&times;</button>
+            </div>
 
-    <div class="bg-white dark:bg-gray-900 w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800" @click.away="showEditModal = false">
-        <div class="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-            <h3 class="font-bold dark:text-white">កែប្រែព័ត៌មាន</h3>
-            <button @click="showEditModal = false" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
+            <form :action="`{{ url('admin/contacts_sett') }}/${currentSetting.id}`" method="POST">
+                @csrf
+                @method('PUT')
+
+                    <div class="p-6 space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">Key (សម្គាល់)</label>
+                                <input type="text" name="key" x-model="currentSetting.key"
+                                    class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">Label (ចំណងជើង)</label>
+                                <input type="text" name="label" x-model="currentSetting.label" required
+                                    class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">តម្លៃ (Value)</label>
+                            <textarea name="value" x-model="currentSetting.value" required rows="3"
+                                class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all resize-none"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">Icon (FontAwesome)</label>
+                                <div class="relative">
+                                    <input type="text" name="icon" x-model="currentSetting.icon"
+                                        class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                        <i :class="currentSetting.icon || 'fas fa-question-circle'"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-wider">ពណ៌ (Theme)</label>
+                                <select name="color" x-model="currentSetting.color"
+                                    class="w-full px-4 py-4 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer appearance-none">
+                                    <option value="blue">Blue</option>
+                                    <option value="emerald">Emerald</option>
+                                    <option value="red">Red</option>
+                                    <option value="amber">Amber</option>
+                                    <option value="purple">Purple</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-2">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="status" value="1"
+                                    x-model="currentSetting.status"
+                                    :checked="currentSetting.status"
+                                    class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                <span class="ms-3 text-sm font-medium dark:text-gray-300">បើកដំណើរការ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-2 dark:border-gray-800">
+                        <button type="button" @click="showEditModal = false" class="px-4 py-2 text-gray-500 font-medium hover:text-gray-700 dark:hover:text-gray-300 transition-colors">បោះបង់</button>
+                        <button type="submit" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20 font-bold">ធ្វើបច្ចុប្បន្នភាព</button>
+                    </div>
+                </form>
         </div>
-
-        <form :action="'{{ url('admin/contacts') }}/' + currentContact.id" method="POST" class="p-6 space-y-4">
-            @csrf
-            @method('PUT')
-
-            <div class="space-y-1">
-                <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">ចំណងជើង</label>
-                <input type="text" name="label" x-model="currentContact.label" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 dark:text-white">
-            </div>
-
-            <div class="space-y-1">
-                <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">តម្លៃ (Value / Link Map)</label>
-                <textarea name="value" x-model="currentContact.value" rows="4" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 dark:text-white resize-none"></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">Icon (FontAwesome)</label>
-                    <input type="text" name="icon" x-model="currentContact.icon" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm dark:text-white">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-1">ពណ៌</label>
-                    <select name="color" x-model="currentContact.color" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-sm dark:text-white">
-                        <option value="blue">Blue</option>
-                        <option value="red">Red</option>
-                        <option value="green">Green</option>
-                        <option value="amber">Amber</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
-                <label class="text-sm font-bold text-gray-600 dark:text-gray-300">ស្ថានភាពបង្ហាញ</label>
-                <select name="status" x-model="currentContact.status" class="bg-white dark:bg-gray-700 border-none rounded-lg text-xs font-bold">
-                    <option :value="1">បង្ហាញ</option>
-                    <option :value="0">លាក់</option>
-                </select>
-            </div>
-
-            <div class="pt-4 flex gap-2">
-                <button type="button" @click="showEditModal = false" class="flex-1 py-3 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-all">បោះបង់</button>
-                <button type="submit" class="flex-1 py-3 bg-blue-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 active:scale-95 transition-all">រក្សាទុក</button>
-            </div>
-        </form>
     </div>
 </div>
 
+<div x-show="showDetailModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showDetailModal = true"></div>
 
-<div x-show="showDeleteModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" x-cloak>
-    <div class="bg-white dark:bg-gray-900 w-full max-w-sm rounded-[2rem] p-8 text-center shadow-2xl">
-        <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-            <i class="fas fa-exclamation-triangle"></i>
+        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-sm relative border dark:border-gray-800 overflow-hidden font-kantumruy">
+            <div class="p-8 text-center">
+                <div class="w-24 h-24 flex items-center justify-center rounded-3xl text-4xl mx-auto mb-6 shadow-inner border transition-all duration-500"
+                    :class="{
+                        'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:border-blue-800/50': currentSetting.color === 'blue',
+                        'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:border-emerald-800/50': currentSetting.color === 'emerald',
+                        'bg-red-100 text-red-600 dark:bg-red-900/30 dark:border-red-800/50': currentSetting.color === 'red',
+                        'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:border-amber-800/50': currentSetting.color === 'amber'
+                     }">
+                    <i :class="currentSetting.icon || 'fas fa-info-circle'"></i>
+                </div>
+
+                <h4 class="text-2xl font-black dark:text-white mb-1" x-text="currentSetting.label"></h4>
+                <p class="text-sm text-gray-400 uppercase tracking-widest font-bold mb-6" x-text="'Key: ' + currentSetting.key"></p>
+
+                <div class="space-y-3 mb-8 text-left">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border dark:border-gray-800">
+                        <span class="text-[10px] text-gray-400 font-bold uppercase block mb-1">តម្លៃ / ព័ត៌មាន</span>
+                        <p class="text-sm dark:text-gray-200 font-medium break-words" x-text="currentSetting.value"></p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border dark:border-gray-800 flex justify-between items-center">
+                        <span class="text-xs text-gray-400 font-bold uppercase">ស្ថានភាពបង្ហាញ</span>
+                        <span :class="currentSetting.status ? 'text-emerald-500' : 'text-red-500'" class="font-bold flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" :class="currentSetting.status ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'"></span>
+                            <span x-text="currentSetting.status ? 'បង្ហាញ' : 'មិនបង្ហាញ'"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 flex gap-3">
+                <button @click="showDetailModal = false"
+                    class="flex-1 h-12 bg-white dark:bg-gray-800 border dark:border-gray-700 font-black text-[11px] uppercase tracking-widest rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all dark:text-white">
+                    បិទវិញ
+                </button>
+                <button @click="showDetailModal = false; showEditModal = true"
+                    class="flex-1 h-12 bg-blue-600 text-white font-black text-[11px] uppercase tracking-widest rounded-xl shadow-lg shadow-blue-500/20 hover:bg-blue-700 active:scale-95 transition-all">
+                    កែសម្រួល
+                </button>
+            </div>
         </div>
-        <h3 class="text-lg font-bold dark:text-white mb-2">តើអ្នកប្រាកដទេ?</h3>
-        <p class="text-sm text-gray-500 mb-6">ទិន្នន័យនេះនឹងត្រូវលុបចេញពីប្រព័ន្ធរហូត!</p>
-        <form :action="'{{ url('admin/contacts') }}/' + currentContact.id" method="POST" class="flex gap-3">
-            @csrf
-            @method('DELETE')
-            <button type="button" @click="showDeleteModal = false" class="flex-1 py-3 text-sm font-bold bg-gray-100 text-gray-500 rounded-xl">បោះបង់</button>
-            <button type="submit" class="flex-1 py-3 bg-red-600 text-white text-sm font-bold rounded-xl shadow-lg shadow-red-500/30 hover:bg-red-700">យល់ព្រមលុប</button>
-        </form>
     </div>
 </div>

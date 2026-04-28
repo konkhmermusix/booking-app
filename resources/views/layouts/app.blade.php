@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
     <title>@yield('title')</title>
 
 
@@ -59,7 +60,9 @@
         <div class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
 
             <a href="/" class="text-2xl font-bold text-blue-900 dark:text-blue-400 flex items-center gap-2 group">
-                <div class="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold group-hover:bg-blue-700 transition">P</div>
+                <div class="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold group-hover:bg-blue-700 transition">
+                    <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="" srcset="">
+                </div>
                 <span class="hidden sm:inline">ភីអេនធី</span>
             </a>
 

@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('about_histories', function (Blueprint $table) {
+        Schema::create('hotel_histories', function (Blueprint $table) {
             $table->id();
-            $table->string('year'); // ឧទាហរណ៍: 2023, 2025
+            $table->string('year'); // ឧទាហរណ៍: 2023, 2025, បច្ចុប្បន្ន
             $table->string('title_kh');
-            $table->string('title_en')->nullable();
             $table->text('description_kh');
-            $table->text('description_en')->nullable();
-            $table->integer('sort_order')->default(0); // សម្រាប់រៀបលំដាប់លំដោយ
-            $table->boolean('status')->default(true);
+            $table->integer('order_priority')->default(0); // សម្រាប់រៀបលំដាប់លំដោយ
+            $table->boolean('status')->default(true); // true = បង្ហាញ, false = លាក់
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('about_histories');
+        Schema::dropIfExists('hotel_histories');
     }
 };

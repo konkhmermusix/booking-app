@@ -9,7 +9,7 @@ class SlideshowService
 {
     public function getAllSlides()
     {
-        return Slideshow::orderBy('order_column', 'asc')->paginate(10);
+        return Slideshow::orderBy('order_column', 'asc')->paginate(4);
     }
 
     public function createSlide(array $data)

@@ -25,13 +25,6 @@ class FacilityController extends Controller
         return view('admin.facilities.index', compact('facilities'));
     }
 
-    // ២. បង្ហាញ Form បង្កើត (GET: /admin/facilities/create)
-    // ចំណាំ៖ ដោយសារអ្នកប្រើ Modal ក្នុង index ខ្លះប្រហែលមិនបាច់ប្រើ Method នេះទេ
-    public function create()
-    {
-        return view('admin.facilities.create');
-    }
-
     // ៣. រក្សាទុកទិន្នន័យថ្មី (POST: /admin/facilities)
     public function store(StoreFacilityRequest $request)
     {
@@ -43,12 +36,6 @@ class FacilityController extends Controller
     public function show(Facility $facility)
     {
         return response()->json($facility); // ឬ return view
-    }
-
-    // ៥. បង្ហាញ Form កែប្រែ (GET: /admin/facilities/{facility}/edit)
-    public function edit(Facility $facility)
-    {
-        return view('admin.facilities.edit', compact('facility'));
     }
 
     // ៦. បច្ចុប្បន្នភាពទិន្នន័យ (PUT/PATCH: /admin/facilities/{facility})

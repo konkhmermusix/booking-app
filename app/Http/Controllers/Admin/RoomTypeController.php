@@ -11,6 +11,7 @@ use App\Models\Hotel;
 use App\Models\Facility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class RoomTypeController extends Controller
 {
@@ -30,6 +31,7 @@ class RoomTypeController extends Controller
         // ២. ហៅ Service ឱ្យទាញទិន្នន័យតាម Filter
         $roomTypes = $this->roomTypeService->getAllRoomType($filters);
 
+
         // ៣. បើជា AJAX (ពេលវាយ Search) ឱ្យបោះទៅ Partial List
         if ($request->ajax()) {
             return view('admin.room_types.partials.room-type-list', compact('roomTypes'))->render();
@@ -41,14 +43,13 @@ class RoomTypeController extends Controller
         return view('admin.room_types.index', compact('roomTypes', 'hotels', 'facilities'));
     }
 
-    
     public function store(RoomTypeRequest $request)
     {
         try {
             $roomType = $this->roomTypeService->storeRoomType($request->validated());
-            return response()->json(['message' => 'បង្កើតបានជោគជ័យ', 'data' => $roomType], 201);
+            return redirect()->back()->with('success', 'បង្កើតប្រភេទបន្ទប់បានជោគជ័យ!');
         } catch (\Exception $e) {
-            return response()->json(['message' => 'មានបញ្ហា: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'មានបញ្ហា: ' . $e->getMessage());
         }
     }
 
@@ -65,6 +66,7 @@ class RoomTypeController extends Controller
         }
     }
 
+
     public function destroy($id)
     {
         try {
@@ -80,20 +82,38 @@ class RoomTypeController extends Controller
         }
     }
 
+    public function deleteImage($id)
+    {
+        $image = RoomImage::find($id); // ឬឈ្មោះ Model រូបភាពរបស់លោកអ្នក
+
+        if ($image) {
+            // លុប File ចេញពី Storage (បើមាន)
+            if (Storage::exists($image->path)) {
+                Storage::delete($image->path);
+            }
+
+            $image->delete(); // លុប Record ចេញពី Database
+
+            return response()->json(['success' => true, 'message' => 'Image deleted successfully']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Image not found'], 404);
+    }
+
     /**
      * លុបរូបភាពមួយសន្លឹកតាមរយៈ AJAX
      */
     public function destroyImage($id)
     {
         try {
-            // ប្រសិនបើអ្នកមាន ImageService ប្រើវាដើម្បីលុប File និង DB
             $image = RoomImage::findOrFail($id);
 
-            // ប្រើ Trait ឬ Service ដើម្បីលុប File ក្នុង Storage
-            if (method_exists($this->roomTypeService, 'deleteFile')) {
-                $this->roomTypeService->deleteFile($image->image_path);
+            // ១. លុប File ចេញពី Storage
+            if ($image->path && Storage::disk('public')->exists($image->path)) {
+                Storage::disk('public')->delete($image->path);
             }
 
+            // ២. លុបពី Database
             $image->delete();
 
             return response()->json([
@@ -103,7 +123,7 @@ class RoomTypeController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'កំហុស៖ ' . $e->getMessage()
             ], 500);
         }
     }

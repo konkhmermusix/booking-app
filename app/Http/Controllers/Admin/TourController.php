@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 use App\Models\Tour;
 use App\Services\TourService;
 use App\Http\Requests\StoreTourRequest;
+use Illuminate\Http\Request;
 
 class TourController extends Controller
 {
-
     protected $tourService;
 
     public function __construct(TourService $tourService)
@@ -24,27 +20,51 @@ class TourController extends Controller
     public function index(Request $request)
     {
         $tours = $this->tourService->getTours($request);
+
+        if ($request->ajax()) {
+            // ប្តូរពី response()->json() មក render ជា View partial វិញ
+            return view('admin.tours.partials.tours-list', compact('tours'))->render();
+        }
+
         return view('admin.tours.index', compact('tours'));
     }
 
+
     public function store(StoreTourRequest $request)
     {
-        $this->tourService->createTour($request);
+        $tour = $this->tourService->createTour($request);
 
-        return back()->with('success', 'Tour created');
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'រក្សាទុកជោគជ័យ',
+                'data' => $tour
+            ]);
+        }
+
+        return redirect()->route('tours.index')->with('success', 'រក្សាទុកជោគជ័យ');
     }
 
     public function update(StoreTourRequest $request, Tour $tour)
     {
         $this->tourService->updateTour($request, $tour);
 
-        return back()->with('success', 'Tour updated');
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'កែប្រែជោគជ័យ'
+            ]);
+        }
+
+        return redirect()->route('tours.index')->with('success', 'កែប្រែជោគជ័យ');
     }
 
     public function destroy(Tour $tour)
     {
         $this->tourService->deleteTour($tour);
-
-        return back()->with('success', 'Tour deleted');
+        return response()->json([
+            'success' => true,
+            'message' => 'បានលុបជោគជ័យ'
+        ]);
     }
 }
