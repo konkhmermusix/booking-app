@@ -11,6 +11,8 @@ use App\Models\Promotion;
 use App\Models\Facility;
 use App\Models\Tour;
 use App\Models\RoomImage;
+use App\Models\Gallery;
+use App\Models\Hotel;
 
 class HomeController extends Controller
 {
@@ -88,9 +90,14 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('frontend.index', compact('slides', 'roomTypes', 'availableRooms', 'check_in', 'check_out', 'promotions', 'facilities', 'tours', 'roomTypeImage', 'displayImages'));
-    }
+        $galleries = Gallery::with('hotel')
+            ->where('is_active', 1)
+            ->orderBy('sort_order', 'asc')
+            ->take(9) // យកតែ ៦ រូបដើម្បីរៀប Grid
+            ->get();
 
+        return view('frontend.index', compact('slides', 'roomTypes', 'availableRooms', 'check_in', 'check_out', 'promotions', 'facilities', 'tours', 'roomTypeImage', 'displayImages', 'galleries'));
+    }
 
     public function showHotel($id)
     {

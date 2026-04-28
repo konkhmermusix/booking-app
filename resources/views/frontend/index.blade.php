@@ -113,14 +113,12 @@
                     ប្រភេទបន្ទប់
                 </h4>
                 <div class="h-1.5 w-20 bg-blue-600 mx-auto rounded-full mb-4"></div>
-                <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed italic">
-                    "ការស្នាក់នៅដ៏មានផាសុកភាព"
-                </p>
+
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @forelse($roomTypes as $type)
-                <div class="group bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col border border-gray-100 dark:border-gray-700">
+                <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col border border-gray-100 dark:border-gray-700">
 
                     <div class="relative aspect-[4/3] overflow-hidden">
                         @php
@@ -191,18 +189,15 @@
                             @endforeach
                         </div>
 
-                        <div class="grid grid-cols-3 gap-2 py-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
-                            <div class="text-center">
+                        <div class="grid grid-cols-2 gap-3 py-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
+                            <div class="text-center border-r border-gray-100 dark:border-gray-700">
                                 <i class="fas fa-users text-blue-500 text-[10px] block mb-0.5"></i>
                                 <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">{{ $type->max_guests }} នាក់</span>
                             </div>
-                            <div class="text-center border-x border-gray-100 dark:border-gray-700">
-                                <i class="fas fa-bed text-blue-500 text-[10px] block mb-0.5"></i>
-                                <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">{{ $type->beds }} គ្រែ</span>
-                            </div>
+
                             <div class="text-center">
-                                <i class="fas fa-expand-arrows-alt text-blue-500 text-[10px] block mb-0.5"></i>
-                                <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">{{ $type->size }}m²</span>
+                                <i class="fas fa-bed text-blue-500 text-[10px] block mb-0.5"></i>
+                                <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">{{ $type->name }}</span>
                             </div>
                         </div>
 
@@ -228,8 +223,7 @@
         <div class="container mx-auto px-4">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{{ __('Our Facilities') }}</h2>
-                    <p class="mt-4 text-gray-600 dark:text-gray-400">យើងផ្តល់ជូននូវសេវាកម្មដ៏ល្អបំផុត ដើម្បីផាសុកភាពរបស់អ្នក។</p>
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white">សម្ភារៈរបស់យើង</h2>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -251,29 +245,24 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-end mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 dark:text-white" data-key="tour-title">គោលដៅពេញនិយម</h2>
-
-                <a href="#" class="text-blue-600 font-bold hover:underline" data-key="view-all-tours">
-                    ច្រើនទៀត <i class="fas fa-chevron-right ml-1"></i>
-                </a>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @forelse($tours as $tour)
-                <div class="relative rounded-3xl overflow-hidden h-96 group shadow-lg cursor-pointer">
+                <div class="relative rounded-2xl overflow-hidden h-96 group shadow-lg cursor-pointer">
                     <a href="{{ $tour->google_map_link }}" target="_blank">
                         <img src="{{ asset('storage/' . ($tour->image[0] ?? 'default.jpg')) }}"
                             class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                             alt="{{ $tour->name }}">
-                       
+
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-6">
                             <h4 class="text-xl font-bold text-white">{{ $tour->name }}</h4>
-                            <p class="text-sm text-gray-300">{{ $tour->distance }} នាទីពីសណ្ឋាគារ</p>
+                            <p class="text-sm text-gray-300">{{ $tour->distance }} គីឡូម៉ែត្រពីសណ្ឋាគារ</p>
                         </div>
                     </a>
                 </div>
                 @empty
-                <div class="relative rounded-3xl overflow-hidden h-96 group shadow-lg cursor-pointer">
-
+                <div class="relative rounded-2xl overflow-hidden h-96 group shadow-lg cursor-pointer">
 
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-6">
                         <h4 class="text-xl font-bold text-white">មិនគោលដៅទាំងនេះទេ</h4>
@@ -314,7 +303,7 @@
                 };
                 @endphp
 
-                <div class="relative group overflow-hidden rounded-3xl {{ $gridClass }} shadow-md">
+                <div class="relative group overflow-hidden rounded-2xl {{ $gridClass }} shadow-md">
                     <img src="{{ asset('storage/' . $item->image_path) }}"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         alt="{{ $item->roomType->name }}">
@@ -333,6 +322,65 @@
                     <div class="absolute top-4 left-4">
                         <span class="bg-white/90 backdrop-blur-sm text-gray-900 text-[11px] font-bold px-3 py-1 rounded-full uppercase shadow-sm">
                             {{ $item->roomType->name }}
+                        </span>
+                    </div>
+                </div>
+                @empty
+                <div class="col-span-4 py-20 text-center bg-gray-100 dark:bg-gray-800 rounded-2xl">
+                    <p class="text-gray-500">មិនទាន់មានរូបភាពក្នុង Gallery ឡើយ</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallary -->
+    <section class="py-24 container dark:bg-[#0b1120]">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white uppercase tracking-wider">
+                        រូបភាពសណ្ឋាគារ
+                    </h2>
+                    <div class="h-1 w-20 bg-blue-600 mt-2"></div>
+                </div>
+                <a href="/gallery" class="text-blue-600 font-bold hover:text-blue-700 transition flex items-center">
+                    ច្រើនទៀត <i class="fas fa-external-link-alt ml-2 text-sm"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-auto md:h-[600px]">
+                @forelse($galleries as $index => $item)
+                @php
+                // កំណត់ Style Grid ឱ្យមានទំហំធំតូចខុសគ្នាដើម្បីភាពស្រស់ស្អាត
+                $gridClass = match($index) {
+                0 => "md:col-span-2 md:row-span-2 h-[450px] md:h-full",
+                3 => "md:col-span-2 h-[200px] md:h-full",
+                4 => "md:col-span-2 md:row-span-2 h-[250px] md:h-full",
+                default => "h-[200px] md:h-full",
+                };
+                @endphp
+
+                <div class="relative group overflow-hidden rounded-3xl {{ $gridClass }} shadow-md">
+                    <img src="{{ asset('storage/' . $item->image) }}"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        alt="Hotel Gallery">
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
+                        <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <h4 class="text-white font-bold text-lg">{{ $item->hotel->name ?? 'សណ្ឋាគារ' }}</h4>
+
+                            <a href="{{ route('frontend.gallery') }}"
+                                class="inline-flex items-center mt-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-2.5 rounded-full transition shadow-lg">
+                                មើលរូបភាពទាំងអស់
+                                <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="absolute top-4 left-4">
+                        <span class="bg-white/90 backdrop-blur-sm text-gray-900 text-[11px] font-bold px-3 py-1 rounded-full uppercase shadow-sm">
+                            {{ $item->hotel->name ?? 'Gallery' }}
                         </span>
                     </div>
                 </div>

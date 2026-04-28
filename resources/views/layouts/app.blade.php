@@ -56,7 +56,7 @@
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-300/20 dark:bg-blue-800/10 rounded-full blur-[120px] animate-pulse"></div>
     </div>
 
-    <nav class="bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-[100] border-b border-gray-100 dark:border-gray-800">
+    <nav class="bg-white/80 dark:bg-gray-950/80 backdrop-blur-md sticky top-0 z-100 border-b border-gray-100 dark:border-gray-800">
         <div class="container mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
 
             <a href="/" class="text-2xl font-bold text-blue-900 dark:text-blue-400 flex items-center gap-2 group">
@@ -80,14 +80,6 @@
                     <a href="{{ route('frontend.rooms') }}"
                         class="transition {{ Route::is('frontend.rooms') ? 'text-blue-600 font-bold border-b-2 border-blue-600' : 'hover:text-blue-600 dark:hover:text-blue-400' }}">
                         {{ __('auth.nav-rooms') }}
-                    </a>
-                </li>
-
-                {{-- Meeting --}}
-                <li>
-                    <a href="{{ route('frontend.meeting') }}"
-                        class="transition {{ Route::is('frontend.meeting') ? 'text-blue-600 font-bold border-b-2 border-blue-600' : 'hover:text-blue-600 dark:hover:text-blue-400' }}">
-                        {{ __('auth.nav-meetings') }}
                     </a>
                 </li>
 
@@ -117,7 +109,7 @@
             </ul>
 
             <div class="flex items-center space-x-3 md:space-x-4">
-                <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full p-1 shadow-inner">
+                <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded p-1 shadow-inner">
                     <button @click="switchLang('kh')"
                         class="px-2 py-1 text-[10px] font-black rounded transition"
                         :class=" '{{ app()->getLocale() }}' == 'kh' ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm' : 'text-gray-400' ">
@@ -195,7 +187,6 @@
                 <ul class="flex flex-col p-5 space-y-2 font-medium">
                     <li><a href="/" class="block px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-900 rounded-xl">{{ __('auth.nav-home') }}</a></li>
                     <li><a href="/rooms" class="block px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-900 rounded-xl">{{ __('auth.nav-rooms') }}</a></li>
-                    <li><a href="/meeting" class="block px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-900 rounded-xl">{{ __('auth.nav-meetings') }}</a></li>
                     <li><a href="/about" class="block px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-900 rounded-xl">{{ __('auth.nav-about') }}</a></li>
 
                     @auth
@@ -225,9 +216,7 @@
 
     <main>
         <x-alert /> @yield('content')
-        <!-- </main> class="min-h-screen flex items-center justify-center py-3"> -->
-        <!-- <div class="container mx-auto px-4"> -->
-        <!-- </div> -->
+      
     </main>
 
     <footer class="py-16 bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">
@@ -259,7 +248,7 @@
         </div>
     </footer>
 
-    <div x-data="{ openChat: false }" class="fixed bottom-8 right-1 z-[100] flex flex-col items-end gap-4">
+    <div x-data="{ openChat: false }" class="fixed bottom-8 right-1 z-100 flex flex-col items-end gap-4">
 
         <div x-show="openChat"
             x-transition:enter="transition ease-out duration-300"
@@ -268,7 +257,7 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-10 scale-95"
-            class="w-[330px] md:w-[370px] bg-white dark:bg-gray-900 rounded-[1.5rem] shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-2"
+            class="w-[330px] md:w-[370px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-2"
             x-cloak>
 
             <div class="bg-blue-600 p-3 text-white flex justify-between items-center">

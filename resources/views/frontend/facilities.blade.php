@@ -1,40 +1,56 @@
-@extends('layouts.app') {{-- បើអ្នកមាន Layout រួម --}}
+@extends('layouts.app')
+
+@section('title', 'សេវាកម្ម និងអត្ថប្រយោជន៍ | Facilities & Services')
 
 @section('content')
-<div class="py-20 bg-gray-50 dark:bg-gray-900 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4">
-        <h1 class="text-4xl font-bold text-center text-gray-900 dark:text-white mb-12 italic">
-            Hotel Facilities & Services
-        </h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- WiFi Card -->
-            <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 text-center group hover:bg-blue-600 transition-all duration-300">
-                <div class="text-4xl text-blue-600 group-hover:text-white mb-4">
-                    <i class="fas fa-wifi"></i>
-                </div>
-                <h3 class="text-xl font-bold dark:text-white group-hover:text-white">High-Speed WiFi</h3>
-                <p class="text-gray-500 dark:text-gray-400 group-hover:text-blue-100 mt-2">ឥតគិតថ្លៃគ្រប់ទីកន្លែងក្នុងសណ្ឋាគារ</p>
-            </div>
+<div class="bg-gray-50 dark:bg-[#0b1120] min-h-screen py-20">
+    <div class="container mx-auto px-4">
 
-            <!-- Parking Card -->
-            <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 text-center group hover:bg-green-600 transition-all duration-300">
-                <div class="text-4xl text-green-600 group-hover:text-white mb-4">
-                    <i class="fas fa-parking"></i>
-                </div>
-                <h3 class="text-xl font-bold dark:text-white group-hover:text-white">Secure Parking</h3>
-                <p class="text-gray-500 dark:text-gray-400 group-hover:text-green-100 mt-2">ចំណតរថយន្តមានសុវត្ថិភាព ២៤ ម៉ោង</p>
-            </div>
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
+                គ្រឿងបរិក្ខារ <span class="text-blue-600">&</span> សេវាកម្ម
+            </h1>
+            <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+                យើងផ្តល់ជូននូវបទពិសោធន៍ដ៏ល្អបំផុតជាមួយនឹងសេវាកម្មលំដាប់ខ្ពស់ និងគ្រឿងបរិក្ខារទំនើបៗសម្រាប់រាល់ការស្នាក់នៅរបស់អ្នក។
+            </p>
+            <div class="h-1.5 w-24 bg-blue-600 mx-auto mt-6 rounded-full"></div>
+        </div>
 
-            <!-- Restaurant Card -->
-            <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 text-center group hover:bg-orange-600 transition-all duration-300">
-                <div class="text-4xl text-orange-600 group-hover:text-white mb-4">
-                    <i class="fas fa-utensils"></i>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            @forelse($facilities as $facility)
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 hover:border-blue-500 transition-all group">
+                <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-blue-600 text-3xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                    <i class="{{ $facility->icon ?? 'fas fa-concierge-bell' }}"></i>
                 </div>
-                <h3 class="text-xl font-bold dark:text-white group-hover:text-white">Restaurant</h3>
-                <p class="text-gray-500 dark:text-gray-400 group-hover:text-orange-100 mt-2">ម្ហូបខ្មែរ និងអឺរ៉ុបរសជាតិឈ្ងុយឆ្ងាញ់</p>
+
+                <h3 class="text-xl font-black text-gray-900 dark:text-white uppercase mb-3 tracking-tight">
+                    {{ $facility->name }}
+                </h3>
+
+                <div class="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-widest">
+                    <span>សេវាកម្ម ២៤ ម៉ោង</span>
+                    <i class="fas fa-check-circle"></i>
+                </div>
             </div>
+            @empty
+            <div class="col-span-full text-center py-20">
+                <p class="text-gray-400 italic">មិនទាន់មានទិន្នន័យគ្រឿងបរិក្ខារនៅឡើយទេ</p>
+            </div>
+            @endforelse
+
+        </div>
+
+        <div class="mt-20 p-10 bg-blue-600 rounded-2xl text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-blue-500/30">
+            <div>
+                <h2 class="text-3xl font-black uppercase mb-2">តើអ្នកមានសំណួរផ្សេងៗ?</h2>
+                <p class="opacity-80">ក្រុមការងារយើងខ្ញុំរង់ចាំបម្រើលោកអ្នករាល់សេវាកម្មដែលត្រូវការ។</p>
+            </div>
+            <a href="/contact" class="px-8 py-4 bg-white text-blue-600 font-black rounded-2xl uppercase tracking-widest hover:bg-gray-100 transition-all text-sm">
+                ទាក់ទងមកយើងឥឡូវនេះ
+            </a>
         </div>
     </div>
 </div>
+
 @endsection

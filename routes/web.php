@@ -20,6 +20,7 @@ use App\Http\Controllers\ContactWebController;
 use App\Http\Controllers\FacilitiWebController;
 use App\Http\Controllers\BookingWebController;
 use App\Http\Controllers\ReviewWebController;
+use App\Http\Controllers\WebGalleryController;
 
 
 // for admin
@@ -86,6 +87,7 @@ Route::get('/hotels', [HotelFrontendController::class, 'index'])->name('frontend
 Route::get('/hotel/{id}', [HomeController::class, 'showHotel'])->name('frontend.details'); // Hotel details
 Route::get('/rooms', [RoomWebController::class, 'index'])->name('frontend.rooms');
 Route::get('/room-type/{id}', [HomeController::class, 'roomTypeDetails'])->name('frontend.room_type'); // Room type details
+Route::get('/gallery', [WebGalleryController::class, 'index'])->name('frontend.gallery');
 
 // Meeting Page
 Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.meeting');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AboutContent;
 use App\Models\HotelHistory;
+use App\Models\Gallery;
 
 class AboutWebController extends Controller
 {
@@ -17,6 +18,11 @@ class AboutWebController extends Controller
         // ទាញយកមាតិកាផ្សេងៗ (Vision, Mission...)
         $contents = AboutContent::where('status', true)->get()->keyBy('key');
 
-        return view('frontend.about', compact('histories', 'contents'));
+        $galleries = Gallery::with('hotel')
+            ->where('is_active', 1)
+            ->orderBy('sort_order', 'asc')
+            ->paginate(13);
+
+        return view('frontend.about', compact('histories', 'contents', 'galleries'));
     }
 }
