@@ -17,11 +17,11 @@ class Booking extends Model
         'total_price',
         'status',
         'booking_code',
+        'check_in_time',
+        'check_out_time',
+        'special_requests'
     ];
 
-    // Relationships
-
-    // Booking ត្រូវបានបង្កើតដោយ User ម្នាក់
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -37,6 +37,16 @@ class Booking extends Model
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(BookingDetail::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
     }
 
     // Optional: Accessor for number of nights

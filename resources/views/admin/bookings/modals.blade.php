@@ -1,154 +1,150 @@
-<div x-show="showAddModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
-    <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showAddModal = true"></div>
-        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-2xl relative border dark:border-gray-800 overflow-hidden">
-            <div class="px-8 py-6 border-b dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
-                <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">បង្កើតការកក់ថ្មី</h3>
-                <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 text-3xl transition-transform hover:rotate-90">&times;</button>
-            </div>
-            <form action="{{ route('bookings.store') }}" method="POST">
-                @csrf
-                <div class="p-8 grid grid-cols-2 gap-6">
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-xs font-black text-gray-400 uppercase mb-2">ជ្រើសរើសសណ្ឋាគារ</label>
-                        <select name="hotel_id" required class="w-full px-4 py-3 rounded-2xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
-                            @foreach($hotels as $hotel)
-                            <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-xs font-black text-gray-400 uppercase mb-2">ជ្រើសរើសអតិថិជន</label>
-                        <select name="user_id" class="w-full px-4 py-3 rounded-2xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                            <option value="">ភ្ញៀវក្រៅប្រព័ន្ធ (Walk-in)</option>
-                            @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+<div x-show="showAddModal" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
+    <div class="flex items-center justify-center min-h-screen px-4 py-10">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showAddModal = true"></div>
+
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-3xl relative border-none overflow-hidden transition-all"
+            x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
+
+            <div class="px-8 py-5 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
+                <div class="flex items-center gap-4">
                     <div>
-                        <label class="block text-xs font-black text-gray-400 uppercase mb-2">ថ្ងៃ Check-in</label>
-                        <input type="date" name="check_in" required class="w-full px-4 py-3 rounded-2xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-black text-gray-400 uppercase mb-2">ថ្ងៃ Check-out</label>
-                        <input type="date" name="check_out" required class="w-full px-4 py-3 rounded-2xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                    </div>
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-xs font-black text-gray-400 uppercase mb-2">តម្លៃសរុប ($)</label>
-                        <input type="number" step="0.01" name="total_price" required class="w-full px-4 py-3 rounded-2xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white font-bold text-lg">
-                    </div>
-                    <div class="col-span-2 md:col-span-1">
-                        <label class="block text-xs font-black text-gray-400 uppercase mb-2">ស្ថានភាព</label>
-                        <select name="status" class="w-full px-4 py-3 rounded-2xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white outline-none">
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                        </select>
+                        <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">បន្ថែមកក់បន្ទប់ថ្មី</h3>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">បំពេញព័ត៌មានខាងក្រោមដើម្បីធ្វើការកក់</p>
                     </div>
                 </div>
-                <div class="px-8 py-6 bg-gray-50 dark:bg-gray-800/50 flex justify-end gap-3 border-t dark:border-gray-800">
-                    <button type="button" @click="showAddModal = false" class="px-6 py-3 text-gray-500 font-bold hover:text-gray-700 transition-colors">បោះបង់</button>
-                    <button type="submit" class="px-10 py-3 bg-gray-900 dark:bg-white dark:text-black text-white rounded-2xl font-black shadow-lg hover:scale-105 transition-all">បង្កើតការកក់</button>
+                <button @click="showAddModal = false" class="text-gray-400 hover:text-red-500 text-3xl transition-all hover:rotate-90">&times;</button>
+            </div>
+
+            <form @submit.prevent="saveBooking()">
+                <div class="p-8 space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ជ្រើសរើសបន្ទប់ <span class="text-red-500">*</span></label>
+                            <div class="relative group">
+                                <select x-model="newBooking.room_id"
+                                    class="w-full h-14 pl-7 pr-10 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none font-medium relative z-0">
+                                    <option value="">រើសបន្ទប់ដែលទំនេរ</option>
+                                    <template x-for="room in rooms" :key="room.id">
+                                        <option :value="room.id" x-text="`${room.room_number} (${room.room_type.name}) - $${room.room_type.base_price}`"></option>
+                                    </template>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                            </div>
+                            <template x-if="errors.room_id">
+                                <span class="text-[10px] text-red-500 ml-2" x-text="errors.room_id[0]"></span>
+                            </template>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ថ្ងៃចូល (Check-in)</label>
+                            <div class="relative group">
+                                <i class="fas fa-calendar-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs group-focus-within:text-blue-500 transition-colors"></i>
+                                <input type="date"
+                                    x-model="newBooking.check_in"
+                                    :min="min_date"
+                                    @change="if(newBooking.check_out < newBooking.check_in) newBooking.check_out = ''; calculateTotal();"
+                                    class="w-full h-14 pl-10 pr-5 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold">
+                            </div>
+                            <template x-if="errors.check_in">
+                                <span class="text-[10px] text-red-500 ml-2" x-text="errors.check_in[0]"></span>
+                            </template>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ថ្ងៃចេញ (Check-out)</label>
+                            <div class="relative group">
+                                <i class="fas fa-calendar-check absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs group-focus-within:text-blue-500 transition-colors"></i>
+                                <input type="date"
+                                    x-model="newBooking.check_out"
+                                    :min="newBooking.check_in ? newBooking.check_in : min_date"
+                                    @change="calculateTotal()"
+                                    class="w-full h-14 pl-10 pr-5 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold">
+                            </div>
+
+                            <template x-if="errors.check_out">
+                                <span class="text-[10px] text-red-500 ml-2" x-text="errors.check_out[0]"></span>
+                            </template>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ការបង់ប្រាក់</label>
+                            <div class="relative group">
+                                <select x-model="newBooking.payment_method"
+                                    class="w-full h-14 pl-7 pr-10 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none font-medium relative z-0">
+                                    <option value="cash">សាច់ប្រាក់</option>
+                                    <option value="bank_transfer">ផ្ទេរតាមធនាគារ</option>
+                                    <option value="khqr">ឃ្យូអរកូដ</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">តម្លៃសរុប (Grand Total)</label>
+                            <div class="w-full flex items-center h-14 px-6 rounded-2xl border border-emerald-100 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-400 transition-all shadow-sm">
+
+                                <div class="flex items-center border-r dark:border-gray-700 pr-4 mr-4">
+                                    <div class="flex items-center justify-center bg-emerald-600 text-white w-7 h-7 rounded-lg shadow-md shadow-emerald-500/20 mr-2">
+                                        <span class="text-xs font-bold">$</span>
+                                    </div>
+                                    <div class="flex items-baseline">
+                                        <span class="text-2xl font-black tracking-tight" x-text="newBooking.total_price.toLocaleString()"></span>
+                                        <span class="ml-1 text-[10px] font-bold opacity-60">ដុល្លារ</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <div class="flex items-baseline">
+                                        <span class="text-lg font-bold tracking-tight text-gray-500 dark:text-gray-400"
+                                            x-text="(newBooking.total_price * 4000).toLocaleString()"></span>
+                                        <span class="ml-1 text-[12px] font-medium text-gray-400">រៀល</span>
+                                    </div>
+                                </div>
+
+                                <template x-if="newBooking.total_price > 0">
+                                    <div class="ml-auto">
+                                        <span class="text-[10px] bg-emerald-100 dark:bg-emerald-800 px-2 py-1 rounded-md font-bold italic">
+                                            គិតជាប្រាក់រៀល (1$ = 4,000៛)
+                                        </span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">សំណូមពរផ្សេងៗ</label>
+                            <textarea x-model="newBooking.special_requests" rows="3"
+                                class="w-full p-5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all"
+                                placeholder="សុំបន្ទប់ស្អាត ឬសុំបន្ថែមភួយ..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-8 py-5 bg-gray-50 dark:bg-gray-800/50 flex justify-end items-center gap-4 border-t dark:border-gray-800">
+                    <button type="button" @click="showAddModal = false"
+                        class="px-6 h-12 rounded-2xl font-bold text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                        បោះបង់
+                    </button>
+                    <button type="submit"
+                        :disabled="loading" class="px-10 h-12 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-sm shadow-lg shadow-emerald-500/30 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2">
+                        <template x-if="!loading">
+                            <div class="flex items-center gap-2">
+                                <span>បញ្ជាក់ការកក់</span>
+                            </div>
+                        </template>
+                        <template x-if="loading">
+                            <div class="flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>កំពុងរក្សាទុក...</span>
+                            </div>
+                        </template>
+                    </button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-<div x-show="showEditModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
-    <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showEditModal = false"></div>
-        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-md relative border dark:border-gray-800">
-            <div class="px-6 py-4 border-b dark:border-gray-800 flex justify-between items-center">
-                <h3 class="font-black dark:text-white italic">កែប្រែការកក់: <span x-text="currentBooking.booking_code" class="text-blue-500"></span></h3>
-                <button @click="showEditModal = false" class="text-gray-400 text-2xl">&times;</button>
-            </div>
-            <form :action="`{{ url('admin/bookings') }}/${currentBooking.id}`" method="POST">
-                @csrf @method('PUT')
-                <div class="p-6 space-y-4">
-                    <div>
-                        <label class="block text-xs font-black text-gray-400 uppercase mb-2 tracking-widest">បច្ចុប្បន្នភាពស្ថានភាព</label>
-                        <select name="status" x-model="currentBooking.status" class="w-full px-4 py-4 rounded-2xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white font-bold">
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black text-gray-400 uppercase">Check-in</label>
-                            <input type="date" name="check_in" x-model="currentBooking.check_in" class="w-full px-3 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-gray-400 uppercase">Check-out</label>
-                            <input type="date" name="check_out" x-model="currentBooking.check_out" class="w-full px-3 py-2 rounded-xl border dark:bg-gray-800 dark:border-gray-700 dark:text-white">
-                        </div>
-                    </div>
-                </div>
-                <div class="px-6 py-6 flex justify-end gap-2 border-t dark:border-gray-800">
-                    <button type="submit" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-black shadow-xl shadow-blue-500/20 transition-all hover:bg-blue-700">ធ្វើបច្ចុប្បន្នភាព</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div x-show="showDetailModal" class="fixed inset-0 z-[70] overflow-y-auto" x-cloak>
-    <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-md" @click="showDetailModal = false"></div>
-        <div class="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl w-full max-w-md relative overflow-hidden border dark:border-gray-800">
-            <div class="bg-blue-600 p-8 text-white text-center">
-                <div class="mb-2 opacity-80 text-xs font-black uppercase tracking-[0.3em]">វិក្កយបត្រការកក់</div>
-                <div class="text-3xl font-black tracking-tighter" x-text="'#' + currentBooking.booking_code"></div>
-            </div>
-            <div class="p-8">
-                <div class="flex justify-between mb-6">
-                    <div class="text-left">
-                        <p class="text-[10px] font-black text-gray-400 uppercase mb-1">អតិថិជន</p>
-                        <p class="font-black dark:text-white text-lg" x-text="currentBooking.user?.name || 'ភ្ញៀវក្រៅប្រព័ន្ធ'"></p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-black text-gray-400 uppercase mb-1">ស្ថានភាព</p>
-                        <p class="font-black text-blue-500 uppercase text-xs" x-text="currentBooking.status"></p>
-                    </div>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-6 mb-6 border dark:border-gray-700 border-dashed">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="text-center flex-1">
-                            <p class="text-[10px] font-black text-gray-400 uppercase">Check-in</p>
-                            <p class="font-black dark:text-gray-200" x-text="currentBooking.check_in"></p>
-                        </div>
-                        <div class="px-4 text-gray-300"><i class="fas fa-hotel"></i></div>
-                        <div class="text-center flex-1">
-                            <p class="text-[10px] font-black text-gray-400 uppercase">Check-out</p>
-                            <p class="font-black dark:text-gray-200" x-text="currentBooking.check_out"></p>
-                        </div>
-                    </div>
-                    <div class="border-t dark:border-gray-700 border-dashed pt-4 flex justify-between items-center">
-                        <span class="text-xs font-bold text-gray-500 uppercase">តម្លៃសរុប</span>
-                        <span class="text-2xl font-black text-emerald-600" x-text="'$' + parseFloat(currentBooking.total_price).toFixed(2)"></span>
-                    </div>
-                </div>
-                <button @click="showDetailModal = false" class="w-full py-4 bg-gray-900 dark:bg-white dark:text-black text-white rounded-2xl font-black transition-all active:scale-95">បិទត្រឡប់ទៅវិញ</button>
-
-                <div class="p-6">
-                    <a :href="`{{ url('bookings/invoice') }}/${currentBooking.id}`"
-                        class="w-full mb-3 py-3 bg-blue-600 text-white rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
-                        <i class="fas fa-file-pdf"></i> ទាញយកវិក្កយបត្រ (PDF)
-                    </a>
-
-                    @if(isset($booking))
-                    <a href="{{ route('bookings.invoice', $booking->id) }}"
-                        target="_blank"
-                        class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all">
-                        <i class="fas fa-file-pdf"></i> ទាញយកវិក្កយបត្រ
-                    </a>
-                    @endif
-
-                    <button @click="showDetailModal = false" class="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-bold">បិទ</button>
-                </div>
-            </div>
         </div>
     </div>
 </div>

@@ -5,13 +5,11 @@
 <div class="bg-gray-50 dark:bg-[#0b1120] min-h-screen py-20">
     <div class="container mx-auto px-4">
 
-        <div class="text-center mb-16">
+        <div class="text-center mb-30 relative z-10">
             <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
                 អំពីយើងខ្ញុំ <span class="text-blue-600">ភីអេនធី</span>
             </h1>
-            <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
-                ស្វាគមន៍មកកាន់សណ្ឋាគារ <span class="font-bold text-blue-600">ភីអេនធី</span> ដែលជាកន្លែងស្នាក់នៅដ៏ល្អឥតខ្ចោះសម្រាប់អ្នកដែលកំពុងស្វែងរកបទពិសោធន៍ស្នាក់នៅដ៏អស្ចារ្យនៅក្នុងទីក្រុងភ្នំពេញ។ យើងខ្ញុំមានបន្ទប់ទំនើបៗ និងសេវាកម្មលំដាប់ខ្ពស់ដែលត្រូវបានរចនាឡើងដើម្បីផ្តល់ជូននូវភាពងាយស្រួល និងសេវាកម្មដ៏ល្អឥតខ្ចោះសម្រាប់ភ្ញៀវជាតិ និងអន្តរជាតិ។
-            </p>
+
             <div class="h-1.5 w-24 bg-blue-600 mx-auto mt-6 rounded-full"></div>
         </div>
 
@@ -26,10 +24,16 @@
                         {{ $contents['welcome_text']->content_kh ?? 'ព័ត៌មានមិនទាន់ត្រូវបានបញ្ចូល...' }}
                     </p>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    {{-- បើមានរូបភាពក្នុង DB ឱ្យបង្ហាញរូបនោះ បើអត់ទេប្រើ Default Unsplash --}}
-                    <img src="{{ $contents['welcome_text']->image ?? 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070' }}" class="rounded-3xl shadow-lg mt-8" alt="Lobby">
-                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070" class="rounded-3xl shadow-lg" alt="Pool">
+                <div class="flex justify-center items-center">
+                    @if(isset($contents['welcome_text']) && $contents['welcome_text']->image)
+                    <img src="{{ asset('storage/' . $contents['welcome_text']->image) }}"
+                        class="rounded-2xl shadow-2xl w-full h-auto object-cover"
+                        alt="{{ $contents['welcome_text']->title_kh ?? 'Welcome Image' }}">
+                    @else
+                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070"
+                        class="rounded-2xl shadow-2xl w-full h-auto object-cover"
+                        alt="Placeholder Lobby">
+                    @endif
                 </div>
             </section>
 
@@ -52,8 +56,8 @@
                         <i class="fas fa-rocket"></i>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">{{ $contents['mission']->title_kh ?? 'បេសកកម្ម (Mission)' }}</h3>
-                    <p class="text-slate-300 leading-relaxed">
-                        {{ $contents['mission']->content_kh ?? 'មិនទាន់មានទិន្នន័យ' }}
+                    <p class="text-blue-50 leading-relaxed italic text-lg">
+                        "{{ $contents['mission']->content_kh ?? 'មិនទាន់មានទិន្នន័យ' }}"
                     </p>
                 </div>
             </section>

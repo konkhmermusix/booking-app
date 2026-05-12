@@ -58,7 +58,7 @@
         </p>
     </div>
     @empty
-    <div class="col-span-full">@include('admin.rooms.partials.empty-state')</div>
+    <div class="col-span-full">@include('admin.rooms.partials.empty_state')</div>
     @endforelse
 </div>
 
@@ -118,7 +118,7 @@
         </div>
     </div>
     @empty
-    <div class="col-span-full">@include('admin.rooms.partials.empty-state')</div>
+    <div class="col-span-full">@include('admin.rooms.partials.empty_state')</div>
     @endforelse
 </div>
 
@@ -183,7 +183,7 @@
                     </td>
                 </tr>
                 @empty
-                <div class="col-span-full">@include('admin.rooms.partials.empty-state')</div>
+                <div class="col-span-full">@include('admin.rooms.partials.empty_state')</div>
                 @endforelse
             </tbody>
         </table>

@@ -52,60 +52,72 @@
     <!-- search box -->
     <div class="container mx-auto px-4 -mt-10 relative z-50">
         <form action="{{ route('frontend.rooms') }}" method="GET">
-            <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 font-['Kantumruy_Pro']">
+            <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 font-['Kantumruy_Pro']">
 
+                {{-- CHECK IN --}}
                 <div class="flex flex-col">
-                    <label class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase ml-2 mb-2">
-                        <i class="fas fa-calendar-alt mr-1 text-blue-500"></i>
-                        <span data-key="label-checkin">ថ្ងៃចូលស្នាក់នៅ</span>
+                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
+                        <i class="fas fa-calendar-alt text-blue-500 mr-1"></i> ថ្ងៃចូល
                     </label>
                     <input type="date" name="check_in" id="check_in" value="{{ request('check_in', date('Y-m-d')) }}"
                         class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                 </div>
 
+                {{-- CHECK OUT --}}
                 <div class="flex flex-col">
-                    <label class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase ml-2 mb-2">
-                        <i class="fas fa-calendar-check mr-1 text-blue-500"></i>
-                        <span data-key="label-checkout">ថ្ងៃចាកចេញ</span>
+                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
+                        <i class="fas fa-calendar-check text-blue-500 mr-1"></i> ថ្ងៃចេញ
                     </label>
-                    <input type="date" name="check_out" id="check_out"
-                        value="{{ request('check_out', date('Y-m-d', strtotime('+1 day'))) }}"
+                    <input type="date" name="check_out" id="check_out" value="{{ request('check_out', date('Y-m-d', strtotime('+1 day'))) }}"
                         class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                 </div>
 
+                {{-- ROOM TYPE --}}
                 <div class="flex flex-col">
-                    <label class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase ml-2 mb-2">
-                        <i class="fas fa-bed mr-1 text-blue-500"></i>
-                        <span data-key="book-room-type">ប្រភេទបន្ទប់</span>
+                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
+                        <i class="fas fa-bed text-blue-500 mr-1"></i> ប្រភេទបន្ទប់
                     </label>
-                    <div class="relative">
-                        <select name="room_type" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
-                            <option value="">គ្រប់ប្រភេទទាំងអស់</option>
-                            @foreach($roomTypes as $type)
-                            <option value="{{ $type->id }}" {{ request('room_type')==$type->id ? 'selected' : '' }}>
-                                {{ $type->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                        <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
-                    </div>
+                    <select name="type" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
+                        <option value="">គ្រប់ប្រភេទទាំងអស់</option>
+                        @foreach($roomTypes as $category)
+                        <option value="{{ $category->name }}" {{ request('type') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
-                <div class="flex flex-col">
-                    <label class="hidden lg:block text-[11px] mb-2 opacity-0 select-none">Search</label>
+                {{-- DURATION --}}
+                <div class="flex flex-col relative">
+                    <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
+                        <i class="fas fa-clock text-blue-500 mr-1"></i> រយៈពេល
+                    </label>
 
+                    <select id="duration"
+                        class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
+                        <option value="">ជ្រើសរយៈពេល</option>
+                        <option value="1">1 ថ្ងៃ</option>
+                        <option value="2">2 ថ្ងៃ</option>
+                        <option value="3">3 ថ្ងៃ</option>
+                        <option value="5">5 ថ្ងៃ</option>
+                        <option value="7">1 សប្ដាហ៍</option>
+                        <option value="14">2 សប្ដាហ៍</option>
+                        <option value="21">3 សប្ដាហ៍</option>
+                        <option value="30">1 ខែ</option>
+                    </select>
+                </div>
+
+                {{-- BUTTON --}}
+                <div class="flex items-end">
                     <button type="submit"
                         class="w-full bg-blue-900 dark:bg-blue-800 text-white font-bold rounded-xl hover:brightness-110 shadow-lg transition-all active:scale-95 h-[52px] flex items-center justify-center gap-2">
-                        <i class="fas fa-search text-xs mr-1"></i>
                         ស្វែងរក
                     </button>
                 </div>
-
             </div>
         </form>
     </div>
 
     <!-- rooms card -->
+
     <section class="py-24 bg-gray-50 dark:bg-[#0b1120]">
         <div class="container mx-auto px-4">
             <div class="max-w-3xl mx-auto text-center mb-16">
@@ -201,11 +213,19 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('frontend.details', $type->id) }}"
-                            class="mt-4 group/btn flex items-center justify-center w-full bg-blue-900 dark:bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all text-sm shadow-md hover:shadow-blue-500/30 active:scale-95">
-                            <span>ពិនិត្យមើលបន្ទប់</span>
-                            <i class="fas fa-chevron-right ml-2 text-[10px] group-hover/btn:translate-x-1 transition-transform"></i>
-                        </a>
+                        <!-- ផ្នែកប៊ូតុងសកម្មភាព -->
+                        <div class="mt-4 flex flex-col gap-2">
+                            <button @click="addToCart({{ $type->id }})"
+                                class="mt-4 flex items-center justify-center w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all text-sm active:scale-95">
+                                <i class="fas fa-cart-plus mr-2"></i>
+                                <span>កក់បន្ទប់នេះ</span>
+                            </button>
+
+                            <a href="{{ route('frontend.room_details', $type->id) }}"
+                                class="flex items-center justify-center w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-[12px]">
+                                <span>មើលលម្អិត</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 @empty
@@ -311,7 +331,7 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6">
                         <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
 
-                            <a href="{{ route('frontend.details', $item->room_type_id) }}"
+                            <a href="{{ route('frontend.room_details', $item->room_type_id) }}"
                                 class="inline-flex items-center mt-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-2.5 rounded-full transition shadow-lg">
                                 មើលបន្ថែម
                                 <i class="fas fa-arrow-right ml-2 text-xs"></i>
@@ -564,5 +584,122 @@
         </div>
     </section>
 </div>
+
+<script>
+    document.getElementById("duration").addEventListener("change", function() {
+
+        let days = parseInt(this.value);
+        if (!days) return;
+
+        // =========================
+        // 1. AUTO SET CHECK-IN = TODAY
+        // =========================
+        let today = new Date();
+
+        let yyyy = today.getFullYear();
+        let mm = String(today.getMonth() + 1).padStart(2, '0');
+        let dd = String(today.getDate()).padStart(2, '0');
+
+        let checkInDate = `${yyyy}-${mm}-${dd}`;
+        document.getElementById("check_in").value = checkInDate;
+
+        // =========================
+        // 2. CALCULATE CHECK-OUT
+        // =========================
+        let checkOut = new Date();
+        checkOut.setDate(checkOut.getDate() + days);
+
+        let y2 = checkOut.getFullYear();
+        let m2 = String(checkOut.getMonth() + 1).padStart(2, '0');
+        let d2 = String(checkOut.getDate()).padStart(2, '0');
+
+        document.getElementById("check_out").value = `${y2}-${m2}-${d2}`;
+    });
+</script>
+
+<script>
+    function cartSystem() {
+        return {
+            count: 0,
+
+            // ទាញយកចំនួន Cart បច្ចុប្បន្នពេល Load Page
+            async getCount() {
+                try {
+                    let response = await axios.get('/cart-count');
+                    this.count = response.data.count;
+                } catch (error) {
+                    console.error("Error fetching cart count");
+                }
+            },
+
+            // បញ្ជូនទិន្នន័យទៅ Server តាមរយៈ Ajax (Axios)
+            async addToCart(id) {
+                try {
+                    let response = await axios.post('{{ route('cart.add') }}', {
+                            id: id
+                        });
+
+                    if (response.data.status === 'success') {
+                        this.count = response.data.cart_count; // Update លេខ Badge
+
+                        // បង្ហាញ SweetAlert2 (ដូចដែលអ្នកមានស្រាប់)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'ជោគជ័យ!',
+                            text: response.data.message,
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            text: response.data.message,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error adding to cart");
+                }
+            }
+        }
+    }
+
+    function cartSystem() {
+        return {
+            count: 0,
+            cartItems: [], // ទុកសម្រាប់រក្សាទុកបញ្ជីបន្ទប់
+
+            async getCount() {
+                // ទាញយកទាំងចំនួន និងទិន្នន័យបន្ទប់ពី Session
+                let response = await axios.get('/cart-details');
+                this.count = response.data.count;
+                this.cartItems = response.data.items;
+            },
+
+            async addToCart(id) {
+                let response = await axios.post('{{ route("cart.add") }}', {
+                    id: id
+                });
+                if (response.data.status === 'success') {
+                    this.getCount(); // ទាញទិន្នន័យថ្មីមកបង្ហាញភ្លាមៗ
+                    // ... show sweetalert ...
+                }
+            },
+
+            async removeFromCart(id) {
+                // Logic សម្រាប់លុបបន្ទប់ចេញពី Cart
+                let response = await axios.post('/cart-remove', {
+                    id: id
+                });
+                this.getCount();
+            }
+        }
+    }
+</script>
 
 @endsection

@@ -36,6 +36,7 @@ class AuthWebController extends Controller
         ]);
 
         Auth::login($user);
+
         return redirect('/')->with('success', 'ចុះឈ្មោះ និងចូលប្រើជោគជ័យ!');
     }
 
@@ -53,8 +54,23 @@ class AuthWebController extends Controller
             'password' => 'required',
         ]);
 
+        // ចូលទៅគេហទំព័រសិនទើបចូលទៅ Dashboard
+        // if (Auth::attempt($credentials)) {
+        //     $request->session()->regenerate();
+        //     return redirect()->intended('/')->with('success', 'ចូលបានជោគជ័យ!');
+        // }
+
+        // Admin ចូល Dashboard ស្រាប់ 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            // បែងចែកការ Redirect តាម Role
+            if ($user->role === 'admin') {
+                return redirect()->intended('/admin/dashboard')->with('success', 'សួស្តី Admin!');
+            }
+
             return redirect()->intended('/')->with('success', 'ចូលបានជោគជ័យ!');
         }
 

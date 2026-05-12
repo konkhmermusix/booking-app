@@ -3,23 +3,28 @@
 
 @section('content')
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white dark:bg-gray-900 p-6 rounded-[1.5rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
         <div class="flex items-center justify-between">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">ចំណូលសរុប (ខែនេះ)</p>
-                <h3 class="text-2xl font-black text-gray-800 dark:text-white">$12,450.00</h3>
+
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white">
+                    $ {{ number_format($stats['revenue'], 2) }}
+                </h3>
             </div>
             <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-600 transition-transform group-hover:scale-110">
                 <i class="fa-solid fa-money-bill-trend-up text-xl"></i>
             </div>
         </div>
         <div class="mt-4 flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-[10px] font-bold text-emerald-600">+12.5%</span>
-            <span class="text-[10px] text-gray-400 font-bold uppercase italic">ធៀបនឹងខែមុន</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-[10px] font-bold text-emerald-600">{{ $stats['revenue_growth'] >= 0 ? '+' : '' }}</span>
+            <span class="text-[10px] text-gray-400 font-bold uppercase italic">ធៀបនឹងខែមុន
+                {{ $stats['revenue_growth'] }}%
+            </span>
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 p-6 rounded-[1.5rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
         <div class="flex items-center justify-between">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">ការកក់សរុប</p>
@@ -35,11 +40,15 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 p-6 rounded-[1.5rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
         <div class="flex items-center justify-between">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">បន្ទប់ទំនេរ</p>
-                <h3 class="text-2xl font-black text-gray-800 dark:text-white">15 / 45</h3>
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white">
+                    
+                </h3>
+                <!-- Progress Bar -->
+                <div class="bg-orange-500 h-full" ></div>
             </div>
             <div class="w-12 h-12 bg-orange-50 dark:bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-600 transition-transform group-hover:scale-110">
                 <i class="fa-solid fa-door-open text-xl"></i>
@@ -50,11 +59,14 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 p-6 rounded-[1.5rem] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-all group">
         <div class="flex items-center justify-between">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">ការវាយតម្លៃ</p>
-                <h3 class="text-2xl font-black text-gray-800 dark:text-white">4.8 / 5</h3>
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white">
+                    {{ $stats['average_rating'] }} / 5
+                </h3>
+
             </div>
             <div class="w-12 h-12 bg-amber-50 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-600 transition-transform group-hover:scale-110">
                 <i class="fa-solid fa-star text-xl"></i>
@@ -66,7 +78,9 @@
             <i class="fa-solid fa-star"></i>
             <i class="fa-solid fa-star"></i>
             <i class="fa-solid fa-star-half-stroke"></i>
-            <span class="ml-2 text-gray-400 font-bold uppercase italic">98 នាក់</span>
+            <span class="ml-2 text-gray-400 font-bold uppercase italic">
+                {{ $stats['total_reviews'] }} នាក់
+            </span>
         </div>
     </div>
 </div>
@@ -74,7 +88,7 @@
 
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <div class="lg:col-span-2 bg-white dark:bg-gray-900 p-6 rounded-[1.5rem] border border-gray-100 dark:border-gray-800">
+    <div class="lg:col-span-2 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
         <div class="flex justify-between items-center mb-6">
             <h4 class="font-black text-sm uppercase tracking-wider dark:text-white">និន្នាការចំណូលប្រចាំឆ្នាំ</h4>
             <select class="text-[10px] font-bold bg-gray-50 dark:bg-gray-800 border-none rounded-xl px-4 py-2 uppercase">
@@ -87,7 +101,7 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 p-6 rounded-[1.5rem] border border-gray-100 dark:border-gray-800">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800">
         <h4 class="font-black text-sm uppercase tracking-wider mb-6 dark:text-white">ស្ថានភាពបន្ទប់ថ្ងៃនេះ</h4>
         <div class="space-y-4">
             @php
@@ -113,7 +127,7 @@
 </div>
 
 
-<div class="bg-white dark:bg-gray-900 rounded-[1.5rem] border border-gray-100 dark:border-gray-800 overflow-hidden">
+<div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
     <div class="px-7 py-5 border-b dark:border-gray-800 flex justify-between items-center">
         <h4 class="font-black text-sm uppercase tracking-wider dark:text-white">ការកក់ដែលទើបចូលថ្មី</h4>
         <a href="#" class="text-[10px] font-black text-blue-500 uppercase hover:underline">មើលទាំងអស់</a>

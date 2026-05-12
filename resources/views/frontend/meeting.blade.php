@@ -1,177 +1,211 @@
 @extends('layouts.app')
-@section('title', 'សាលប្រជុំ')
+@section('title', 'សាលប្រជុំ និងសិក្ខាសាលា')
 
 @section('content')
+<div x-data="{ 
+    view: 'grid',
+    loading: false, 
+    currentUrl: '{{ request()->fullUrl() }}',
+    fetchMeetings(url) {
+        this.loading = true;
+        this.currentUrl = url;
+        
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('room-list-container').innerHTML = html;
+                window.history.pushState({ path: url }, '', url);
+                this.loading = false;
+            })
+            .catch(err => {
+                console.error(err);
+                this.loading = false;
+            });
+    }
+}" @popstate.window="location.reload()">
 
-<header class="group relative h-[55vh] w-full overflow-hidden flex items-center justify-center rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 transition-all duration-500 ease-in-out cursor-default">
+    <div class="bg-gray-50 dark:bg-[#0b1120] min-h-screen py-20">
+        <div class="container mx-auto px-4">
 
-    <!-- Animated Grid Background -->
-    <div class="absolute inset-0 z-0 animate-grid-move opacity-60 dark:opacity-20 will-change-transform"
-        style="background-image: linear-gradient(to right, #cfdae1 1px, transparent 1px), linear-gradient(to bottom, #fbd5e1 1px, transparent 1px); background-size: 80px 80px;">
-    </div>
-
-    <!-- Soft Gradient Overlay -->
-    <div class="absolute inset-0 z-[1] backdrop-blur-[2px] bg-[radial-gradient(circle_at_center,transparent_30%,rgba(255,255,255,0.9)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_30%,rgba(2,6,23,0.95)_100%)]"></div>
-
-    <!-- Content -->
-    <div class="relative z-10 text-center px-4">
-        <h4 class="text-4xl md:text-5xl font-black mb-4 text-pnt-blue dark:text-white tracking-tight transition-all duration-500 ease-in-out group-hover:scale-105 group-hover:text-[#9e8efc] group-hover:drop-shadow-[0_0_20px_rgba(107,218,225,0.5)]">
-            បន្ទប់ប្រជុំទាំងអស់
-        </h4>
-
-        <p class="text-lg font-bold text-slate-600 dark:text-slate-400 transition-all duration-500 ease-in-out delay-75 **:group-hover:text-[#9e8efc] group-hover:translate-y-1">
-            ព្រឹត្ដិការណ៍សំខាន់ៗ
-        </p>
-    </div>
-</header>
-
-<section class="py-20 container mx-auto px-4">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-
-        <div
-            class="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-xl border dark:border-gray-800 flex flex-col">
-            <img src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407?auto=format&fit=crop&w=800&q=80"
-                class="h-72 w-full object-cover">
-            <div class="p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">Grand Ballroom (100 Pax)</h2>
-                    <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-bold">សាលធំ</span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-users text-blue-500"></i> ចំណុះ:
-                        100 នាក់</div>
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-th text-blue-500"></i> Style:
-                        Theater/Classroom</div>
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-projector text-blue-500"></i>
-                        Projector 4K</div>
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-volume-up text-blue-500"></i>
-                        Sound System VIP</div>
-                </div>
-
-                <h4 class="font-bold mb-4 border-b pb-2">គ្រឿងបរិក្ខាររួមមាន (Equipment)</h4>
-                <ul class="grid grid-cols-2 gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> High-speed WiFi</li>
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Wireless Mics</li>
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Whiteboard & Marker</li>
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Flipchart</li>
-                </ul>
+            {{-- HEADER SECTION --}}
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4 font-['Kantumruy_Pro']">
+                    សាលប្រជុំ <span class="text-blue-600">ភីអេនធី</span>
+                </h1>
+                <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
+                    រៀបចំកម្មវិធីសិក្ខាសាលា ប្រជុំអាជីវកម្ម ឬពិធីជប់លៀងរបស់លោកអ្នកឱ្យកាន់តែមានប្រសិទ្ធភាព ជាមួយសាលប្រជុំទំនើបៗ និងសេវាកម្មដ៏ល្អឥតខ្ចោះក្នុងខេត្តត្បូងឃ្មុំ។
+                </p>
+                <div class="h-1.5 w-24 bg-blue-600 mx-auto mt-6 rounded-full"></div>
             </div>
-        </div>
 
-        <div
-            class="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-xl border dark:border-gray-800 flex flex-col">
-            <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=800&q=80"
-                class="h-72 w-full object-cover">
-            <div class="p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold">Executive Room (50 Pax)</h2>
-                    <span class="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-bold">មធ្យម</span>
-                </div>
+            {{-- SEARCH BOX --}}
+            <section class="container mx-auto px-4 -mt-10 relative z-50">
+                <form action="{{ route('frontend.meeting') }}" method="GET">
+                    <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-users text-blue-500"></i> ចំណុះ:
-                        50 នាក់</div>
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-th text-blue-500"></i> Style:
-                        U-Shape/Boardroom</div>
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-tv text-blue-500"></i> LED TV 75"
+                        {{-- START DATE --}}
+                        <div class="flex flex-col">
+                            <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
+                                <i class="fas fa-calendar-alt text-blue-500 mr-1"></i> ថ្ងៃកម្មវិធី
+                            </label>
+                            <input type="date" name="check_in" value="{{ request('check_in', date('Y-m-d')) }}"
+                                class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
+                        </div>
+
+                        {{-- GUESTS / CAPACITY --}}
+                        <div class="flex flex-col">
+                            <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
+                                <i class="fas fa-users text-blue-500 mr-1"></i> ចំណុះមនុស្ស
+                            </label>
+                            <select name="guests" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none h-[52px]">
+                                <option value="">គ្រប់ចំនួន</option>
+                                <option value="20" {{ request('guests') == '20' ? 'selected' : '' }}>២០ - ៥០ នាក់</option>
+                                <option value="100" {{ request('guests') == '100' ? 'selected' : '' }}>១០០ នាក់ឡើង</option>
+                                <option value="300" {{ request('guests') == '300' ? 'selected' : '' }}>៣០០ នាក់ឡើង</option>
+                            </select>
+                        </div>
+
+                        {{-- SORT --}}
+                        <div class="flex flex-col">
+                            <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
+                                <i class="fas fa-sort text-blue-500 mr-1"></i> រៀបតាមតម្លៃ
+                            </label>
+                            <select name="sort" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none h-[52px]">
+                                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>តម្លៃ ទាប → ខ្ពស់</option>
+                                <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>តម្លៃ ខ្ពស់ → ទាប</option>
+                            </select>
+                        </div>
+
+                        {{-- BUTTON --}}
+                        <div class="flex items-end">
+                            <button type="submit"
+                                class="w-full bg-blue-900 dark:bg-blue-800 text-white font-bold rounded-xl hover:brightness-110 shadow-lg transition-all active:scale-95 h-[52px] flex items-center justify-center gap-2">
+                                ស្វែងរក
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3 text-sm"><i class="fas fa-wifi text-blue-500"></i> Dedicated
-                        Fiber</div>
-                </div>
+                </form>
+            </section>
 
-                <h4 class="font-bold mb-4 border-b pb-2">គ្រឿងបរិក្ខាររួមមាន (Equipment)</h4>
-                <ul class="grid grid-cols-2 gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Coffee Break Set</li>
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> HDMI Connectors</li>
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Air Conditioning</li>
-                    <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Water & Stationery</li>
-                </ul>
+            {{-- Container មេ: ប្រើ flex-col សម្រាប់ Mobile និង md:flex-row សម្រាប់ Tablet ឡើងទៅ --}}
+            <div class="container mx-auto px-4 flex flex-col md:flex-row gap-6 lg:gap-10 py-6">
+
+                {{-- LEFT SIDE --}}
+                <aside class="w-full md:w-[25%] lg:w-1/5 md:sticky md:top-[80px] self-start z-20">
+                    <section class="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+                        <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center">
+                            តម្រងស្វែងរក
+                        </h3>
+
+                        <div class="flex flex-col gap-5">
+
+                            {{-- SEARCH --}}
+                            <div class="relative">
+                                <input type="text" placeholder="ស្វែងរកសាលប្រជុំ" @input.debounce.500ms="let url = new URL(currentUrl); url.searchParams.set('search',$event.target.value); url.searchParams.set('page',1); fetchRooms(url.toString());"
+                                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm focus:ring-2 ring-blue-500 outline-none transition">
+                                <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                            </div>
+
+                            <div class="h-px bg-gray-100 dark:bg-gray-800"></div>
+
+                            <div class="text-xs text-gray-400 font-bold uppercase">ជម្រើសបន្ថែម</div>
+                            <button @click="fetchMeetings('{{ route('frontend.meeting') }}')"
+                                class="w-full py-2.5 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                                សម្អាត
+                            </button>
+                        </div>
+                    </section>
+                </aside>
+
+                {{-- RIGHT SIDE MEETING LIST --}}
+                <main class="w-full md:flex-1 relative">
+                    <div class="flex items-center justify-between mb-6 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-800">
+                        <div class="hidden sm:block">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                សាលប្រជុំ
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center rounded-lg bg-gray-100 dark:bg-gray-800 p-1">
+                                    <button @click="view = 'grid'"
+                                        :class="view === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'"
+                                        class="p-2 px-3 rounded-lg transition-all">
+                                        <i class="fas fa-th-large"></i>
+                                    </button>
+                                    <button @click="view = 'list'"
+                                        :class="view === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'"
+                                        class="p-2 px-3 rounded-lg transition-all">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- RESET BUTTON --}}
+                            <button
+                                @click="fetchMeetings('{{ route('frontend.meeting') }}')"
+                                title="Reset Filters"
+                                class="px-3 py-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 text-sm font-medium transition-all shadow-sm flex items-center">
+                                <!-- <i class="fas fa-undo-alt sm:mr-2"></i> -->
+                                <span class="hidden sm:inline">សម្អាត</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- LOADING OVERLAY --}}
+                    <div class="relative min-h-[400px]">
+                        <div x-show="loading"
+                            x-transition:enter="transition opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            class="absolute inset-0 bg-white/60 dark:bg-gray-900/60 z-10 flex justify-center pt-20 backdrop-blur-[2px] rounded-2xl">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent shadow-lg"></div>
+                                <span class="text-sm font-medium text-blue-600 dark:text-blue-400">កំពុងផ្ទុក...</span>
+                            </div>
+                        </div>
+
+                        {{-- ROOM LIST CONTAINER --}}
+                        <div id="room-list-container">
+                            @include('frontend.partials.meeting_list')
+                        </div>
+                    </div>
+                </main>
             </div>
         </div>
+
+        {{-- BOOKING MODAL (ប្រើសម្រាប់កក់សាល) --}}
+        @include('frontend.partials.booking_modal')
     </div>
-</section>
+</div>
 
-<section class="py-20 bg-blue-50 dark:bg-gray-900">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">កញ្ចប់តម្លៃសេវាកម្ម</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+{{-- JAVASCRIPT លុបចោលខ្លះដើម្បីឱ្យស្អាត --}}
+<script>
+    function openBookingModal(id, name) {
+        document.getElementById('room_type_id').value = id;
+        document.getElementById('modal_room_name').value = name;
+        const modal = document.getElementById('bookingModal');
+        const container = document.getElementById('modalContainer');
 
-            <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border-t-8 border-blue-500 text-center">
-                <h3 class="text-xl font-bold mb-2">កញ្ចប់កន្លះថ្ងៃ (Half Day)</h3>
-                <p class="text-gray-500 mb-6 text-sm">៨:០០ ព្រឹក - ១២:០០ ថ្ងៃត្រង់</p>
-                <div class="text-4xl font-bold text-blue-600 mb-6">$150<span
-                        class="text-sm text-gray-400 font-normal">/បូករួមអាហារសម្រន់</span></div>
-                <ul class="text-sm space-y-3 mb-8 text-gray-600 dark:text-gray-300">
-                    <li>១ ដង សម្រាប់ Coffee Break</li>
-                    <li>ប្រើប្រាស់សម្ភារៈបច្ចេកទេសទាំងអស់</li>
-                    <li>ទឹកបរិសុទ្ធ និងក្រដាសសរសេរ</li>
-                </ul>
-            </div>
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            container.classList.remove('scale-95', 'opacity-0');
+            container.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
 
-            <div
-                class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border-t-8 border-gold-500 text-center relative overflow-hidden">
-                <div
-                    class="absolute top-4 right-[-35px] bg-yellow-500 text-white text-[10px] font-bold px-10 py-1 rotate-45">
-                    POPULAR</div>
-                <h3 class="text-xl font-bold mb-2">កញ្ចប់ពេញមួយថ្ងៃ (Full Day)</h3>
-                <p class="text-gray-500 mb-6 text-sm">៨:០០ ព្រឹក - ៥:០០ ល្ងាច</p>
-                <div class="text-4xl font-bold text-blue-600 mb-6">$280<span
-                        class="text-sm text-gray-400 font-normal">/បូករួមអាហារសម្រន់</span></div>
-                <ul class="text-sm space-y-3 mb-8 text-gray-600 dark:text-gray-300">
-                    <li>២ ដង សម្រាប់ Coffee Break</li>
-                    <li>បូករួមអាហារថ្ងៃត្រង់ (Buffet)</li>
-                    <li>ជំនួយការបច្ចេកទេសប្រចាំការ</li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<section class="py-20 container mx-auto px-4 max-w-3xl">
-    <div class="bg-white dark:bg-gray-900 p-10 rounded-[2rem] shadow-2xl border dark:border-gray-800">
-        <h2 class="text-2xl font-bold mb-2 text-center">សាកសួរព័ត៌មាន ឬកក់ទីតាំង</h2>
-        <p class="text-center text-gray-500 mb-10">បំពេញព័ត៌មានខាងក្រោម ក្រុមការងារយើងនឹងទាក់ទងទៅវិញក្នុងពេលឆាប់ៗ
-        </p>
-
-        <form class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-bold mb-2 ml-1">ឈ្មោះអ្នកទាក់ទង</label>
-                    <input type="text" placeholder="បញ្ចូលឈ្មោះ..."
-                        class="w-full bg-gray-50 dark:bg-gray-800 border-none p-4 rounded-2xl focus:ring-2 ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2 ml-1">លេខទូរស័ព្ទ</label>
-                    <input type="tel" placeholder="012 345 678"
-                        class="w-full bg-gray-50 dark:bg-gray-800 border-none p-4 rounded-2xl focus:ring-2 ring-blue-500 outline-none">
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-bold mb-2 ml-1">កាលបរិច្ឆេទ</label>
-                    <input type="date"
-                        class="w-full bg-gray-50 dark:bg-gray-800 border-none p-4 rounded-2xl focus:ring-2 ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2 ml-1">ចំនួនអ្នកចូលរួម</label>
-                    <input type="number" placeholder="ឧទាហរណ៍: 50"
-                        class="w-full bg-gray-50 dark:bg-gray-800 border-none p-4 rounded-2xl focus:ring-2 ring-blue-500 outline-none">
-                </div>
-            </div>
-            <div>
-                <label class="block text-sm font-bold mb-2 ml-1">ជ្រើសរើសសាលប្រជុំ</label>
-                <select
-                    class="w-full bg-gray-50 dark:bg-gray-800 border-none p-4 rounded-2xl focus:ring-2 ring-blue-500 outline-none appearance-none">
-                    <option>Grand Ballroom (100 Pax)</option>
-                    <option>Executive Room (50 Pax)</option>
-                </select>
-            </div>
-            <button type="submit"
-                class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 shadow-xl transition-all active:scale-95">ផ្ញើសំណើកក់ឥឡូវនេះ</button>
-        </form>
-    </div>
-</section>
-
+    function closeBookingModal() {
+        const modal = document.getElementById('bookingModal');
+        const container = document.getElementById('modalContainer');
+        container.classList.remove('scale-100', 'opacity-100');
+        container.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    }
+</script>
 @endsection

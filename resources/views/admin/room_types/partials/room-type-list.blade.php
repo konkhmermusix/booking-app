@@ -120,13 +120,13 @@
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden" x-transition>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
-            <thead class="bg-gray-50/50 dark:bg-gray-900/50">
+            <thead class="text-[11px] bg-gray-50/50 dark:bg-gray-900/50 ">
                 <tr>
-                    <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">ឈ្មោះប្រភេទ</th>
-                    <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">សណ្ឋាគារ</th>
-                    <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">ភ្ញៀវ</th>
-                    <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest">តម្លៃគោល</th>
-                    <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-widest text-right">សកម្មភាព</th>
+                    <th class="px-6 py-4 font-bold text-gray-400 uppercase tracking-widest">ឈ្មោះប្រភេទ</th>
+                    <th class="px-6 py-4 font-bold text-gray-400 uppercase tracking-widest">សណ្ឋាគារ</th>
+                    <th class="px-6 py-4 font-bold text-gray-400 uppercase tracking-widest text-center">ភ្ញៀវ</th>
+                    <th class="px-6 py-4 font-bold text-gray-400 uppercase tracking-widest">តម្លៃគោល</th>
+                    <th class="px-6 py-4 font-bold text-gray-400 uppercase tracking-widest text-right">សកម្មភាព</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50 dark:divide-gray-700">

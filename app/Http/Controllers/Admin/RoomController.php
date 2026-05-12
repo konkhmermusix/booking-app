@@ -22,13 +22,10 @@ class RoomController extends Controller
 
     public function index(Request $request)
     {
-        // ១. ទាញយកទិន្នន័យតាមរយៈ Service (វាហៅ Repository ដែលមាន Search/Filter រួចហើយ)
-        // បញ្ជាក់៖ ក្នុង Repository របស់អ្នកមាន paginate(4) ដូច្នេះអ្នកអាចដូរវាជា 10 ឬ 12 តាមតម្រូវការ
         $rooms = $this->roomService->getAllRooms($request->all());
 
-        // ២. ប្រសិនបើជាការហៅតាមរយៈ AJAX (Axios)
         if ($request->ajax()) {
-            return view('admin.rooms.partials.rooms-list', compact('rooms'))->render();
+            return view('admin.rooms.partials.rooms_list', compact('rooms'))->render();
         }
 
         // ៣. ទាញទិន្នន័យសម្រាប់ Select Options ក្នុង Modals

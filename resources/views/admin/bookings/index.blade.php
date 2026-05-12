@@ -1,98 +1,239 @@
 @extends('layouts.admin')
-@section('title', 'បញ្ជីការកក់បន្ទប់')
+@section('title', 'ការគ្រប់គ្រងការកក់')
 
 @section('content')
 
-<div class="space-y-6" x-data="{ showAddModal: false, showEditModal: false, showDetailModal: false, currentBooking: { hotel: {}, user: {} } }" class="p-6 min-h-screen bg-gray-50 dark:bg-black">
-    <div class="flex justify-between items-center">
+<div class="p-2 sm:p-2" x-data="bookingManager()" x-init="init()">
 
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6 border border-gray-100 dark:border-gray-800">
         <div>
-            <h2 class="text-2xl font-bold dark:text-white">គ្រប់គ្រងកក់បន្ទប់</h2>
-            <p class="text-gray-500 dark:text-gray-400">គ្រប់គ្រងរាល់ការកក់ និងស្ថានភាពស្នាក់នៅរបស់ភ្ញៀវ</p>
+            <h2 class="text-lg font-bold dark:text-white">គ្រប់គ្រងការកក់</h2>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Real-time Booking System</p>
         </div>
 
-        <button @click="showAddModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-2xl shadow-xl shadow-blue-500/20 transition-all flex items-center justify-center gap-2 font-bold">
-            <i class="fas fa-plus-circle"></i> បង្កើត
-        </button>
+        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <div class="relative w-full sm:w-64">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
+                <input type="text" x-model="search" @input.debounce.500ms="fetchBookings()" placeholder="ស្វែងរកលេខកូដកក់..."
+                    class="w-full pl-8 pr-4 h-10 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-medium">
+            </div>
+
+            <div class="w-full sm:w-40">
+                <div class="relative group">
+                    <select x-model="status" @change="fetchBookings()"
+                        class="w-full h-10 px-3 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none text-sm font-medium relative z-0">
+                        <option value="">ស្ថានភាពទាំងអស់</option>
+                        <option value="pending">រង់ចាំ</option>
+                        <option value="confirmed">បញ្ជាក់ហើយ</option>
+                        <option value="completed">បញ្ចប់</option>
+                        <option value="cancelled">បោះបង់</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                </div>
+            </div>
+
+            <div class="flex bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl h-10 items-center">
+                <button @click="setView('table')" :class="viewMode === 'table' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]">
+                    <i class="fas fa-table-list"></i>
+                </button>
+                <button @click="setView('list')" :class="viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button @click="setView('grid')" :class="viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]">
+                    <i class="fas fa-th-large"></i>
+                </button>
+            </div>
+
+            <button @click="showAddModal = true" class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md text-sm font-bold flex items-center gap-2 transition-all active:scale-95">
+                <i class="fas fa-plus-circle"></i> បន្ថែមកក់ថ្មី
+            </button>
+
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white dark:bg-gray-900 p-4 rounded-2xl border dark:border-gray-800 shadow-sm">
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">ការកក់សរុប</p>
-            <p class="text-2xl font-black dark:text-white">{{ $bookings->total() }}</p>
-        </div>
+    <div x-show="loading" x-cloak class="mb-4 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-3 rounded-xl text-sm animate-pulse">
+        កំពុងដំណើរការ...
     </div>
 
-    <div class="bg-white dark:bg-gray-900 rounded-3xl border dark:border-gray-800 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-[10px] uppercase font-black tracking-widest">
-                        <th class="px-6 py-4">លេខកូដកក់</th>
-                        <th class="px-6 py-4">ភ្ញៀវ & សណ្ឋាគារ</th>
-                        <th class="px-6 py-4">កាលបរិច្ឆេទ</th>
-                        <th class="px-6 py-4">តម្លៃសរុប</th>
-                        <th class="px-6 py-4">ស្ថានភាព</th>
-                        <th class="px-6 py-4 text-right">សកម្មភាព</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y dark:divide-gray-800">
-                    @foreach($bookings as $booking)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors group">
-                        <td class="px-6 py-5">
-                            <span class="font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-3 py-1.5 rounded-lg text-sm">
-                                #{{ $booking->booking_code }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-5">
-                            <div class="font-bold dark:text-white">{{ $booking->user->name ?? 'ភ្ញៀវក្រៅប្រព័ន្ធ' }}</div>
-                            <div class="text-xs text-gray-400">{{ $booking->hotel->name }}</div>
-                        </td>
-                        <td class="px-6 py-5">
-                            <div class="flex items-center gap-2 text-xs font-medium dark:text-gray-300">
-                                <span class="text-emerald-500 font-bold">{{ $booking->check_in }}</span>
-                                <i class="fas fa-arrow-right text-[10px] text-gray-300"></i>
-                                <span class="text-rose-500 font-bold">{{ $booking->check_out }}</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-5 font-black text-gray-800 dark:text-gray-200">
-                            ${{ number_format($booking->total_price, 2) }}
-                        </td>
-                        <td class="px-6 py-5">
-                            @php
-                            $statusClasses = [
-                            'pending' => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
-                            'confirmed' => 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400',
-                            'completed' => 'bg-green-100 text-green-700 dark:bg-green-500/10 dark:text-green-400',
-                            'cancelled' => 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400',
-                            ];
-                            @endphp
-                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase {{ $statusClasses[$booking->status] }}">
-                                {{ $booking->status }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right flex gap-3 justify-end">
-                            <div class="flex justify-end gap-2 space-x-3">
-                                <button @click="currentBooking = {{ $booking->toJson() }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors"><i class="fas fa-eye"></i></button>
-                                <button @click="currentBooking = {{ $booking->toJson() }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors"><i class="fas fa-edit"></i></button>
-                                <form action="{{ route('bookings.destroy', $booking) }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <button type="button" class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="px-6 py-4 border-t dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
-            {{ $bookings->links() }}
-        </div>
+    <div id="bookings-container" :class="loading ? 'opacity-40 pointer-events-none' : ''" class="transition-opacity duration-300">
+        @include('admin.bookings.partials.booking_list')
     </div>
 
     @include('admin.bookings.modals')
 
 </div>
+
+<script>
+    function bookingManager() {
+        return {
+            viewMode: localStorage.getItem('bookingView') || 'table',
+            showAddModal: false,
+            showEditModal: false,
+            showDetailModal: false,
+            loading: false,
+            search: '{{ request('
+            search ') }}',
+            status: '{{ request('
+            status ') }}',
+            rooms: @js($rooms),
+            hotels: @js($hotels),
+            errors: {},
+            notyf: null,
+            min_date: '',
+
+            newBooking: {
+                hotel_id: '',
+                room_id: '',
+                check_in: '',
+                check_out: '',
+                price_per_night: 0,
+                total_price: 0,
+                payment_method: 'cash',
+                special_requests: ''
+            },
+
+            init() {
+                this.min_date = this.formatDate(new Date());
+                // កំណត់ Notyf Configuration
+                this.notyf = new Notyf({
+                    duration: 3000,
+                    position: {
+                        x: 'right',
+                        y: 'top'
+                    },
+                    dismissible: true,
+                    types: [{
+                            type: 'success',
+                            background: '#10b981', // ពណ៌ Emerald-600
+                            icon: {
+                                className: 'fas fa-check-circle',
+                                color: '#fff'
+                            }
+                        },
+                        {
+                            type: 'error',
+                            background: '#ef4444', // ពណ៌ Red-500
+                            icon: {
+                                className: 'fas fa-exclamation-circle',
+                                color: '#fff'
+                            }
+                        }
+                    ]
+                });
+                this.fetchBookings();
+
+                this.$watch('newBooking.room_id', () => this.calculateTotal());
+                this.$watch('newBooking.check_in', () => this.calculateTotal());
+                this.$watch('newBooking.check_out', () => this.calculateTotal());
+            },
+
+            formatDate(date) {
+                let yyyy = date.getFullYear();
+                let mm = String(date.getMonth() + 1).padStart(2, '0');
+                let dd = String(date.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            },
+
+            setView(mode) {
+                this.viewMode = mode;
+                localStorage.setItem('bookingView', mode);
+            },
+
+            // គណនាតម្លៃសរុប (JavaScript Logic)
+            calculateTotal() {
+                const room = this.rooms.find(r => r.id == this.newBooking.room_id);
+                if (room) {
+                    this.newBooking.price_per_night = room.room_type.base_price;
+                    this.newBooking.hotel_id = room.hotel_id;
+                }
+
+                if (this.newBooking.check_in && this.newBooking.check_out) {
+                    const start = new Date(this.newBooking.check_in);
+                    const end = new Date(this.newBooking.check_out);
+
+                    if (end > start) {
+                        const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                        this.newBooking.total_price = diffDays * this.newBooking.price_per_night;
+                    } else {
+                        this.newBooking.total_price = 0;
+                    }
+                }
+            },
+
+            async fetchBookings(url = null) {
+                this.loading = true;
+                let fetchUrl = url || '{{ route("bookings.index") }}';
+
+                try {
+                    const res = await axios.get(fetchUrl, {
+                        params: {
+                            search: this.search,
+                            status: this.status
+                        },
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+                    document.getElementById('bookings-container').innerHTML = res.data;
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+
+
+            async saveBooking() {
+                this.loading = true;
+                this.errors = {};
+                try {
+                    const res = await axios.post('{{ route("bookings.store") }}', this.newBooking);
+                    if (res.data.success) {
+                        this.showAddModal = false;
+                        this.resetForm();
+
+                        // បង្ហាញ Notyf ជោគជ័យ
+                        this.notyf.success(res.data.message);
+
+                        this.fetchBookings();
+                    }
+                } catch (err) {
+                    if (err.response?.status === 422) {
+                        this.errors = err.response.data.errors;
+                    } else {
+                        console.error(err);
+                        alert('មានបញ្ហាបច្ចេកទេសក្នុងការរក្សាទុក!');
+                    }
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+            resetForm() {
+                this.newBooking = {
+                    hotel_id: '',
+                    room_id: '',
+                    check_in: '',
+                    check_out: '',
+                    total_price: 0,
+                    price_per_night: 0,
+                    payment_method: 'cash'
+                };
+                this.errors = {};
+            }
+        }
+    }
+
+    // Pagination Click Handler
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('.pagination a');
+        if (link) {
+            e.preventDefault();
+            const alpine = Alpine.$data(document.querySelector('[x-data]'));
+            alpine.fetchBookings(link.href);
+        }
+    });
+</script>
+
 @endsection

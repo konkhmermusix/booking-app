@@ -1,12 +1,12 @@
 {{-- resources/views/frontend/partials/room_list.blade.php --}}
 
 <div id="room-list-container"
-    :class="view === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8' : 'flex flex-col gap-6'">
+    :class="view === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8' : 'flex flex-col gap-6'">
 
     @forelse($roomTypes as $type)
     {{-- Card Container --}}
     <div :class="view === 'grid' ? 'flex-col' : 'md:flex-row'"
-        class="group bg-white dark:bg-gray-900 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 dark:border-gray-800 flex w-full">
+        class="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 dark:border-gray-800 flex w-full">
 
         {{-- Image Section --}}
         <div :class="view === 'grid' ? 'h-64 w-full' : 'h-64 md:h-auto md:w-80 lg:w-96'"
@@ -23,7 +23,7 @@
         </div>
 
         {{-- Content Section --}}
-        <div class="p-6 flex flex-col justify-between flex-grow">
+        <div class="p-6 flex flex-col justify-between flex-grow ">
             <div>
                 <div class="flex justify-between items-start mb-2">
                     <h3 class="text-xl font-black text-gray-800 dark:text-white group-hover:text-blue-600">
@@ -58,9 +58,9 @@
 
             {{-- Action Buttons --}}
             <div class="flex gap-3">
-                <a href="{{ route('frontend.details', $type->id) }}"
+                <a href="{{ route('frontend.room_details', $type->id) }}"
                     class="flex-1 text-center py-3 rounded-xl border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-50 text-sm transition-all">
-                    លម្អិត
+                    មើលព័ត៌មាន
                 </a>
                 <button @click="openBookingModal({{ $type->id }}, '{{ $type->name }}')"
                     class="flex-[1.5] bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-200 dark:shadow-none transition-all text-sm">

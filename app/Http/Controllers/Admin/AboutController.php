@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\AboutRepository;
 use App\Services\AboutService;
-use App\Http\Requests\AboutRequest;
 use Illuminate\Http\Request;
 use App\Models\AboutContent;
-
+use App\Models\HotelHistory;
+use Illuminate\Support\Facades\Storage;
 
 class AboutController extends Controller
 {
@@ -21,31 +20,80 @@ class AboutController extends Controller
 
     public function index()
     {
-        $contents = $this->aboutService->listAll();
-        return view('admin.abouts.index', compact('contents'));
+        $aboutContents = AboutContent::latest()->get();
+        $hotelHistories = HotelHistory::orderBy('order_priority', 'asc')->get();
+
+        return view('admin.abouts.index', compact('aboutContents', 'hotelHistories'));
     }
 
-    public function store(Request $request)
+    // --- About Content Section ---
+
+    public function storeAbout(Request $request)
     {
-        $data = $this->aboutService->storeData($request->all());
-        return response()->json(['status' => 'success', 'message' => 'រក្សាទុកជោគជ័យ', 'data' => $data]);
+        $data = $request->validate([
+            'key' => 'required',
+            'title_kh' => 'required',
+            'content_kh' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|boolean'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('abouts', 'public');
+        }
+
+        AboutContent::create($data);
+        return back()->with('success', 'រក្សាទុកមាតិកាជោគជ័យ');
     }
 
-    public function edit($id)
+    public function updateAbout(Request $request, $id)
     {
         $content = AboutContent::findOrFail($id);
-        return response()->json($content);
-    }
-    
-    public function update(Request $request, $id)
-    {
-        $this->aboutService->updateData($id, $request->all());
-        return response()->json(['status' => 'success', 'message' => 'កែប្រែជោគជ័យ']);
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            if ($content->image) Storage::disk('public')->delete($content->image);
+            $data['image'] = $request->file('image')->store('abouts', 'public');
+        }
+
+        $content->update($data);
+        return back()->with('success', 'កែប្រែមាតិកាជោគជ័យ');
     }
 
-    public function destroy($id)
+    public function destroyAbout($id)
     {
-        $this->aboutService->deleteData($id);
-        return response()->json(['status' => 'success', 'message' => 'លុបជោគជ័យ']);
+        $content = AboutContent::findOrFail($id);
+        if ($content->image) Storage::disk('public')->delete($content->image);
+        $content->delete();
+        return back()->with('success', 'លុបមាតិកាបានជោគជ័យ!');
+    }
+
+    // --- Hotel History Section ---
+
+    public function storeHistory(Request $request)
+    {
+        $data = $request->validate([
+            'year' => 'required',
+            'title_kh' => 'required',
+            'description_kh' => 'required',
+            'order_priority' => 'required|integer',
+            'status' => 'required|boolean'
+        ]);
+
+        HotelHistory::create($data);
+        return back()->with('success', 'រក្សាទុកប្រវត្តិជោគជ័យ');
+    }
+
+    public function updateHistory(Request $request, $id)
+    {
+        $history = HotelHistory::findOrFail($id);
+        $history->update($request->all());
+        return back()->with('success', 'កែប្រែប្រវត្តិជោគជ័យ');
+    }
+
+    public function destroyHistory($id)
+    {
+        HotelHistory::findOrFail($id)->delete();
+        return back()->with('success', 'លុបប្រវត្តិបានជោគជ័យ!');
     }
 }

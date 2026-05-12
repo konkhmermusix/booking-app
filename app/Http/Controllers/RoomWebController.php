@@ -10,27 +10,30 @@ use App\Models\Booking;
 
 class RoomWebController extends Controller
 {
-
     public function index(Request $request)
     {
-        // 1. Get Inputs & Validation
-        $check_in = $request->input('check_in', now()->format('Y-m-d'));
-        $check_out = $request->input('check_out', now()->addDay()->format('Y-m-d'));
+        // 1. INPUT
+        $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
+        $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
         $type_name = $request->input('type');
-        $sort = $request->input('sort', 'asc');
-        $search = $request->input('search');
-        $guests = $request->input('guests');
+        $sort      = $request->input('sort', 'asc');
+        $search    = $request->input('search');
+        $guests    = $request->input('guests');
 
-        // 2. Get Categories for Filter
-        $categories = RoomType::select('name')->distinct()->get();
+        // 2. CATEGORIES (EXCLUDE MEETING ROOM)
+        $categories = RoomType::where('name', 'not like', '%សាលប្រជុំ%')
+            ->select('id', 'name')
+            ->distinct()
+            ->get();
 
-        // 3. Main Query with Availability Check Logic
-        // បង្កើត closure ទុកសម្រាប់ប្រើឡើងវិញ កុំឱ្យសរសេរស្ទួន
-        $availabilityFilter = function ($q) use ($check_in, $check_out) {
-            $q->where('status', 'available')
+        // 3. AVAILABILITY LOGIC (REUSABLE)
+        $availabilityFilter = function ($query) use ($check_in, $check_out) {
+            $query->where('status', 'available')
                 ->whereDoesntHave('bookings', function ($b) use ($check_in, $check_out) {
+
                     $b->whereIn('status', ['confirmed', 'pending'])
                         ->where(function ($overlap) use ($check_in, $check_out) {
+
                             $overlap->whereBetween('check_in', [$check_in, $check_out])
                                 ->orWhereBetween('check_out', [$check_in, $check_out])
                                 ->orWhere(function ($full) use ($check_in, $check_out) {
@@ -41,41 +44,60 @@ class RoomWebController extends Controller
                 });
         };
 
+        // 4. MAIN QUERY
         $query = RoomType::with(['images', 'facilities'])
-            ->withCount(['rooms as available_rooms_count' => $availabilityFilter])
-            ->whereHas('rooms', $availabilityFilter);
 
-        // 4. Advanced Filters
+            ->withCount([
+                'rooms as available_rooms_count' => $availabilityFilter
+            ])
+
+            ->whereHas('rooms', $availabilityFilter)
+
+            ->where('name', 'not like', '%សាលប្រជុំ%');
+
+        // 5. FILTERS
+
+        // type filter
         if ($type_name) {
             $query->where('name', $type_name);
         }
 
+        // search filter
         if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
         }
 
+        // guests filter
         if ($guests) {
             $query->where('max_guests', '>=', $guests);
         }
 
-        // 5. Sorting & Pagination
-        $roomTypes = $query->orderBy('base_price', $sort)
+        // 6. SORT + PAGINATION
+        $roomTypes = $query
+            ->orderBy('base_price', $sort === 'desc' ? 'desc' : 'asc')
             ->paginate(6)
             ->withQueryString();
 
-        // 6. Response Handlers
+        // 7. AJAX RESPONSE
         if ($request->ajax()) {
             return view('frontend.partials.room_list', compact('roomTypes'))->render();
         }
 
+        // 8. RETURN VIEW
         return view('frontend.rooms', compact(
             'roomTypes',
             'categories',
             'check_in',
             'check_out',
-            'sort'
+            'sort',
+            'search',
+            'guests',
+            'type_name'
         ));
     }
+
 
     public function storeBooking(Request $request)
     {

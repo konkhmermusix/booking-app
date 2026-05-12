@@ -20,7 +20,8 @@ use App\Http\Controllers\ContactWebController;
 use App\Http\Controllers\FacilitiWebController;
 use App\Http\Controllers\BookingWebController;
 use App\Http\Controllers\ReviewWebController;
-use App\Http\Controllers\WebGalleryController;
+use App\Http\Controllers\GalleryWebController;
+use App\Http\Controllers\CartController;
 
 
 // for admin
@@ -39,6 +40,7 @@ use App\Http\Controllers\Admin\ContactSettingController;
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\CalendarController;
 
 // use App\Http\Controllers\Admin\
 
@@ -83,18 +85,26 @@ Route::post('/contact', [ContactWebController::class, 'store'])->name('frontend.
 
 
 // Hotels & Rooms
-Route::get('/hotels', [HotelFrontendController::class, 'index'])->name('frontend.hotels.index');
-Route::get('/hotel/{id}', [HomeController::class, 'showHotel'])->name('frontend.details'); // Hotel details
+// Route::get('/details', [HotelFrontendController::class, 'index'])->name('frontend.hotels.index');
+Route::get('/roomdetails/{id}', [HomeController::class, 'room_detail'])->name('frontend.room_details'); // Room details
+Route::get('/meetingdetails/{id}', [HomeController::class, 'meeting_detail'])->name('frontend.meeting_details'); // Meeting details
 Route::get('/rooms', [RoomWebController::class, 'index'])->name('frontend.rooms');
 Route::get('/room-type/{id}', [HomeController::class, 'roomTypeDetails'])->name('frontend.room_type'); // Room type details
-Route::get('/gallery', [WebGalleryController::class, 'index'])->name('frontend.gallery');
+Route::get('/gallery', [GalleryWebController::class, 'index'])->name('frontend.gallery');
 
 // Meeting Page
 Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.meeting');
+Route::get('/meeting/detail/{id}', [MeetingWebController::class, 'meeting_detail'])->name('frontend.meeting_detail');
+
+
+Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart-count', [CartController::class, 'getCartCount'])->name('cart.count');
 
 // Booking Routes
 Route::get('/booking', [BookingWebController::class, 'index'])->name('booking.index');
-Route::post('/bookings/store', [RoomWebController::class, 'storeBooking'])->name('frontend.bookings.store')->middleware('auth'); // អនុញ្ញាតឱ្យតែកាលណាបាន Login រួច
+Route::post('/booking/store', [BookingWebController::class, 'store'])->name('booking.store')->middleware('auth');
+
+Route::post('/bookings/store', [RoomWebController::class, 'storeBooking'])->name('frontend.bookings.store')->middleware('auth');
 Route::post('/booking/storecart', [BookingWebController::class, 'storecart'])->name('booking.storecart');
 Route::get('/booking/history', [BookingWebController::class, 'history'])->name('booking.history');
 Route::get('/booking/details/{id}', [BookingWebController::class, 'show'])->name('booking.show');
@@ -131,6 +141,9 @@ Route::middleware(['auth'])->group(function () {
     // សម្រាប់តែ Admin ប៉ុណ្ណោះ (សិទ្ធិខ្ពស់បំផុត)
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
         // --- Core Resources ---
+        // Route::resource('calendar', CalendarController::class);
+        Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+        Route::get('/calendar/events', [CalendarController::class, 'getEvents'])->name('calendar.events');
         Route::resource('users', UserController::class);
         Route::resource('hotels', HotelController::class);
         Route::resource('rooms', RoomController::class);
@@ -141,6 +154,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('tours', TourController::class);
         Route::resource('promotions', PromotionController::class);
         Route::resource('bookings', BookingController::class);
+        Route::resource('bookings', BookingController::class);
+        Route::get('bookings/invoice/{booking}', [BookingController::class, 'downloadInvoice'])->name('bookings.invoice');
+
 
         // Contacts
         Route::resource('contact', ContactController::class);
@@ -151,10 +167,17 @@ Route::middleware(['auth'])->group(function () {
 
         // about
         Route::resource('abouts', AboutController::class);
-        Route::resource('abouts', AboutController::class)->only(['index', 'update']);
-        Route::resource('history', HistoryController::class);
 
-        Route::get('bookings/invoice/{booking}', [BookingWebController::class, 'downloadInvoice'])->name('bookings.invoice');
+        // About Content
+        Route::post('/about/store', [AboutController::class, 'storeAbout'])->name('about.store');
+        Route::post('/about/update/{id}', [AboutController::class, 'updateAbout'])->name('about.update');
+        Route::delete('/about/delete/{id}', [AboutController::class, 'destroyAbout'])->name('about.destroy');
+
+        // History
+        Route::post('/history/store', [AboutController::class, 'storeHistory'])->name('history.store');
+        Route::post('/history/update/{id}', [AboutController::class, 'updateHistory'])->name('history.update');
+        Route::delete('/history/delete/{id}', [AboutController::class, 'destroyHistory'])->name('history.destroy');
+
         Route::delete('/hotels/{hotel}', [HotelController::class, 'destroy'])->name('hotels.destroy');
     });
 });

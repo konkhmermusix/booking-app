@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/spotlight.js@0.7.8/dist/spotlight.bundle.js"></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
     <style>
         [x-cloak] {
             display: none !important;
@@ -56,6 +57,32 @@
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
+
+        .ck-editor__editable {
+            min-height: 200px;
+        }
+
+        /* កំណត់កម្ពស់ និងរាងមូល */
+        .ck-editor__editable_inline {
+            min-height: 200px;
+            border-radius: 0 0 15px 15px !important;
+            padding: 0 20px !important;
+        }
+
+        /* កំណត់ Toolbar ផ្នែកខាងលើឱ្យរាងមូល */
+        .ck-toolbar {
+            border-radius: 15px 15px 0 0 !important;
+            background-color: #f9fafb !important;
+            /* ដូច bg-gray-50 */
+            border: 2px solid #f9fafb !important;
+        }
+
+        /* សម្រាប់ Dark Mode (Option) */
+        .dark .ck-editor__editable {
+            background-color: #1f2937 !important;
+            /* dark:bg-gray-800 */
+            color: white !important;
+        }
     </style>
 </head>
 
@@ -66,7 +93,7 @@
         x-transition:enter="duration-300" x-transition:leave="duration-200"></div>
 
     <aside
-        class="bg-[#002B5B] dark:bg-gray-900 text-white transition-all duration-300 ease-in-out flex flex-col z-[9999] fixed inset-y-0 left-0 md:relative shadow-2xl"
+        class="bg-[#002B5B] dark:bg-gray-900 text-white transition-all duration-300 ease-in-out flex flex-col z-9999 fixed inset-y-0 left-0 md:relative shadow-2xl"
         :class="{ 
         'w-64': sidebarOpen, 
         'w-20': !sidebarOpen, 
@@ -88,6 +115,7 @@
             @php
             $navItems = [
             ['route' => 'dashboard', 'icon' => 'fa-chart-line', 'label' => 'ផ្ទាំងគ្រប់គ្រង'],
+            ['route' => 'calendar.index', 'icon' => 'fa-calendar', 'label' => 'កាលវិភាគ'],
             ];
             @endphp
 
@@ -101,7 +129,7 @@
             </a>
             @endforeach
 
-            {{-- សម្រាប់ Dropdown Links ក៏ត្រូវថែម @click ដូចគ្នា --}}
+            {{-- សម្រាប់ Dropdown Links --}}
             <div x-data="{ open: {{ request()->routeIs('hotels.*', 'room_types.*', 'rooms.*', 'facilities.*') ? 'true' : 'false' }} }">
                 <button @click="open = !open" class="w-full flex items-center gap-4 p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all" :class="sidebarOpen ? 'justify-start' : 'justify-center'">
                     <i class="fas fa-bed w-6 text-center"></i>
@@ -292,18 +320,38 @@
         </main>
 
     </div>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
 
     <script>
-        // ឆែកភ្លាម ដាក់ Class ភ្លាម មិនចាំ Alpine.js Load ចប់ទេ
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                },
+                events: '/api/bookings', // ផ្លូវទៅកាន់ Controller ដើម្បីទាញទិន្នន័យ
+                eventClick: function(info) {
+                    alert('បន្ទប់៖ ' + info.event.title + '\nស្ថានភាព៖ ' + info.event.extendedProps.status);
+                }
+            });
+            calendar.render();
+        });
     </script>
 </body>
 

@@ -32,7 +32,8 @@
                         </div>
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ឈ្មោះប្រភេទបន្ទប់ <span class="text-red-500">*</span></label>
-                            <input type="text" name="name" required placeholder="បន្ទប់គ្រែមួយ" class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold placeholder:font-normal">
+                            <input type="text" name="name" required placeholder="បន្ទប់គ្រែមួយ"
+                                class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all font-bold placeholder:font-normal">
                         </div>
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">តម្លៃគោល ($) <span class="text-red-500">*</span></label>
@@ -44,9 +45,16 @@
                         </div>
                     </div>
 
-                    <div class="space-y-2 col-span-full">
+                    <!-- <div class="space-y-2 col-span-full">
                         <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ពិពណ៌នា (Description)</label>
                         <textarea name="description" rows="3" placeholder="ព័ត៌មានលម្អិតពីបន្ទប់..."
+                            class="w-full p-5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all"></textarea>
+                    </div> -->
+
+                    <div class="space-y-2 col-span-full">
+                        <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ពិពណ៌នា (Description)</label>
+                        <!-- បន្ថែម id="editor" នៅទីនេះ -->
+                        <textarea id="editor" name="description" placeholder="ព័ត៌មានលម្អិតពីបន្ទប់..."
                             class="w-full p-5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 focus:bg-white outline-none transition-all"></textarea>
                     </div>
 

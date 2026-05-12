@@ -9,22 +9,29 @@ use App\Http\Controllers\Api\RoomTypeController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SlideshowController;
 
-/* --- Public Routes --- */
+/* ---------- Public Routes ---------- */
 
+// Authentication
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// Slideshows
 Route::get('/slideshows', [SlideshowController::class, 'index']);
 
+// Hotels
 Route::get('/hotels', [HotelController::class, 'index']);
 Route::get('/hotels/{id}', [HotelController::class, 'show']);
 
+// Room Types
 Route::get('/room-types', [RoomTypeController::class, 'index']);
 Route::get('/room-types/{id}', [RoomTypeController::class, 'show']);
 
-/* --- Protected Routes (Require Login) --- */
+
+/* ---------- Protected Routes ---------- */
+
 Route::middleware('auth:sanctum')->group(function () {
-    // Profile Management
+
+    // Profile
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile/update', [ProfileController::class, 'update']);
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);

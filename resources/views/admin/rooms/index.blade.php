@@ -1,6 +1,5 @@
 @extends('layouts.admin')
 @section('title', 'បញ្ជីបន្ទប់')
-
 @section('content')
 <div class="p-2 sm:p-2" x-data="{ 
         viewMode: localStorage.getItem('roomView') || 'list', 
@@ -58,7 +57,7 @@
     </div>
 
     <div id="rooms-container" :class="loading ? 'opacity-40' : ''" class="transition-opacity duration-300">
-        @include('admin.rooms.partials.rooms-list')
+        @include('admin.rooms.partials.rooms_list')
     </div>
 
     @include('admin.rooms.modals')

@@ -4,7 +4,7 @@
 return [
 
     // Login or Register
-    'login' => 'ចូលប្រើប្រាស់',
+    'login' => 'ចូលប្រើ',
     'login_text_box_email' => 'សូមបញ្ចូលអ៊ីម៉ែល',
     'login_text_box_password' => 'សូមបញ្ចូលពាក្យសម្ងាត់',
     'register' => 'ចុះឈ្មោះ',
@@ -28,7 +28,7 @@ return [
     // Home Page
     'nav-home' => 'ទំព័រដើម',
     'nav-rooms' => 'បន្ទប់',
-    'nav-meetings' => 'បន្ទប់ប្រជុំ',
+    'nav-meetings' => 'សាលប្រជុំ',
     'nav-facilities' => 'សេវាកម្ម',
     'nav-about' => 'អំពីយើង',
     'nav-contact' => 'ទំនាក់ទំនង',
