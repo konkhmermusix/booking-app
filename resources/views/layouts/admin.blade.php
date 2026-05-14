@@ -115,7 +115,8 @@
             @php
             $navItems = [
             ['route' => 'dashboard', 'icon' => 'fa-chart-line', 'label' => 'ផ្ទាំងគ្រប់គ្រង'],
-            ['route' => 'calendar.index', 'icon' => 'fa-calendar', 'label' => 'កាលវិភាគ'],
+            ['route' => 'calendar.index', 'icon' => 'fa-calendar', 'label' => 'គ្រប់គ្រងកាលវិភាគ'],
+            ['route' => 'bookings.index', 'icon' => 'fa-calendar-check', 'label' => 'គ្រប់គ្រងការកក់']
             ];
             @endphp
 
@@ -345,7 +346,7 @@
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,listWeek'
                 },
-                events: '/api/bookings', // ផ្លូវទៅកាន់ Controller ដើម្បីទាញទិន្នន័យ
+                events: '/api/bookings',
                 eventClick: function(info) {
                     alert('បន្ទប់៖ ' + info.event.title + '\nស្ថានភាព៖ ' + info.event.extendedProps.status);
                 }

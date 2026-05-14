@@ -1,9 +1,10 @@
 @extends('layouts.auth')
+@section('title', 'ចូលប្រើ')
 @section('content')
-<div class="max-w-4xl w-full bg-white dark:bg-gray-800 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row border dark:border-gray-700">
+<div class="max-w-4xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row border dark:border-gray-700">
     {{-- Banner --}}
     <div class="hidden md:flex md:w-1/2 bg-[#002B5B] dark:bg-black p-12 text-white flex-col justify-center relative overflow-hidden">
-        <h2 class="text-4xl font-bold mb-4 italic">PNT <span class="text-yellow-400 font-serif">HOTEL</span></h2>
+        <h2 class="text-4xl font-bold mb-4 italic">សណ្ឋាគារ <span class="text-yellow-400 font-serif">ភីអេនធី</span></h2>
         <p class="text-blue-100 opacity-80">{{ __('auth.welcome') }}</p>
         <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-yellow-400/10 rounded-full blur-3xl"></div>
     </div>
@@ -33,8 +34,10 @@
                 <label class="block text-xs font-bold text-gray-500 uppercase mb-1">{{ __('auth.email') }}</label>
                 <div class="relative group">
                     <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"></i>
-                    <input type="email" name="email" value="{{ old('email') }}" required placeholder="{{ __('auth.login_text_box_email') }}" class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded-xl outline-none focus:ring-2 ring-blue-500/50 dark:text-white transition-all">
+                    <input type="email" name="email" value="{{ old('email') }}" required placeholder="{{ __('auth.login_text_box_email') }}"
+                        class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 </div>
+                <p class="mt-1 invisible peer-placeholder-shown:visible text-[10px] text-red-500">
             </div>
 
             <div x-data="{ show: false }">
@@ -44,7 +47,8 @@
                 </div>
                 <div class="relative group">
                     <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"></i>
-                    <input :type="show ? 'text' : 'password'" name="password" required placeholder="{{ __('auth.login_text_box_password') }}" class="w-full pl-11 pr-12 py-3 bg-gray-50 dark:bg-gray-700 border dark:border-gray-600 rounded-xl outline-none focus:ring-2 ring-blue-500/50 dark:text-white transition-all">
+                    <input :type="show ? 'text' : 'password'" name="password" required placeholder="{{ __('auth.login_text_box_password') }}"
+                        class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                         <i class="fas" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
                     </button>

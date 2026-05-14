@@ -22,6 +22,7 @@ use App\Http\Controllers\BookingWebController;
 use App\Http\Controllers\ReviewWebController;
 use App\Http\Controllers\GalleryWebController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ChatWebController;
 
 
 // for admin
@@ -41,9 +42,7 @@ use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\CalendarController;
-
-// use App\Http\Controllers\Admin\
-
+use App\Http\Controllers\Admin\ChatController;
 
 // Authentication Routes
 Route::controller(AuthWebController::class)->group(function () {
@@ -76,12 +75,11 @@ Route::post('/logout', function () {
 // =======================================
 // Home Page
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Static Pages
+Route::post('/chat/send', [ChatWebController::class, 'store'])->middleware('auth');
 Route::get('/facilities', [FacilitiWebController::class, 'index'])->name('frontend.facilities');
 Route::get('/about', [AboutWebController::class, 'index'])->name('frontend.about');
 Route::get('/contact', [ContactWebController::class, 'index'])->name('frontend.contact');
-Route::post('/contact', [ContactWebController::class, 'store'])->name('frontend.contact.store');
+Route::post('/contact', [ContactWebController::class, 'store'])->name('frontend.contact');
 
 
 // Hotels & Rooms
@@ -127,6 +125,10 @@ Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit')
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
+// Tours Details
+Route::get('/toursdetail/{id}', [HomeController::class, 'toursdetail'])->name('toursdetail');
+
+
 // ផ្នែក Admin (Backend)
 // ២. Protected Routes (តម្រូវឱ្យ Login រួចរាល់)
 Route::middleware(['auth'])->group(function () {
@@ -157,6 +159,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('bookings', BookingController::class);
         Route::get('bookings/invoice/{booking}', [BookingController::class, 'downloadInvoice'])->name('bookings.invoice');
 
+        Route::post('/chat/send', [ChatController::class, 'store'])->name('admin.chat.send');
 
         // Contacts
         Route::resource('contact', ContactController::class);

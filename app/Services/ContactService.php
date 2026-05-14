@@ -13,13 +13,11 @@ class ContactService
         $this->contactRepo = $contactRepo;
     }
 
-    // សម្រាប់បង្ហាញបញ្ជីសារទាំងអស់ក្នុង Admin
     public function listAllMessages()
     {
         return $this->contactRepo->getAll();
     }
 
-    // សម្រាប់មើលលម្អិត និងប្តូរ Status ទៅជា 'pending' ឬ 'completed'
     public function updateStatus($id, $status)
     {
         return $this->contactRepo->update($id, ['status' => $status]);

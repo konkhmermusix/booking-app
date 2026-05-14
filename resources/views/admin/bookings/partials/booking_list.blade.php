@@ -129,8 +129,17 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex justify-end gap-2">
-                            <button @click="currentBooking = {{ $booking->toJson() }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors"><i class="fas fa-eye text-sm"></i></button>
-                            <button @click="currentBooking = {{ $booking->toJson() }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors"><i class="fas fa-edit text-sm"></i></button>
+                            <!-- ប៊ូតុងមើលលម្អិត -->
+                            <button @click="viewDetail({{ json_encode($booking) }})"
+                                class="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                <i class="fas fa-eye text-sm"></i>
+                            </button>
+
+                            <!-- ប៊ូតុងកែសម្រួល -->
+                            <button @click="editBooking({{ json_encode($booking) }})"
+                                class="p-2 text-gray-400 hover:text-amber-500 transition-colors">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>

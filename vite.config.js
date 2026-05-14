@@ -20,5 +20,4 @@ export default defineConfig({
         //     host: "192.168.43.1",
         // },
     },
-
 });

@@ -28,7 +28,7 @@
                         <option value="completed">បញ្ចប់</option>
                         <option value="cancelled">បោះបង់</option>
                     </select>
-                    <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
                 </div>
             </div>
 
@@ -47,7 +47,6 @@
             <button @click="showAddModal = true" class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md text-sm font-bold flex items-center gap-2 transition-all active:scale-95">
                 <i class="fas fa-plus-circle"></i> បន្ថែមកក់ថ្មី
             </button>
-
         </div>
     </div>
 
@@ -70,6 +69,10 @@
             showAddModal: false,
             showEditModal: false,
             showDetailModal: false,
+
+            editingBooking: {},
+            selectedBooking: {},
+
             loading: false,
             search: '{{ request('
             search ') }}',
@@ -90,6 +93,27 @@
                 total_price: 0,
                 payment_method: 'cash',
                 special_requests: ''
+            },
+
+            editBooking(booking) {
+                // ចម្លងទិន្នន័យចេញពី Object booking ក្នុងជួរនីមួយៗ
+                this.editingBooking = {
+                    id: booking.id,
+                    room_id: booking.room_id,
+                    check_in: booking.check_in,
+                    check_out: booking.check_out,
+                    payment_method: booking.payment_method,
+                    total_price: booking.total_price,
+                    special_requests: booking.special_requests
+                };
+                this.showEditModal = true;
+            },
+
+
+
+            viewDetail(booking) {
+                this.selectedBooking = booking;
+                this.showDetailModal = true;
             },
 
             init() {
@@ -182,8 +206,6 @@
                 }
             },
 
-
-
             async saveBooking() {
                 this.loading = true;
                 this.errors = {};
@@ -205,6 +227,22 @@
                         console.error(err);
                         alert('មានបញ្ហាបច្ចេកទេសក្នុងការរក្សាទុក!');
                     }
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+            async updateBooking() {
+                this.loading = true;
+                try {
+                    const res = await axios.put(`/admin/bookings/${this.editingBooking.id}`, this.editingBooking);
+                    if (res.data.success) {
+                        this.showEditModal = false;
+                        this.notyf.success(res.data.message);
+                        this.fetchBookings(); // ទាញទិន្នន័យថ្មីមកបង្ហាញក្នុង Table
+                    }
+                } catch (err) {
+                    this.notyf.error("មិនអាចកែសម្រួលបានទេ!");
                 } finally {
                     this.loading = false;
                 }

@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ContactRequest; // ប្រើ Request ដែលយើងបានបង្កើត
-use App\Services\ContactService;    // ប្រើ Service សម្រាប់ Business Logic
+use App\Http\Requests\ContactRequest;
+use App\Services\ContactService;
 use Illuminate\Http\Request;
 use App\Models\ContactSetting;
+use Mews\Purifier\Facades\Purifier;
 
 class ContactWebController extends Controller
 {
     protected $contactService;
 
-    // Inject ContactService ចូលមកក្នុង Controller
     public function __construct(ContactService $contactService)
     {
         $this->contactService = $contactService;
     }
-
-    // បង្ហាញទំព័រ Contact Form (UI)
 
     public function index()
     {
@@ -29,22 +27,22 @@ class ContactWebController extends Controller
         return view('frontend.contact', compact('contacts', 'mapData'));
     }
 
-    // ទទួលទិន្នន័យពី Customer និងរក្សាទុក (Create)
     public function store(ContactRequest $request)
     {
         try {
             $data = $request->validated();
 
-            // កំណត់ Status ដំបូងឱ្យត្រូវតាម Enum ('unread')
+            $data['description'] = clean($request->description);
+            // $data['description'] = Purifier::clean($request->description);
+            // $data['description'] = strip_tags($request->description, '<p><br><b><strong><ul><li>');
+            // $data['description'] = strip_tags($request->description, '<p><br><b><strong><ul><li><ol><h1><h2><h3>');
+
             $data['status'] = 'unread';
 
-            // រក្សាទុកទិន្នន័យ
             $this->contactService->handleContactSubmission($data);
 
-            // បញ្ជូនសារជោគជ័យទៅកាន់ Frontend
             return back()->with('success', 'សាររបស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ!');
         } catch (\Exception $e) {
-            // ប្រសិនបើមានបញ្ហា (ឧទាហរណ៍ DB Error)
             return back()->withInput()->with('error', 'មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage());
         }
     }
