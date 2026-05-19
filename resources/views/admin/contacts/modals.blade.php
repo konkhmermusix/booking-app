@@ -83,20 +83,16 @@
 
 <div x-show="showDetailModal" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
-        <!-- Backdrop -->
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
-            @click="showDetailModal = false"
+            @click="showDetailModal = true"
             x-transition:enter="ease-out duration-300"
             x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100"></div>
-
-        <!-- Modal Content -->
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl relative border-none overflow-hidden transition-all"
             x-transition:enter="ease-out duration-300"
             x-transition:enter-start="opacity-0 translate-y-8 scale-95"
             x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
-            <!-- Header -->
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
                 <div>
                     <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">ព័ត៌មានលម្អិតនៃសារ</h3>
@@ -130,7 +126,6 @@
                         </div>
                     </div>
 
-                    <!-- ខ្លឹមសារសង្ខេប (Description) -->
                     <div class="space-y-3">
                         <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">
                             ខ្លឹមសារនៃសារទាំងស្រុង
@@ -140,16 +135,13 @@
                         </div>
                     </div>
 
-                    <!-- កាលបរិច្ឆេទ -->
                     <div class="flex justify-between items-center px-4 py-3 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl border border-gray-100 dark:border-gray-700">
                         <span class="text-[11px] font-black uppercase text-gray-400 tracking-widest">កាលបរិច្ឆេទផ្ញើ</span>
                         <span class="text-sm font-bold dark:text-gray-300" x-text="currentMessage.created_at_formatted"></span>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Footer -->
             <div class="px-7 py-4 bg-gray-50 dark:bg-gray-800/50 flex justify-end items-center gap-4 dark:border-gray-800">
                 <button type="button" @click="showDetailModal = false; showEditModal = true"
                     class="px-10 h-10 bg-amber-800 dark:bg-white dark:text-gray-900 text-white font-black text-sm uppercase tracking-[0.2em] rounded-2xl shadow-xl active:scale-95 transition-all">

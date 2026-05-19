@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\RoomType;
 use Carbon\Carbon;
+use App\Models\RoomType;
+use App\Models\Review;
+use Illuminate\Support\Facades\Auth;
 
 class MeetingWebController extends Controller
 {
@@ -32,7 +34,7 @@ class MeetingWebController extends Controller
         // 3. AVAILABILITY LOGIC (ពិនិត្យបន្ទប់ទំនេរ)
         $availabilityFilter = function ($query) use ($check_in, $check_out) {
             $query->where('status', 'available')
-                ->whereDoesntHave('bookings', function ($b) use ($check_in, $check_out) {
+                ->whereDoesntHave('hotelbookings', function ($b) use ($check_in, $check_out) {
                     $b->whereIn('status', ['confirmed', 'pending'])
                         ->where(function ($overlap) use ($check_in, $check_out) {
                             $overlap->whereBetween('check_in', [$check_in, $check_out])
@@ -91,33 +93,71 @@ class MeetingWebController extends Controller
         ));
     }
 
+    // សម្រាប់ Meeting Hall
     public function meeting_detail($id)
     {
-        $roomType = RoomType::with([
-            'images',
-            'facilities',
-            'rooms.hotel',
-            'reviews.user'
-        ])
-            ->withCount([
-                'rooms as available_rooms_count' => function ($query) {
-                    $query->where('status', 'available');
-                }
-            ])
+        $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->findOrFail($id);
 
-        // related rooms
-        $relatedRooms = RoomType::with('images')
-            ->where('id', '!=', $id)
-            ->where('name', 'like', '%សាលប្រជុំ%')
-            ->take(4)
+        $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
+            ->where('id', '!=', $roomType->id)
+            ->where(function ($q) {
+                $q->where('name', 'like', '%សាល%')
+                    ->orWhere('name', 'like', '%Meeting%')
+                    ->orWhere('name', 'like', '%Hall%');
+            })
+            ->take(3)
             ->get();
 
-        return view('frontend.meeting_detail', compact(
-            'roomType',
-            'relatedRooms'
-        ));
+        return view('frontend.meeting_details', compact('roomType', 'similarRooms'));
+    }
+
+    // For 
+    // public function storeReview(Request $request)
+    // {
+    //     $request->validate([
+    //         'room_type_id' => 'required|exists:room_types,id',
+    //         'name' => 'required|string|max:255',
+    //         'rating' => 'required|integer|min:1|max:5',
+    //         'comment' => 'nullable|string',
+    //     ]);
+
+    //     Review::create([
+    //         'room_type_id' => $request->room_type_id,
+    //         'name' => $request->name,
+    //         'rating' => $request->rating,
+    //         'comment' => $request->comment,
+    //         'status' => 1 // ដាក់ឱ្យបង្ហាញភ្លាមៗ ឬដាក់ ០ បើចង់ឱ្យ Admin ពិនិត្យសិន
+    //     ]);
+
+    //     return back()->with('success', 'សូមអរគុណសម្រាប់ការវាយតម្លៃរបស់អ្នក!');
+    // }
+
+    public function storeReview(Request $request)
+    {
+        $request->validate([
+            'room_type_id' => 'required|exists:room_types,id',
+            'parent_id'    => 'nullable|exists:reviews,id', // បន្ថែមការ Validate parent_id
+            'name'         => 'required_if:user_id,null|string|max:255',
+            'rating'       => 'required_without:parent_id|integer|min:1|max:5', // បើជា Reply មិនបាច់មានផ្កាទេ
+            'comment'      => 'required|string',
+        ]);
+
+        $userId = Auth::check() ? Auth::id() : null;
+        $name = Auth::check() ? Auth::user()->name : $request->input('name', 'ភ្ញៀវមិនស្គាល់ឈ្មោះ');
+
+        Review::create([
+            'room_type_id' => $request->room_type_id,
+            'user_id'      => $userId,
+            'parent_id'    => $request->parent_id, // រក្សាទុក ID របស់ Comment មេ (បើមាន)
+            'name'         => $name,
+            'rating'       => $request->parent_id ? 0 : $request->rating, // បើជា Reply ដាក់ ០ ផ្កា
+            'comment'      => $request->comment,
+            'status'       => 1
+        ]);
+
+        return back()->with('success', 'បានផ្ញើការឆ្លើយតបដោយជោគជ័យ!');
     }
 }

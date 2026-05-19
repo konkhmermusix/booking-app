@@ -74,7 +74,8 @@ class CalendarController extends Controller
      */
     public function getEvents()
     {
-        $bookings = Booking::with('room')->get();
+        $bookings = Booking::with('room')
+            ->get();
 
         $events = $bookings->map(function ($booking) {
 

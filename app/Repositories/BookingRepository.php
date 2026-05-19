@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Models\Booking;
+use App\Models\HotelBooking;
 use Illuminate\Support\Str;
 
 class BookingRepository extends BaseRepository
 {
-    public function __construct(Booking $model)
+    public function __construct(HotelBooking $model)
     {
         parent::__construct($model);
     }

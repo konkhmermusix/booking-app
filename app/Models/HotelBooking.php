@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Booking extends Model
+class HotelBooking extends Model
 {
+
+    protected $table = 'hotel_bookings';
+
     // Mass assignable fields
+
     protected $fillable = [
         'user_id',
         'hotel_id',

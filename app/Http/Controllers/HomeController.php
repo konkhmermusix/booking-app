@@ -34,7 +34,7 @@ class HomeController extends Controller
 
         // overlap booking check
         if ($check_in && $check_out) {
-            $roomsQuery->whereDoesntHave('bookings', function ($q) use ($check_in, $check_out) {
+            $roomsQuery->whereDoesntHave('hotelbookings', function ($q) use ($check_in, $check_out) {
                 $q->whereIn('status', ['confirmed', 'pending'])
                     ->where(function ($b) use ($check_in, $check_out) {
 
@@ -136,50 +136,26 @@ class HomeController extends Controller
         ));
     }
 
-
-    // សម្រាប់បន្ទប់ស្នាក់នៅ (Stay Room)
-    public function room_detail($id)
+    public function promotion_detail($id)
     {
-        $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
-            ->withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->findOrFail($id);
+        // ទាញយកទិន្នន័យ Promotion ជាមួយទំនាក់ទំនងដែលពាក់ព័ន្ធ
+        $promotion = Promotion::with(['roomType.images', 'roomType.facilities'])->findOrFail($id);
 
-        $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
-            ->where('id', '!=', $roomType->id)
-            ->where('name', 'not like', '%សាល%') // ច្រោះយកតែបន្ទប់ស្នាក់នៅ
-            ->take(3)
-            ->get();
+        // ចាប់យក RoomType ចេញពី Promotion ងាយស្រួលហៅប្រើក្នុង Blade
+        $roomType = $promotion->roomType;
 
-        return view('frontend.room_details', compact('roomType', 'similarRooms'));
+        if (!$roomType) {
+            return redirect()->back()->with('error', 'មិនមានទិន្នន័យប្រភេទបន្ទប់សម្រាប់ប្រូម៉ូសិននេះទេ។');
+        }
+
+        return view('frontend.promotion_details', compact('promotion', 'roomType'));
     }
 
-    // សម្រាប់សាលប្រជុំ (Meeting Hall)
-    public function meeting_detail($id)
-    {
-        $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
-            ->withAvg('reviews', 'rating')
-            ->withCount('reviews')
-            ->findOrFail($id);
-
-        $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
-            ->where('id', '!=', $roomType->id)
-            ->where(function ($q) {
-                $q->where('name', 'like', '%សាល%')
-                    ->orWhere('name', 'like', '%Meeting%')
-                    ->orWhere('name', 'like', '%Hall%');
-            })
-            ->take(3)
-            ->get();
-
-        return view('frontend.meeting_details', compact('roomType', 'similarRooms'));
-    }
 
     public function show($id)
     {
         $hotel = Hotel::find($id);
 
-        // ទាញយករូបភាពពី RoomImage ដែលជារបស់ Hotel នេះមកធ្វើជា Slide
         $slides = RoomImage::whereHas('roomType', function ($query) use ($id) {
             $query->where('hotel_id', $id);
         })->get();
@@ -190,8 +166,10 @@ class HomeController extends Controller
 
     public function toursdetail($id)
     {
-        $tour = Tour::findOrFail($id);
+        $tour = Tour::where('status', 1)
+            ->findOrFail($id);
         $otherTours = Tour::where('id', '!=', $id)
+            ->where('status', 1)
             ->limit(10)
             ->get();
 

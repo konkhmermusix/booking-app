@@ -26,8 +26,6 @@
 
     <div class="bg-gray-50 dark:bg-[#0b1120] min-h-screen py-20">
         <div class="container mx-auto px-4">
-
-            {{-- HEADER SECTION --}}
             <div class="text-center mb-16">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4 font-['Kantumruy_Pro']">
                     សាលប្រជុំ <span class="text-blue-600">ភីអេនធី</span>
@@ -39,11 +37,9 @@
             </div>
 
             {{-- SEARCH BOX --}}
-            <section class="container mx-auto px-4 -mt-10 relative z-50">
+            <section class="container mx-auto px-4 -mt-10 relative z-10">
                 <form action="{{ route('frontend.meeting') }}" method="GET">
-                    <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                        {{-- START DATE --}}
+                    <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                         <div class="flex flex-col">
                             <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
                                 <i class="fas fa-calendar-alt text-blue-500 mr-1"></i> ថ្ងៃកម្មវិធី
@@ -52,31 +48,36 @@
                                 class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                         </div>
 
-                        {{-- GUESTS / CAPACITY --}}
                         <div class="flex flex-col">
                             <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
                                 <i class="fas fa-users text-blue-500 mr-1"></i> ចំណុះមនុស្ស
                             </label>
-                            <select name="guests" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none h-[52px]">
-                                <option value="">គ្រប់ចំនួន</option>
-                                <option value="20" {{ request('guests') == '20' ? 'selected' : '' }}>២០ - ៥០ នាក់</option>
-                                <option value="100" {{ request('guests') == '100' ? 'selected' : '' }}>១០០ នាក់ឡើង</option>
-                                <option value="300" {{ request('guests') == '300' ? 'selected' : '' }}>៣០០ នាក់ឡើង</option>
-                            </select>
+                            <div class="relative group">
+                                <select name="guests" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
+                                    <option value="">គ្រប់ចំនួន</option>
+                                    <option value="20" {{ request('guests') == '20' ? 'selected' : '' }}>២០ - ៥០ នាក់</option>
+                                    <option value="100" {{ request('guests') == '100' ? 'selected' : '' }}>១០០ នាក់ឡើង</option>
+                                    <option value="300" {{ request('guests') == '300' ? 'selected' : '' }}>៣០០ នាក់ឡើង</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+
+                            </div>
                         </div>
 
-                        {{-- SORT --}}
                         <div class="flex flex-col">
                             <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
                                 <i class="fas fa-sort text-blue-500 mr-1"></i> រៀបតាមតម្លៃ
                             </label>
-                            <select name="sort" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none h-[52px]">
-                                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>តម្លៃ ទាប → ខ្ពស់</option>
-                                <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>តម្លៃ ខ្ពស់ → ទាប</option>
-                            </select>
+                            <div class="relative group">
+                                <select name="sort" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
+                                    <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>តម្លៃ ទាប → ខ្ពស់</option>
+                                    <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>តម្លៃ ខ្ពស់ → ទាប</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+
+                            </div>
                         </div>
 
-                        {{-- BUTTON --}}
                         <div class="flex items-end">
                             <button type="submit"
                                 class="w-full bg-blue-900 dark:bg-blue-800 text-white font-bold rounded-xl hover:brightness-110 shadow-lg transition-all active:scale-95 h-[52px] flex items-center justify-center gap-2">
@@ -87,10 +88,7 @@
                 </form>
             </section>
 
-            {{-- Container មេ: ប្រើ flex-col សម្រាប់ Mobile និង md:flex-row សម្រាប់ Tablet ឡើងទៅ --}}
             <div class="container mx-auto px-4 flex flex-col md:flex-row gap-6 lg:gap-10 py-6">
-
-                {{-- LEFT SIDE --}}
                 <aside class="w-full md:w-[25%] lg:w-1/5 md:sticky md:top-[80px] self-start z-20">
                     <section class="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
                         <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center">
@@ -98,8 +96,6 @@
                         </h3>
 
                         <div class="flex flex-col gap-5">
-
-                            {{-- SEARCH --}}
                             <div class="relative">
                                 <input type="text" placeholder="ស្វែងរកសាលប្រជុំ" @input.debounce.500ms="let url = new URL(currentUrl); url.searchParams.set('search',$event.target.value); url.searchParams.set('page',1); fetchRooms(url.toString());"
                                     class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm focus:ring-2 ring-blue-500 outline-none transition">
@@ -117,7 +113,6 @@
                     </section>
                 </aside>
 
-                {{-- RIGHT SIDE MEETING LIST --}}
                 <main class="w-full md:flex-1 relative">
                     <div class="flex items-center justify-between mb-6 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-800">
                         <div class="hidden sm:block">
@@ -142,7 +137,6 @@
                                 </div>
                             </div>
 
-                            {{-- RESET BUTTON --}}
                             <button
                                 @click="fetchMeetings('{{ route('frontend.meeting') }}')"
                                 title="Reset Filters"
@@ -153,7 +147,6 @@
                         </div>
                     </div>
 
-                    {{-- LOADING OVERLAY --}}
                     <div class="relative min-h-[400px]">
                         <div x-show="loading"
                             x-transition:enter="transition opacity-0"
@@ -167,7 +160,6 @@
                             </div>
                         </div>
 
-                        {{-- ROOM LIST CONTAINER --}}
                         <div id="room-list-container">
                             @include('frontend.partials.meeting_list')
                         </div>
@@ -176,36 +168,8 @@
             </div>
         </div>
 
-        {{-- BOOKING MODAL (ប្រើសម្រាប់កក់សាល) --}}
         @include('frontend.partials.booking_modal')
     </div>
 </div>
 
-{{-- JAVASCRIPT លុបចោលខ្លះដើម្បីឱ្យស្អាត --}}
-<script>
-    function openBookingModal(id, name) {
-        document.getElementById('room_type_id').value = id;
-        document.getElementById('modal_room_name').value = name;
-        const modal = document.getElementById('bookingModal');
-        const container = document.getElementById('modalContainer');
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        setTimeout(() => {
-            container.classList.remove('scale-95', 'opacity-0');
-            container.classList.add('scale-100', 'opacity-100');
-        }, 10);
-    }
-
-    function closeBookingModal() {
-        const modal = document.getElementById('bookingModal');
-        const container = document.getElementById('modalContainer');
-        container.classList.remove('scale-100', 'opacity-100');
-        container.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }, 300);
-    }
-</script>
 @endsection

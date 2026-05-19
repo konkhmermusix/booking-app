@@ -6,7 +6,8 @@ use App\Models\RoomType;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Room;
-use App\Models\Booking;
+use App\Models\HotelBooking;
+use App\Models\Review;
 
 class RoomWebController extends Controller
 {
@@ -29,7 +30,7 @@ class RoomWebController extends Controller
         // 3. AVAILABILITY LOGIC (REUSABLE)
         $availabilityFilter = function ($query) use ($check_in, $check_out) {
             $query->where('status', 'available')
-                ->whereDoesntHave('bookings', function ($b) use ($check_in, $check_out) {
+                ->whereDoesntHave('hotelbookings', function ($b) use ($check_in, $check_out) {
 
                     $b->whereIn('status', ['confirmed', 'pending'])
                         ->where(function ($overlap) use ($check_in, $check_out) {
@@ -98,61 +99,48 @@ class RoomWebController extends Controller
         ));
     }
 
-
-    public function storeBooking(Request $request)
+    // សម្រាប់ Stay Room
+    public function room_detail($id)
     {
-        // 1. Validation
+        $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->findOrFail($id);
+
+        $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
+            ->where('id', '!=', $roomType->id)
+            ->where('name', 'not like', '%សាល%')
+            ->take(3)
+            ->get();
+
+        return view('frontend.room_details', compact('roomType', 'similarRooms'));
+    }
+
+    // For 
+    public function storeReview(Request $request)
+    {
         $request->validate([
             'room_type_id' => 'required|exists:room_types,id',
-            'check_in' => 'required|date|after_or_equal:today',
-            'check_out' => 'required|date|after:check_in',
-            'guests' => 'required|integer|min:1',
+            'name' => 'required|string|max:255',
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string',
         ]);
 
-        try {
-            // 2. ស្វែងរកបន្ទប់ដែលទំនេរ (Available) សម្រាប់ប្រភេទដែលគេរើស
-            $room = Room::where('room_type_id', $request->room_type_id)
-                ->where('status', 'available')
-                ->whereDoesntHave('bookings', function ($query) use ($request) {
-                    $query->where(function ($q) use ($request) {
-                        $q->whereBetween('check_in', [$request->check_in, $request->check_out])
-                            ->orWhereBetween('check_out', [$request->check_in, $request->check_out]);
-                    })->whereIn('status', ['confirmed', 'pending']);
-                })->first();
+        Review::create([
+            'room_type_id' => $request->room_type_id,
+            'name' => $request->name,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+            'status' => 1 // ដាក់ឱ្យបង្ហាញភ្លាមៗ ឬដាក់ ០ បើចង់ឱ្យ Admin ពិនិត្យសិន
+        ]);
 
-            if (!$room) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'សូមអភ័យទោស បន្ទប់ប្រភេទនេះត្រូវបានគេកក់អស់ហើយ សម្រាប់កាលបរិច្ឆេទនេះ!'
-                ], 422);
-            }
-
-            // 3. បង្កើតទិន្នន័យកក់
-            Booking::create([
-                'user_id' => auth()->id(),
-                'room_id' => $room->id,
-                'check_in' => $request->check_in,
-                'check_out' => $request->check_out,
-                'guests' => $request->guests,
-                'status' => 'pending',
-                'total_price' => 0,
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'ការកក់របស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ! យើងនឹងទាក់ទងទៅអ្នកឆាប់ៗ។'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage()
-            ], 500);
-        }
+        return back()->with('success', 'សូមអរគុណសម្រាប់ការវាយតម្លៃរបស់អ្នក!');
     }
 
-    public function show($id)
-    {
-        $room = Room::with('roomType.facilities')->findOrFail($id);
-        return view('frontend.details', compact('room'));
-    }
+
+    // public function show($id)
+    // {
+    //     $room = Room::with('roomType.facilities')->findOrFail($id);
+    //     return view('frontend.details', compact('room'));
+    // }
 }

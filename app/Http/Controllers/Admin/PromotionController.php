@@ -48,13 +48,13 @@ class PromotionController extends Controller
             // ២. បញ្ជូនទិន្នន័យទៅ Service ដើម្បីបង្កើត Promotion
             $this->service->storePromotion($data);
 
-            return response()->json([
+            return back()->with([
                 'status' => 'success',
                 'message' => 'បង្កើតការបញ្ចុះតម្លៃជោគជ័យ'
             ], 200);
         } catch (\Exception $e) {
             // ៣. បន្ថែម Catch ដើម្បីដឹងថា Error អ្វីឱ្យពិតប្រាកដ (ឧទាហរណ៍៖ SQL Error)
-            return response()->json([
+            return back()->with([
                 'status' => 'error',
                 'message' => 'មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage()
             ], 500);
@@ -64,12 +64,12 @@ class PromotionController extends Controller
     public function update(PromotionRequest $request, $id)
     {
         $this->service->updatePromotion($id, $request->validated());
-        return response()->json(['status' => 'success', 'message' => 'កែប្រែជោគជ័យ']);
+        return back()->with(['status' => 'success', 'message' => 'កែប្រែជោគជ័យ']);
     }
 
     public function destroy($id)
     {
         $this->service->deletePromotion($id);
-        return response()->json(['status' => 'success', 'message' => 'លុបជោគជ័យ']);
+        return back()->with(['status' => 'success', 'message' => 'លុបជោគជ័យ']);
     }
 }

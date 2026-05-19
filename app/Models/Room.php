@@ -11,9 +11,9 @@ class Room extends Model
     protected $fillable = ['hotel_id', 'room_type_id', 'room_number', 'floor', 'status'];
 
     protected $casts = [
-        'gallery' => 'array', // វានឹងបំប្លែង JSON ទៅ Array ឱ្យយើងអូតូ
+        'gallery' => 'array',
     ];
-    
+
     public function hotel(): BelongsTo
     {
         return $this->belongsTo(Hotel::class);
@@ -24,9 +24,13 @@ class Room extends Model
         return $this->belongsTo(RoomType::class, 'room_type_id');
     }
 
-    public function bookings(): HasMany
+    public function hotelBookings(): HasMany
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(HotelBooking::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class)->where('status', 1)->latest();
+    }
 }

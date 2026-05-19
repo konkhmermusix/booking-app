@@ -95,18 +95,25 @@
                             </div>
                             @endforeach
                         </div>
+                        <div class="mt-5">
+                            <a href="{{ $tour->google_map_link }}" target="_blank"
+                                class="flex items-center justify-center w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm">
+                                <span>មើលលើផែនទី</span>
+                            </a>
+
+                        </div>
                     </div>
                     @endif
+
+
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
 <!-- Image Modal -->
 <div id="imageModal" class="fixed inset-0 z-[999] hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
-    <!-- ប៊ូតុងបិទ -->
     <button onclick="closeImageModal()" class="absolute top-5 right-5 text-white text-3xl hover:text-blue-500 transition-colors">
         <i class="fas fa-times"></i>
     </button>

@@ -15,9 +15,9 @@ class BookingDetail extends Model
         'price_at_booking',
     ];
 
-    public function booking(): BelongsTo
+    public function hotelBooking(): BelongsTo
     {
-        return $this->belongsTo(Booking::class);
+        return $this->belongsTo(HotelBooking::class);
     }
 
     public function room(): BelongsTo

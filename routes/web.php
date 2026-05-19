@@ -22,6 +22,7 @@ use App\Http\Controllers\BookingWebController;
 use App\Http\Controllers\ReviewWebController;
 use App\Http\Controllers\GalleryWebController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ChatWebController;
 
 
@@ -76,6 +77,15 @@ Route::post('/logout', function () {
 // Home Page
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/chat/send', [ChatWebController::class, 'store'])->middleware('auth');
+Route::get('/rooms', [RoomWebController::class, 'index'])->name('frontend.rooms');
+Route::get('/roomdetails/{id}', [RoomWebController::class, 'room_detail'])->name('frontend.room_details');
+Route::post('/roomdetails/{id}', [RoomWebController::class, 'room_detail'])->name('frontend.room_details.store');
+
+Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.meeting');
+Route::get('/meetingdetails/{id}', [MeetingWebController::class, 'meeting_detail'])->name('frontend.meeting_details');
+Route::post('/meetingdetails/{id}', [MeetingWebController::class, 'storeReview'])->name('frontend.meeting_details.store');
+
+
 Route::get('/facilities', [FacilitiWebController::class, 'index'])->name('frontend.facilities');
 Route::get('/about', [AboutWebController::class, 'index'])->name('frontend.about');
 Route::get('/contact', [ContactWebController::class, 'index'])->name('frontend.contact');
@@ -84,19 +94,22 @@ Route::post('/contact', [ContactWebController::class, 'store'])->name('frontend.
 
 // Hotels & Rooms
 // Route::get('/details', [HotelFrontendController::class, 'index'])->name('frontend.hotels.index');
-Route::get('/roomdetails/{id}', [HomeController::class, 'room_detail'])->name('frontend.room_details'); // Room details
-Route::get('/meetingdetails/{id}', [HomeController::class, 'meeting_detail'])->name('frontend.meeting_details'); // Meeting details
-Route::get('/rooms', [RoomWebController::class, 'index'])->name('frontend.rooms');
-Route::get('/room-type/{id}', [HomeController::class, 'roomTypeDetails'])->name('frontend.room_type'); // Room type details
+// Route::get('/meetingdetails/{id}', [HomeController::class, 'meeting_detail'])->name('frontend.meeting_details');
+
+Route::get('/promotions/{id}', [HomeController::class, 'promotion_detail'])->name('frontend.promotion_details');
+Route::get('/room-type/{id}', [HomeController::class, 'roomTypeDetails'])->name('frontend.room_type');
 Route::get('/gallery', [GalleryWebController::class, 'index'])->name('frontend.gallery');
 
 // Meeting Page
-Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.meeting');
-Route::get('/meeting/detail/{id}', [MeetingWebController::class, 'meeting_detail'])->name('frontend.meeting_detail');
-
-
 Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart-count', [CartController::class, 'getCartCount'])->name('cart.count');
+Route::post('/cart/add/hotel', [CartController::class, 'addHotel'])->name('cart.add.hotel');
+Route::post('/cart/add/meeting', [CartController::class, 'addMeeting'])->name('cart.add.meeting');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::delete('/cart/remove/{key}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+
 
 // Booking Routes
 Route::get('/booking', [BookingWebController::class, 'index'])->name('booking.index');

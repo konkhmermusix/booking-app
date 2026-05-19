@@ -25,7 +25,7 @@
     }
 }" @popstate.window="location.reload()">
 
-    <div class="bg-gray-50 dark:bg-[#0b1120] min-h-screen py-20">
+    <div class="bg-gray-50 dark:bg-[#0b1120] min-h-screen py-10">
         <div class="container mx-auto px-4">
 
             <div class="text-center mb-16">
@@ -38,12 +38,10 @@
                 <div class="h-1.5 w-24 bg-blue-600 mx-auto mt-6 rounded-full"></div>
             </div>
 
-            <!-- search box -->
-            <section class="container mx-auto px-4 -mt-10 relative z-50">
+            {{-- search box  --}}
+            <section class="container mx-auto px-4 -mt-10 relative z-10">
                 <form action="{{ route('frontend.rooms') }}" method="GET">
-                    <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 font-['Kantumruy_Pro']">
-
-                        {{-- CHECK IN --}}
+                    <div class="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                         <div class="flex flex-col">
                             <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
                                 <i class="fas fa-calendar-alt text-blue-500 mr-1"></i> ថ្ងៃចូល
@@ -52,7 +50,6 @@
                                 class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                         </div>
 
-                        {{-- CHECK OUT --}}
                         <div class="flex flex-col">
                             <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
                                 <i class="fas fa-calendar-check text-blue-500 mr-1"></i> ថ្ងៃចេញ
@@ -61,40 +58,40 @@
                                 class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                         </div>
 
-                        {{-- ROOM TYPE --}}
                         <div class="flex flex-col">
                             <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
                                 <i class="fas fa-bed text-blue-500 mr-1"></i> ប្រភេទបន្ទប់
                             </label>
-                            <select name="type" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
-                                <option value="">គ្រប់ប្រភេទទាំងអស់</option>
-                                @foreach($categories as $category)
-                                <option value="{{ $category->name }}" {{ request('type') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
-                                @endforeach
-                            </select>
+                            <div class="relative group">
+                                <select name="type" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
+                                    <option value="">គ្រប់ប្រភេទទាំងអស់</option>
+                                    @foreach($categories as $category)
+                                    <option value="{{ $category->name }}" {{ request('type') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                            </div>
                         </div>
-
-                        {{-- DURATION --}}
                         <div class="flex flex-col relative">
                             <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
                                 <i class="fas fa-clock text-blue-500 mr-1"></i> រយៈពេល
                             </label>
-
-                            <select id="duration"
-                                class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
-                                <option value="">ជ្រើសរយៈពេល</option>
-                                <option value="1">1 ថ្ងៃ</option>
-                                <option value="2">2 ថ្ងៃ</option>
-                                <option value="3">3 ថ្ងៃ</option>
-                                <option value="5">5 ថ្ងៃ</option>
-                                <option value="7">1 សប្ដាហ៍</option>
-                                <option value="14">2 សប្ដាហ៍</option>
-                                <option value="21">3 សប្ដាហ៍</option>
-                                <option value="30">1 ខែ</option>
-                            </select>
+                            <div class="relative group">
+                                <select id="duration" class="w-full bg-gray-50 dark:bg-gray-800 border-none px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
+                                    <option value="">ជ្រើសរយៈពេល</option>
+                                    <option value="1">1 ថ្ងៃ</option>
+                                    <option value="2">2 ថ្ងៃ</option>
+                                    <option value="3">3 ថ្ងៃ</option>
+                                    <option value="5">5 ថ្ងៃ</option>
+                                    <option value="7">1 សប្ដាហ៍</option>
+                                    <option value="14">2 សប្ដាហ៍</option>
+                                    <option value="21">3 សប្ដាហ៍</option>
+                                    <option value="30">1 ខែ</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                            </div>
                         </div>
 
-                        {{-- BUTTON --}}
                         <div class="flex items-end">
                             <button type="submit"
                                 class="w-full bg-blue-900 dark:bg-blue-800 text-white font-bold rounded-xl hover:brightness-110 shadow-lg transition-all active:scale-95 h-[52px] flex items-center justify-center gap-2">
@@ -105,11 +102,7 @@
                 </form>
             </section>
 
-
-            {{-- Container មេ: ប្រើ flex-col សម្រាប់ Mobile និង md:flex-row សម្រាប់ Tablet ឡើងទៅ --}}
             <div class="container mx-auto px-4 flex flex-col md:flex-row gap-6 lg:gap-10 py-6">
-
-                {{-- LEFT SIDE --}}
                 <aside class="w-full md:w-[25%] lg:w-1/5 md:sticky md:top-[80px] self-start z-20">
                     <section class="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
                         <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center">
@@ -117,21 +110,16 @@
                         </h3>
 
                         <div class="flex flex-col gap-5">
-
-                            {{-- SEARCH --}}
                             <div class="relative">
                                 <input type="text" placeholder="ស្វែងរកបន្ទប់" @input.debounce.500ms="let url = new URL(currentUrl); url.searchParams.set('search',$event.target.value); url.searchParams.set('page',1); fetchRooms(url.toString());"
                                     class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm focus:ring-2 ring-blue-500 outline-none transition">
                                 <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                             </div>
 
-                            {{-- CATEGORY: បង្ហាញជា Scroll ផ្ដេកលើ Mobile ដើម្បីកុំឱ្យវែងពេក --}}
                             <div>
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 block px-1">ប្រភេទបន្ទប់</span>
 
                                 <div class="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-3 md:pb-0 scrollbar-hide">
-
-                                    {{-- ប៊ូតុង "ទាំងអស់" (Active ពេលគ្មាន Parameter 'type' ក្នុង URL) --}}
                                     <a href="{{ route('frontend.rooms', request()->except(['type','page'])) }}"
                                         @click.prevent="fetchRooms($el.href)"
                                         :class="!currentUrl.includes('type=')  ? 'bg-blue-600 text-white shadow-md ring-2 ring-offset-2 dark:ring-offset-gray-900' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'"
@@ -145,7 +133,6 @@
                                     request()->query(),
                                     ['type' => $category->name, 'page' => 1]
                                     ));
-                                    // បង្កើត String សម្រាប់ Check Active (Encoded ទុកជាមុនដើម្បីសុវត្ថិភាព)
                                     $activeCheck = 'type=' . urlencode($category->name);
                                     @endphp
 
@@ -160,7 +147,6 @@
                                 </div>
                             </div>
 
-                            {{-- GUEST & SORT --}}
                             <div class="space-y-3">
                                 <label class="text-xs font-bold text-gray-400 uppercase tracking-wider block">កំណត់តាម</label>
                                 <div class="grid grid-cols-2 md:grid-cols-1 gap-3">
@@ -208,7 +194,6 @@
                     </section>
                 </aside>
 
-                {{-- RIGHT SIDE: ROOM LIST --}}
                 <main class="w-full md:flex-1 relative">
                     <div class="flex items-center justify-between mb-6 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-800">
                         <div class="hidden sm:block">
@@ -233,18 +218,15 @@
                                 </div>
                             </div>
 
-                            {{-- RESET BUTTON --}}
                             <button
                                 @click="fetchRooms('{{ route('frontend.rooms') }}')"
                                 title="Reset Filters"
                                 class="px-3 py-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 text-sm font-medium transition-all shadow-sm flex items-center">
-                                <!-- <i class="fas fa-undo-alt sm:mr-2"></i> -->
                                 <span class="hidden sm:inline">សម្អាត</span>
                             </button>
                         </div>
                     </div>
 
-                    {{-- LOADING OVERLAY --}}
                     <div class="relative min-h-[400px]">
                         <div x-show="loading"
                             x-transition:enter="transition opacity-0"
@@ -258,7 +240,6 @@
                             </div>
                         </div>
 
-                        {{-- ROOM LIST CONTAINER --}}
                         <div id="room-list-container">
                             @include('frontend.partials.room_list')
                         </div>
@@ -267,35 +248,13 @@
             </div>
         </div>
 
-        {{-- BOOKING MODAL --}}
         @include('frontend.partials.booking_modal')
     </div>
 </div>
 
 <script>
-    const modal = document.getElementById('bookingModal');
     const modalContainer = document.getElementById('modalContainer');
     const bookingForm = document.getElementById('bookingForm');
-
-    function openBookingModal(id, name) {
-        document.getElementById('room_type_id').value = id;
-        document.getElementById('modal_room_name').value = name;
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        setTimeout(() => {
-            modalContainer.classList.remove('scale-95', 'opacity-0');
-            modalContainer.classList.add('scale-100', 'opacity-100');
-        }, 10);
-    }
-
-    function closeBookingModal() {
-        modalContainer.classList.remove('scale-100', 'opacity-100');
-        modalContainer.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }, 300);
-    }
 
     bookingForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -306,37 +265,7 @@
                 Swal.showLoading()
             }
         });
-
-        fetch("{{ route('frontend.bookings.store') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Accept": "application/json"
-                },
-                body: new FormData(this)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'ជោគជ័យ!',
-                        text: data.message
-                    });
-                    closeBookingModal();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'បរាជ័យ!',
-                        text: data.message
-                    });
-                }
-            })
-            .catch(() => Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'មានបញ្ហាបច្ចេកទេស!'
-            }));
-    });
+    })
 </script>
+
 @endsection
