@@ -8,8 +8,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>@yield('title', 'P&T Palace Hotel')</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/P&t Palace Hotel.png') }}">
+    <title>@yield('title') | សណ្ឋាគារ ភីអេនធី ផាលេស</title>
 
     <!-- CSS Linkings -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -18,16 +18,10 @@
     <link rel="stylesheet" href="{{ asset('css/header_style.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/font.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/spotlight.js@0.7.8/dist/spotlight.bundle.js"></script>
 
     <!-- Core Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
 
     <style>
         body {
@@ -40,19 +34,28 @@
     </style>
 </head>
 
-<body class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden antialiased">
-    <div x-data="cartSystem()" x-init="getCount()">
-
+<body x-data="cartSystem()" class="bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden antialiased">
+    <div>
         {{-- TOP INFORMATION BAR --}}
-        <header class="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800 hidden md:block transition-colors">
-            <div class="container mx-auto px-6 py-2 flex justify-between items-center text-[11px] font-medium text-gray-500 dark:text-gray-400">
-                <div class="flex items-center gap-6">
-                    <span class="flex items-center gap-2"><i class="fas fa-phone text-blue-500"></i> +855 964 301 974</span>
-                    <span class="flex items-center gap-2"><i class="fas fa-envelope text-blue-500"></i> info@pntpalace.com</span>
+        <header class="bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-800 transition-colors">
+            <div class="container mx-auto px-4 sm:px-6 py-2.5 md:py-2 flex flex-col md:flex-row justify-between items-center text-[11px] font-medium text-gray-500 dark:text-gray-400 gap-2 md:gap-0 text-center md:text-left">
+
+                <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+                    <span class="flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-phone text-blue-500"></i> +855 964 301 974
+                    </span>
+                    <span class="flex items-center gap-2 whitespace-nowrap">
+                        <i class="fas fa-envelope text-blue-500"></i> info@pntpalace.com
+                    </span>
                 </div>
-                <div class="flex items-center gap-4">
-                    <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-blue-500"></i> ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្ដត្បូងឃ្មុំ</span>
+
+                <div class="flex items-center justify-center gap-4 max-w-full md:max-w-xl text-center md:text-right leading-relaxed">
+                    <span class="flex items-center justify-center gap-2">
+                        <i class="fas fa-map-marker-alt text-blue-500 flex-shrink-0"></i>
+                        <span>ផ្លូវ50ម៉ែត្រ ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្ដត្បូងឃ្មុំ</span>
+                    </span>
                 </div>
+
             </div>
         </header>
 
@@ -69,7 +72,7 @@
                     <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center text-white font-bold group-hover:bg-yellow-700 transition">
                         <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="Logo">
                     </div>
-                    <span class="hidden sm:inline">ភីអេនធី</span>
+                    <span class="hidden sm:inline">ភីអេនធី ផាលេស</span>
                 </a>
 
                 <ul class="hidden lg:flex space-x-7 font-medium">
@@ -82,16 +85,25 @@
                 </ul>
 
                 <div class="flex items-center space-x-2 md:space-x-4">
-                    <button @click="darkMode = !darkMode; localStorage.setItem('theme', darkMode ? 'dark' : 'light')"
-                        class="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 w-10 h-10 flex items-center justify-center transition hover:ring-2 ring-blue-400/50 text-blue-600 dark:text-yellow-400">
-                        <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+
+                    <button
+                        @click="darkMode = !darkMode; 
+                        localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+                        darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')"
+                        class="px-2 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 h-10 flex items-center justify-center transition hover:ring-2 ring-blue-400/50 text-blue-600 dark:text-yellow-400 font-medium text-sm shadow-sm w-15"
+                        x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }">
+
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-700 dark:text-gray-200" x-text="darkMode ? '<i class='fa-regular fa-sun'></i>' : '<i class='fa-regular fa-moon'"></span>
+                        </div>
                     </button>
 
+                    <!-- ២. ផ្នែកគណនី (Auth) -->
                     <div class="hidden xl:flex items-center gap-4 border-l pl-4 dark:border-gray-700">
                         @auth
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" @click.away="open = false" class="flex items-center gap-3 focus:outline-none group">
-                                <div class="text-right hidden sm:block">
+                                <div class="text-right sm:block">
                                     <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase">គណនី</p>
                                     <p class="text-sm font-bold dark:text-white group-hover:text-blue-600 transition">{{ Auth::user()->name }}</p>
                                 </div>
@@ -106,12 +118,13 @@
                                 </div>
                             </button>
 
+                            <!-- Dropdown គណនី -->
                             <div x-show="open" x-cloak x-transition class="absolute right-0 mt-3 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 py-2 z-50">
                                 @if(Auth::user()->role == 'admin' || Auth::user()->role == 'staff')
                                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700"><i class="fas fa-chart-line text-blue-500"></i>ផ្ទាំងគ្រប់គ្រង</a>
                                 @endif
-                                <a href="{{ route('booking.index') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700"><i class="fas fa-calendar-check text-blue-500"></i>ការកក់របស់ខ្ញុំ</a>
-                                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 border-b dark:border-gray-700"><i class="fas fa-user-cog text-blue-500"></i>ប្រវត្ថិរូប</a>
+                                <a href="{{ route('mybookings') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700"><i class="fas fa-calendar-check text-blue-500"></i>ការកក់របស់ខ្ញុំ</a>
+                                <a href="{{ route('setting.edit') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 border-b dark:border-gray-700"><i class="fas fa-user-cog text-blue-500"></i>ការកំណត់</a>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition mt-1">
@@ -126,44 +139,20 @@
                         @endauth
                     </div>
 
-                    <div class="relative" x-data="{ cartOpen: false }">
-                        <button @click="cartOpen = !cartOpen" class="relative p-2 text-gray-700 dark:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800">
-                            <i class="fas fa-shopping-cart text-xl"></i>
-                            <span x-show="count > 0" x-text="count" class="absolute top-0 right-0 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full"></span>
-                        </button>
-
-                        <div x-show="cartOpen" @click.away="cartOpen = false" x-cloak x-transition
-                            class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden z-50 border border-gray-100 dark:border-gray-700">
-                            <div class="p-4 border-b dark:border-gray-700">
-                                <h5 class="font-bold">បន្ទប់ដែលបានជ្រើសរើស</h5>
-                            </div>
-                            <div class="max-h-60 overflow-y-auto">
-                                <template x-if="cartItems.length === 0">
-                                    <div class="p-4 text-center text-gray-500 text-sm">មិនទាន់មានទិន្នន័យ</div>
-                                </template>
-                                <template x-for="item in cartItems" :key="item.id">
-                                    <div class="p-3 flex items-center gap-3 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                        <img :src="'/storage/' + item.image" class="w-12 h-12 rounded-lg object-cover">
-                                        <div class="flex-1">
-                                            <p x-text="item.name" class="text-sm font-bold line-clamp-1"></p>
-                                            <p x-text="'$' + item.price" class="text-xs text-blue-600 font-semibold"></p>
-                                        </div>
-                                        <button @click="removeFromCart(item.id)" class="text-red-400 hover:text-red-600">
-                                            <i class="fas fa-trash-alt text-xs"></i>
-                                        </button>
-                                    </div>
-                                </template>
-                            </div>
-                            <div class="p-4 bg-gray-50 dark:bg-gray-900/50">
-                                <a href="{{ route('cart.index') }}" class="block text-center bg-blue-600 text-white py-2 rounded-xl text-sm font-bold hover:bg-blue-700 transition">ទៅកាន់ទំព័រកន្ដ្រក</a>
-                            </div>
-                        </div>
+                    <div class="relative">
+                        <a href="{{ route('cart.index') }}"
+                            class="px-2 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 h-10 flex items-center justify-center transition hover:ring-2 ring-blue-400/50 text-blue-600 dark:text-yellow-400 font-medium text-sm shadow-sm w-15">
+                            បញ្ជីកក់
+                        </a>
                     </div>
 
-                    <button @click="mobileMenuOpen = true"
-                        class="p-2 text-2xl text-gray-700 dark:text-white rounded-xl bg-gray-100 dark:bg-gray-800 w-10 h-10 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+                    <!-- ៤. ប៊ូតុង Mobile Menu -->
+                    <div class="inline-block lg:hidden">
+                        <button @click="mobileMenuOpen = true"
+                            class="p-2 text-2xl text-gray-700 dark:text-white rounded-xl bg-gray-100 dark:bg-gray-800 w-10 h-10 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -172,7 +161,6 @@
         <div x-show="mobileMenuOpen" class="fixed inset-0 z-100 overflow-hidden" x-cloak>
             <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" x-show="mobileMenuOpen" x-transition:enter="ease-in-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in-out duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="mobileMenuOpen = false"></div>
             <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
-                <!-- Main Mobile Drawer Container -->
                 <div class="w-screen max-w-md bg-white dark:bg-gray-950 shadow-2xl flex flex-col h-screen transition-transform"
                     x-data="{ showConfirm: false }" x-show="mobileMenuOpen" x-transition:enter="transform transition ease-in-out duration-300" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transform transition ease-in-out duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
 
@@ -263,11 +251,11 @@
                                     <i class="fas fa-chart-line text-gray-400 w-5"></i><span>ផ្ទាំងគ្រប់គ្រង</span>
                                 </a>
                                 @endif
-                                <a href="{{ route('booking.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">
+                                <a href="{{ route('mybookings') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">
                                     <i class="fas fa-calendar-check text-gray-400 w-5"></i><span>ការកក់របស់ខ្ញុំ</span>
                                 </a>
-                                <a href="{{ route('profile.edit') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">
-                                    <i class="fas fa-user-cog text-gray-400 w-5"></i><span>ប្រវត្តិរូប</span>
+                                <a href="{{ route('setting.edit') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">
+                                    <i class="fas fa-user-cog text-gray-400 w-5"></i><span>ការកំណត់</span>
                                 </a>
                             </div>
                             @else
@@ -340,7 +328,7 @@
                 <div>
                     <h4 class="text-md font-bold mb-4 text-gray-800 dark:text-white uppercase tracking-wider">ទំនាក់ទំនង</h4>
                     <ul class="space-y-3 text-gray-500 dark:text-gray-400 text-sm">
-                        <li class="flex items-start gap-3"><i class="fas fa-map-marker-alt text-blue-500 mt-1"></i><span>ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្ដត្បូងឃ្មុំ</span></li>
+                        <li class="flex items-start gap-3"><i class="fas fa-map-marker-alt text-blue-500 mt-1"></i><span>ផ្លូវ50ម៉ែត្រ ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្ដត្បូងឃ្មុំ</span></li>
                         <li class="flex items-center gap-3"><i class="fas fa-phone text-blue-500"></i><span>+855 964 301 974</span></li>
                     </ul>
                 </div>
@@ -412,7 +400,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-100 dark:border-gray-900 mt-12 pt-8 text-center text-xs text-gray-400">
-                &copy; 2026 សណ្ឋាគារ ភីអេនធី។ រក្សាសិទ្ធិគ្រប់យ៉ាង។
+                &copy; {{ date('Y') }} សណ្ឋាគារ ភីអេនធី។ រក្សាសិទ្ធិគ្រប់យ៉ាង។
             </div>
         </footer>
 
@@ -503,42 +491,28 @@
     <script src="{{ asset('js/slide.js') }}"></script>
     <script src="{{ asset('js/date_for_select_search.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- For Chat and Scroll UI Actions --}}
+
     <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
         window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         let token = document.head.querySelector('meta[name="csrf-token"]');
         if (token) {
             window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const scrollTopBtn = document.getElementById("scrollTopBtn");
-            let lastScrollTop = 0;
-
-            window.addEventListener("scroll", function() {
-                let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-                if (currentScroll > 200) {
-
-                    if (currentScroll < lastScrollTop) {
-                        scrollTopBtn.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
-                        scrollTopBtn.classList.add("translate-y-0", "opacity-100");
-                    } else {
-                        scrollTopBtn.classList.remove("translate-y-0", "opacity-100");
-                        scrollTopBtn.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
-                    }
-
-                } else {
-                    scrollTopBtn.classList.remove("translate-y-0", "opacity-100");
-                    scrollTopBtn.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
-                }
-
-                lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
-            }, {
-                passive: true
-            });
-        });
     </script>
+
+
 </body>
 
 </html>

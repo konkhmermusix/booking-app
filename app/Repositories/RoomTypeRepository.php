@@ -36,7 +36,7 @@ class RoomTypeRepository extends BaseRepository
         }
 
         return $query->latest()
-            ->paginate($filters['per_page'] ?? 8)
+            ->paginate($filters['per_page'] ?? 4)
             ->withQueryString();
     }
 

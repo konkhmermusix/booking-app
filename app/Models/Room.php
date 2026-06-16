@@ -29,6 +29,11 @@ class Room extends Model
         return $this->hasMany(HotelBooking::class);
     }
 
+    public function meetingBookings():HasMany
+    {
+        return $this->hasMany(MeetingBooking::class, 'meeting_room_id');
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class)->where('status', 1)->latest();

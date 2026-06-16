@@ -2,13 +2,13 @@
 @section('title', 'អំពីយើង')
 @section('content')
 
-<div class="container mx-auto">
+<div class="mx-auto">
     <div class="pt-20 text-center mb-30 relative z-10">
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
             អំពីយើង <span class="text-blue-600">ភីអេនធី</span>
         </h1>
         <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
-            ស្វាគមន៍មកកាន់សណ្ឋាគារ ភីអេនធី ដែលជាទីតាំងដ៏ស័ក្តិសមបំផុតសម្រាប់ការសម្រាកលំហែកាយ។ យើងផ្តល់ជូននូវបទពិសោធន៍ស្នាក់នៅដ៏ប្រណីត ជាមួយបន្ទប់ដែលមានផាសុកភាពខ្ពស់ និងសេវាកម្មប្រកបដោយបដិសណ្ឋារកិច្ចយ៉ាងកក់ក្ដៅបំផុត ដើម្បីធ្វើឱ្យរាល់ការធ្វើដំណើររបស់លោកអ្នកក្លាយជាការចងចាំមិនអាចបំភ្លេចបាន។
+            ស្វាគមន៍មកកាន់សណ្ឋាគារ ភីអេនធី ដែលជាទីតាំងសម្រាប់ការស្នាក់នៅ និងសិក្ខាសាលា និងប្រជុំផ្សេងៗ។
         </p>
         <div class="h-1.5 w-24 bg-blue-600 mx-auto mt-6 rounded-full"></div>
     </div>

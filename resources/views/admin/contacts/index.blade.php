@@ -66,8 +66,7 @@
                         class="w-full h-10 px-3 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none text-sm font-medium relative z-0">
                         <option value="">ទាំងអស់</option>
                         <option value="unread">មិនទាន់អាន</option>
-                        <option value="pending">កំពុងដោះស្រាយ</option>
-                        <option value="completed">រួចរាល់</option>
+                        <option value="completed">បានអានរួច</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
                 </div>

@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use App\Models\ContactSetting;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useTailwind();
+
+        // if (config('app.env') === 'local' || env('APP_URL')) {
+        //     URL::forceScheme('https');
+        // }
 
         View::composer('*', function ($view) {
             $contactSettings = ContactSetting::where('status', 1)

@@ -10,8 +10,8 @@ use App\Models\Facility;
 class RoomType extends Model
 {
     protected $with = ['facilities'];
-    
-    protected $fillable = ['hotel_id', 'name', 'description', 'max_guests', 'base_price'];
+
+    protected $fillable = ['hotel_id', 'name', 'category', 'description', 'max_guests', 'base_price'];
 
     public function hotel(): BelongsTo
     {
@@ -43,7 +43,7 @@ class RoomType extends Model
     {
         return $this->hasMany(Promotion::class);
     }
-    
+
     protected static function boot()
     {
         parent::boot();

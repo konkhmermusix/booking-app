@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div x-show="loading" x-cloak class="mb-4 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-3 rounded-xl text-sm animate-pulse">
+    <div x-show="loading" x-cloak class="mb-4 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-3 rounded-xl text-sm animate-pulse​ text-center">
         កំពុងដំណើរការ...
     </div>
 
@@ -258,6 +258,17 @@
                     price_per_night: 0,
                     payment_method: 'cash'
                 };
+                this.errors = {};
+            },
+
+            resetFormCategory() {
+                // សម្អាតតម្លៃចាស់ៗចេញពេល Admin ប្តូរប្រភេទនៃការកក់នៅលើ UI
+                this.newBooking.room_id = '';
+                this.newBooking.meeting_room_id = '';
+                this.newBooking.total_price = 0;
+                this.newBooking.total_hours = '';
+                this.newBooking.attendees_count = '';
+                this.newBooking.setup_style = '';
                 this.errors = {};
             }
         }

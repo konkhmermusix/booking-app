@@ -11,9 +11,26 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
+
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(5);
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->paginate(12);
+
+        if ($request->ajax()) {
+            return view('admin.users.partials.users_list', compact('users'))->render();
+        }
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -26,7 +43,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,staff,customer',
             'status' => 'required|in:active,inactive,pending',
             'password' => 'required|min:8|confirmed',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:20480'
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:20480' // ២០MB
         ]);
 
         if ($request->hasFile('avatar')) {
@@ -34,13 +51,16 @@ class UserController extends Controller
         }
 
         $data['password'] = Hash::make($request->password);
+
         User::create($data);
 
         return back()->with('success', 'បង្កើតអ្នកប្រើប្រាស់បានជោគជ័យ!');
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
@@ -52,7 +72,9 @@ class UserController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
-            if ($user->avatar) Storage::disk('public')->delete($user->avatar);
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
             $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
@@ -63,13 +85,18 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
         return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពបានជោគជ័យ!');
     }
 
     public function destroy(User $user)
     {
-        if ($user->avatar) Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
         $user->delete();
+
         return back()->with('success', 'លុបអ្នកប្រើប្រាស់រួចរាល់!');
     }
 }

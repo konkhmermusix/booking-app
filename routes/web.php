@@ -1,32 +1,27 @@
 <?php
 
-
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Room;
 
-// for customer
+// For Customer
 use App\Http\Controllers\AuthWebController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\HotelFrontendController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ShowController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\RoomWebController;
 use App\Http\Controllers\MeetingWebController;
 use App\Http\Controllers\AboutWebController;
 use App\Http\Controllers\ContactWebController;
 use App\Http\Controllers\FacilitiWebController;
 use App\Http\Controllers\BookingWebController;
-use App\Http\Controllers\ReviewWebController;
 use App\Http\Controllers\GalleryWebController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ChatWebController;
 
-
-// for admin
+// For Admin
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RoomController;
@@ -40,10 +35,10 @@ use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\ContactSettingController;
 use App\Http\Controllers\Admin\AboutController;
-use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\ChatController;
+use App\Http\Controllers\Admin\Dashboard1Controller;
 
 // Authentication Routes
 Route::controller(AuthWebController::class)->group(function () {
@@ -51,16 +46,17 @@ Route::controller(AuthWebController::class)->group(function () {
     Route::post('/login', 'login')->name('login.post');
     Route::get('/register', 'showRegister')->name('register');
     Route::post('/register', 'register')->name('register.post');
+    Route::get('auth/google', [AuthWebController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('auth/google/callback', [AuthWebController::class, 'handleGoogleCallback']);
+    Route::get('auth/facebook', [AuthWebController::class, 'redirectToFacebook'])->name('auth.facebook');
+    Route::get('auth/facebook/callback', [AuthWebController::class, 'handleFacebookCallback']);
+
+    Route::get('/forgot-password', 'showForgotPassword')->name('password.request');
+    Route::post('/forgot-password', 'sendResetLinkEmail')->name('password.email');
+    Route::get('/reset-password/{token}', 'showResetPassword')->name('password.reset');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
 
-Route::post('/change-language', function (Illuminate\Http\Request $request) {
-    $locale = $request->locale;
-    if (in_array($locale, ['en', 'kh'])) {
-        session()->put('locale', $locale);
-        return response()->json(['success' => true]);
-    }
-    return response()->json(['success' => false], 400);
-});
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -71,92 +67,95 @@ Route::post('/logout', function () {
 
 
 
-// =======================================
-// Frontend Website Routes
-// =======================================
+// Start Frontend Website Routes
 // Home Page
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/chat/send', [ChatWebController::class, 'store'])->middleware('auth');
+Route::get('/toursdetail/{id}', [HomeController::class, 'toursdetail'])->name('toursdetail');
+Route::get('/promotions/{id}', [HomeController::class, 'promotion_detail'])->name('frontend.promotion_details');
+Route::post('/promotion/cart/addhotel', [CartController::class, 'addHotelPromo'])->name('promotion.addhotelpro');
+Route::post('/promotion/cart/addmeeting', [CartController::class, 'addMeetingPromo'])->name('promotion.addmeetingpro');
+Route::get('/gallery', [GalleryWebController::class, 'index'])->name('frontend.gallery');
+
+// Route::post('/cart/add/hotelpromo', [CartController::class, 'addHotelPromo'])->name('cart.addhotel');
+// Route::post('/cart/add/meetingpromo', [CartController::class, 'addMeetingPromo'])->name('cart.addmeeting');
+
+// For Stay Room 
 Route::get('/rooms', [RoomWebController::class, 'index'])->name('frontend.rooms');
 Route::get('/roomdetails/{id}', [RoomWebController::class, 'room_detail'])->name('frontend.room_details');
-Route::post('/roomdetails/{id}', [RoomWebController::class, 'room_detail'])->name('frontend.room_details.store');
+Route::post('/roomdetails/{id}', [RoomWebController::class, 'storeReview'])->name('frontend.room_details.store');
+Route::post('/roomdetails/{id}/reply', [RoomWebController::class, 'storeReply'])->name('frontend.room_details.replay');
+Route::put('/roomdetails/{id}', [RoomWebController::class, 'updateReview'])->name('frontend.room_details.update');
+Route::delete('/roomdetails/{id}', [RoomWebController::class, 'deleteReview'])->name('frontend.room_details.delete');
 
+// For Meeting Room
 Route::get('/meeting', [MeetingWebController::class, 'index'])->name('frontend.meeting');
 Route::get('/meetingdetails/{id}', [MeetingWebController::class, 'meeting_detail'])->name('frontend.meeting_details');
 Route::post('/meetingdetails/{id}', [MeetingWebController::class, 'storeReview'])->name('frontend.meeting_details.store');
+Route::post('/meetingdetails/{id}/reply', [MeetingWebController::class, 'storeReply'])->name('frontend.meeting_details.replay');
+Route::put('/meetingdetails/{id}', [MeetingWebController::class, 'updateReview'])->name('frontend.meeting_details.update');
+Route::delete('/meetingdetails/{id}', [MeetingWebController::class, 'deleteReview'])->name('frontend.meeting_details.delete');
 
-
+// For Service
 Route::get('/facilities', [FacilitiWebController::class, 'index'])->name('frontend.facilities');
+
+// For About
 Route::get('/about', [AboutWebController::class, 'index'])->name('frontend.about');
+
+// For Contact Us
 Route::get('/contact', [ContactWebController::class, 'index'])->name('frontend.contact');
 Route::post('/contact', [ContactWebController::class, 'store'])->name('frontend.contact');
 
-
-// Hotels & Rooms
-// Route::get('/details', [HotelFrontendController::class, 'index'])->name('frontend.hotels.index');
-// Route::get('/meetingdetails/{id}', [HomeController::class, 'meeting_detail'])->name('frontend.meeting_details');
-
-Route::get('/promotions/{id}', [HomeController::class, 'promotion_detail'])->name('frontend.promotion_details');
-Route::get('/room-type/{id}', [HomeController::class, 'roomTypeDetails'])->name('frontend.room_type');
-Route::get('/gallery', [GalleryWebController::class, 'index'])->name('frontend.gallery');
-
-// Meeting Page
-Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
+// Cart Page
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('/cart-count', [CartController::class, 'getCartCount'])->name('cart.count');
 Route::post('/cart/add/hotel', [CartController::class, 'addHotel'])->name('cart.add.hotel');
 Route::post('/cart/add/meeting', [CartController::class, 'addMeeting'])->name('cart.add.meeting');
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::delete('/cart/remove/{key}', [CartController::class, 'remove'])->name('cart.remove');
+
+Route::post('/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.update-quantity');
+Route::post('/update-dates', [CartController::class, 'updateDates'])->name('cart.update-dates');
+Route::delete('/remove/{key}', [CartController::class, 'remove'])->name('cart.remove');
+
+// History
+Route::get('/mybookings', [BookingWebController::class, 'myBookings'])->name('mybookings');
+Route::get('/booking/receipt/{code}', [BookingWebController::class, 'viewReceipt'])->name('receipt');
+
+
+// Checkout Page
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 
-
-// Booking Routes
-Route::get('/booking', [BookingWebController::class, 'index'])->name('booking.index');
-Route::post('/booking/store', [BookingWebController::class, 'store'])->name('booking.store')->middleware('auth');
-
-Route::post('/bookings/store', [RoomWebController::class, 'storeBooking'])->name('frontend.bookings.store')->middleware('auth');
-Route::post('/booking/storecart', [BookingWebController::class, 'storecart'])->name('booking.storecart');
-Route::get('/booking/history', [BookingWebController::class, 'history'])->name('booking.history');
-Route::get('/booking/details/{id}', [BookingWebController::class, 'show'])->name('booking.show');
-Route::get('/show/{id}', [BookingWebController::class, 'show'])->name('show');
-Route::get('/success/{id}', [BookingWebController::class, 'success'])->name('success');
 
 // Checkout & Payment
 Route::get('/booking/{id}/checkout', [BookingWebController::class, 'checkout'])->name('booking.checkout');
 Route::post('/booking/{id}/payment', [BookingWebController::class, 'processPayment'])->name('booking.payment');
 
-// Reviews
-Route::post('/reviews', [ReviewWebController::class, 'store'])->name('reviews.store');
-
 // Success
 Route::get('/booking/success/{id}', [BookingWebController::class, 'success'])
     ->name('booking.success');
 
+// Setting
+Route::get('/setting', [SettingController::class, 'edit'])->name('setting.edit');
+Route::put('/setting', [SettingController::class, 'update'])->name('setting.update');
+Route::put('/setting/password', [SettingController::class, 'updatePassword'])->name('setting.password.update');
+Route::delete('/setting', [SettingController::class, 'destroy'])->name('setting.destroy');
+// End Frontend Website Routes
 
-Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
-
-// Tours Details
-Route::get('/toursdetail/{id}', [HomeController::class, 'toursdetail'])->name('toursdetail');
-
-
-// ផ្នែក Admin (Backend)
-// ២. Protected Routes (តម្រូវឱ្យ Login រួចរាល់)
+// Start Admin Routes
+// Protected Routes
 Route::middleware(['auth'])->group(function () {
 
-    // សម្រាប់ Admin និង Staff (មើល Dashboard និង CRUD ទូទៅ)
+    // For Admin and Staff
     Route::middleware(['role:admin,staff'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        // CRUD សម្រាប់ Hotels និង Room Types
-
+        Route::get('/dashboard1', [Dashboard1Controller::class, 'index'])->name('dashboard1');
+        Route::post('/bookings/{id}/approve', [DashboardController::class, 'approve'])->name('admin.bookings.approve');
+        Route::post('/bookings/{id}/reject', [DashboardController::class, 'reject'])->name('admin.bookings.reject');
     });
 
-    // សម្រាប់តែ Admin ប៉ុណ្ណោះ (សិទ្ធិខ្ពស់បំផុត)
+    // For Admin
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
-        // --- Core Resources ---
-        // Route::resource('calendar', CalendarController::class);
+        // Core Resources
         Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
         Route::get('/calendar/events', [CalendarController::class, 'getEvents'])->name('calendar.events');
         Route::resource('users', UserController::class);

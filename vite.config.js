@@ -14,15 +14,29 @@ export default defineConfig({
         watch: {
             ignored: ["**/storage/framework/views/**"],
         },
-        // host: "10.116.0.146",
+
+        // cors: true,
+        // strictPort: true,
+        // hmr: {
+        //     host: "stock-drank-headache.ngrok-free.dev", // ដាក់លីង ngrok របស់បង
+        //     protocol: "wss",
+        //     clientPort: 443,
+        // },
+
+        // host: "0.0.0.0",
         // cors: true,
         // hmr: {
-        //     host: "10.116.0.146",
+        //     host: "localhost",
         // },
-        host: "192.168.43.1",
-        cors: true,
-        hmr: {
-            host: "192.168.43.1",
-        },
+        // host: "10.116.0.17",
+        // cors: true,
+        // hmr: {
+        //     host: "10.116.0.17",
+        // },
+        // host: "192.168.43.1",
+        // cors: true,
+        // hmr: {
+        //     host: "192.168.43.1",
+        // },
     },
 });

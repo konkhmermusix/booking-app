@@ -2,86 +2,90 @@
 @section('title', 'បញ្ជីអ្នកប្រើប្រាស់')
 
 @section('content')
+<div class="space-y-6" x-data="{ 
+        viewMode: localStorage.getItem('userView') || 'table', 
+        showAddModal: false, showEditModal: false, showDetailModal: false,
+        currentUser: {},
+        search: '{{ request('search') }}', status: '{{ request('status') }}',
+        loading: false,
 
-<div class="space-y-6" x-data="{ showAddModal: false, showEditModal: false, showDetailModal: false, currentUser: {}}">
-    <div class="flex justify-between items-center">
+        async fetchUsers(url = null) {
+            this.loading = true;
+            let fetchUrl = url || '{{ route('users.index') }}';
+            try {
+                const response = await axios.get(fetchUrl, {
+                    params: { search: this.search, status: this.status },
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                document.getElementById('users-container').innerHTML = response.data;
+            } catch (error) { 
+                console.error('Error fetching users:', error); 
+            }
+            this.loading = false;
+        }
+    }">
+
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6">
         <div>
-            <h2 class="text-2xl font-bold dark:text-white">គ្រប់គ្រងអ្នកប្រើប្រាស់</h2>
-            <p class="text-gray-500 dark:text-gray-400">គ្រប់គ្រងអ្នកប្រើប្រាស់ និងមើលស្ថានភាព</p>
+            <h2 class="text-lg font-bold dark:text-white">គ្រប់គ្រងអ្នកប្រើប្រាស់</h2>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Live User Management</p>
         </div>
 
-        <button @click="showAddModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-2xl shadow-xl shadow-blue-500/20 transition-all flex items-center justify-center gap-2 font-bold">
-            <i class="fas fa-plus-circle"></i>បន្ថែម
-        </button>
+        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <div class="relative w-full sm:w-56">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
+                <input type="text" x-model="search" @input.debounce.500ms="fetchUsers()" placeholder="ស្វែងរកឈ្មោះ, អ៊ីមែល..."
+                    class="w-full pl-8 pr-4 h-10 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-medium">
+            </div>
+
+            <div class="w-full sm:w-25">
+                <div class="relative group">
+                    <select x-model="status" @change="fetchUsers()"
+                        class="w-full h-10 px-3 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none text-sm font-medium relative z-0">
+                        <option value="">ទាំងអស់</option>
+                        <option value="active">សកម្ម</option>
+                        <option value="pending">រង់ចាំ</option>
+                        <option value="inactive">អសកម្ម</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                </div>
+            </div>
+
+            <div class="flex bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl h-10 items-center">
+                <button @click="viewMode = 'table'; localStorage.setItem('userView', 'table')" :class="viewMode === 'table' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]" title="បង្ហាញជាតារាង"><i class="fas fa-table-list"></i></button>
+                <button @click="viewMode = 'list'; localStorage.setItem('userView', 'list')" :class="viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]" title="បង្ហាញជាបញ្ជី"><i class="fas fa-list-ul"></i></button>
+                <button @click="viewMode = 'grid'; localStorage.setItem('userView', 'grid')" :class="viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]" title="បង្ហាញជាប្លុក"><i class="fas fa-th-large"></i></button>
+            </div>
+
+            <button @click="showAddModal = true" class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md text-sm font-bold flex items-center gap-2 transition-all active:scale-95">
+                <i class="fas fa-plus-circle"></i> បន្ថែមអ្នកប្រើប្រាស់
+            </button>
+        </div>
     </div>
 
-    <div class="overflow-x-auto bg-white dark:bg-gray-900 rounded-2xl border dark:border-gray-800">
-        <table class="w-full text-left">
-            <thead class="bg-gray-50 dark:bg-gray-800 text-gray-500 text-xs uppercase font-bold">
-                <tr>
-                    <th class="px-6 py-4">ឈ្មោះអ្នកប្រើ / អ៊ីម៉ែល</th>
-                    <th class="px-6 py-4">ទូរស័ព្ទ</th>
-                    <th class="px-6 py-4">តួនាទី</th>
-                    <th class="px-4 py-4">ស្ថានភាព</th>
-                    <th class="px-4 py-4">បង្កើតឡើង</th>
-                    <th class="px-7 py-4 text-right">សកម្មភាព</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y dark:divide-gray-800">
-                @foreach($users as $user)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
-                    <td class="px-6 py-4 flex items-center gap-3">
-                        <img src="{{ $user->avatar ? asset('storage/'.$user->avatar) : 'https://ui-avatars.com/api/?name='.$user->name }}" class="w-10 h-10 rounded-lg object-cover">
-                        <div>
-                            <div class="font-bold dark:text-white">{{ $user->name }}</div>
-                            <div class="text-xs text-gray-500">{{ $user->email }}</div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm dark:text-gray-300">{{ $user->phone ?? 'N/A' }}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 text-[10px] font-bold uppercase rounded-lg 
-                            {{ $user->role == 'admin' ? 'bg-purple-100 text-purple-600' : ($user->role == 'staff' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600') }}">
-                            {{ $user->role }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-4">
-                        @if($user->status == 'active')
-                        <span class="px-3 py-1 text-[10px] font-bold uppercase rounded-lg bg-green-100 text-green-600 dark:bg-green-500/10 dark:text-green-400">
-                            សកម្ម (Active)
-                        </span>
-                        @elseif($user->status == 'pending')
-                        <span class="px-3 py-1 text-[10px] font-bold uppercase rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
-                            រង់ចាំ (Pending)
-                        </span>
-                        @else
-                        <span class="px-3 py-1 text-[10px] font-bold uppercase rounded-lg bg-red-100 text-red-600 dark:bg-red-500/10 dark:text-red-400">
-                            អសកម្ម (Inactive)
-                        </span>
-                        @endif
-                    </td>
-                    <td class="px-4 py-4 text-sm dark:text-gray-300">{{ $user->created_at ?? 'N/A' }}</td>
+    <div x-show="loading" x-cloak class="mb-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-3 rounded-xl text-sm animate-pulse text-center">
+        កំពុងដំណើរការ...
+    </div>
 
-                    <td class="px-6 py-4 text-right flex gap-3 justify-end">
-                        <div class="flex justify-end gap-2 space-x-3">
-                            <button @click="currentUser = {{ $user }}; showDetailModal = true" class=" text-gray-400 hover:text-indigo-500 transition-colors" title="មើលលម្អិត"> <i class="fas fa-eye"></i></button>
-                            <button @click="currentUser = {{ $user }}; showEditModal = true" class=" text-blue-500 hover:text-blue-700" title="កែប្រែ"><i class="fas fa-edit"></i></button>
-                            <form action="{{ route('users.destroy', $user) }}" method="POST" class="delete-form ">
-                                @csrf @method('DELETE')
-                                <button type="button" class="text-red-500 hover:text-red-700 btn-delete"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <div class="px-6 py-4 border-t dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
-            {{ $users->links() }}
-        </div>
+    <div id="users-container" :class="loading ? 'opacity-40 pointer-events-none' : ''" class="transition-opacity duration-300">
+        @include('admin.users.partials.users_list')
     </div>
 
     @include('admin.users.modals')
 </div>
 
+<script>
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('.pagination a, .custom-pagination a');
+        if (link) {
+            e.preventDefault();
+            const alpineElement = document.querySelector('[x-data]');
+            if (alpineElement && alpineElement.__x && alpineElement.__x.$data) {
+                alpineElement.__x.$data.fetchUsers(link.href);
+            } else if (typeof Alpine !== 'undefined') {
+                Alpine.$data(alpineElement).fetchUsers(link.href);
+            }
+        }
+    });
+</script>
 @endsection

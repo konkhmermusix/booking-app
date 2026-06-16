@@ -38,8 +38,7 @@
                                     x-model="currentMessage.status"
                                     class="w-full h-14 pl-7 pr-10 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none font-medium relative z-0">
                                     <option value="unread">មិនទាន់អាន</option>
-                                    <option value="pending">កំពុងដោះស្រាយ</option>
-                                    <option value="completed">រួចរាល់</option>
+                                    <option value="completed">បានអានរួច</option>
                                 </select>
                                 <i class="fa-solid fa-chevron-down absolute right-5 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
                             </div>
@@ -117,11 +116,9 @@
                             <template x-if="currentMessage.status === 'unread'">
                                 <span class="px-3 py-1 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 rounded-full text-[10px] font-black uppercase">មិនទាន់អាន</span>
                             </template>
-                            <template x-if="currentMessage.status === 'pending'">
-                                <span class="px-3 py-1 bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 rounded-full text-[10px] font-black uppercase">កំពុងដោះស្រាយ</span>
-                            </template>
+
                             <template x-if="currentMessage.status === 'completed'">
-                                <span class="px-3 py-1 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-full text-[10px] font-black uppercase">រួចរាល់</span>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-full text-[10px] font-black uppercase">បានអានរួច</span>
                             </template>
                         </div>
                     </div>

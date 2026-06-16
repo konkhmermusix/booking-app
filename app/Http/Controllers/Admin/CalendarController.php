@@ -5,116 +5,95 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Room;
-use App\Models\Booking;
+use App\Models\HotelBooking;
+use App\Models\MeetingBooking;
 use Carbon\Carbon;
 
 class CalendarController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $currentMonth = now()->month;
-        $currentYear  = now()->year;
+        $month = $request->input('month', now()->month);
+        $year  = $request->input('year', now()->year);
 
-        // Load Rooms + Bookings
-        $rooms = Room::with(['bookings' => function ($query) use ($currentMonth, $currentYear) {
+        $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $endDate   = $startDate->copy()->endOfMonth();
 
-            $query->where(function ($q) use ($currentMonth, $currentYear) {
-
-                $q->whereMonth('check_in', $currentMonth)
-                    ->whereYear('check_in', $currentYear)
-
-                    ->orWhere(function ($qq) use ($currentMonth, $currentYear) {
-
-                        $qq->whereMonth('check_out', $currentMonth)
-                            ->whereYear('check_out', $currentYear);
-                    });
-            });
-        }])->get();
-
-        // Generate booked days array
-        $bookedDays = [];
-
-        foreach ($rooms as $room) {
-
-            foreach ($room->bookings as $booking) {
-
-                $start = Carbon::parse($booking->check_in);
-                $end   = Carbon::parse($booking->check_out);
-
-                while ($start->lt($end)) {
-
-                    if (
-                        $start->month == $currentMonth &&
-                        $start->year == $currentYear
-                    ) {
-
-                        $bookedDays[$room->id][$start->day] = [
-                            'booking_id' => $booking->id,
-                            'guest_name' => $booking->guest_name,
-                            'status'     => $booking->status ?? 'booked',
-                        ];
-                    }
-
-                    $start->addDay();
-                }
+        // ទាញយកទិន្នន័យបន្ទប់ និងការកក់ដោយប្រើ Eager Loading ការពារ N+1 Problem
+        $allRooms = Room::with([
+            'roomType',
+            'hotelBookings' => function ($query) use ($startDate, $endDate) {
+                $query->where('check_in', '<=', $endDate->toDateString())
+                    ->where('check_out', '>=', $startDate->toDateString());
+            },
+            'meetingBookings' => function ($query) use ($startDate, $endDate) {
+                $query->where('start_date', '<=', $endDate->toDateString())
+                    ->where('end_date', '>=', $startDate->toDateString());
             }
+        ])->get();
+
+        // បំបែកក្រុមបន្ទប់
+        $stayRooms    = $allRooms->where('roomType.category', 'stay');
+        $meetingRooms = $allRooms->where('roomType.category', 'meeting');
+        $daysInMonth  = $startDate->daysInMonth;
+
+        // 🌟 ពិនិត្យលក្ខខណ្ឌបើជា AJAX Request គឺ Render តែផ្ទាំងតារាងប្រតិទិនប៉ុណ្ណោះ
+        if ($request->ajax()) {
+            return view('admin.calendar.partials.calendar_table', compact(
+                'stayRooms',
+                'meetingRooms',
+                'daysInMonth',
+                'month',
+                'year'
+            ))->render();
         }
 
-        $daysInMonth = now()->daysInMonth;
-
+        // សម្រាប់ Normal Request ចូលមកកាន់ Page លើកដំបូង
         return view('admin.calendar.index', compact(
-            'rooms',
-            'bookedDays',
-            'daysInMonth'
+            'stayRooms',
+            'meetingRooms',
+            'daysInMonth',
+            'month',
+            'year'
         ));
     }
 
     /**
-     * FullCalendar Events API
+     * API សម្រាប់ FullCalendar JS (ទុកប្រើប្រាស់បន្ថែមបើត្រូវការ)
      */
-    public function getEvents()
+    public function getEvents(Request $request)
     {
-        $bookings = Booking::with('room')
+        $start = $request->input('start', now()->startOfMonth()->toDateString());
+        $end   = $request->input('end', now()->endOfMonth()->toDateString());
+
+        $bookings = HotelBooking::with('room')
+            ->where('check_in', '<=', $end)
+            ->where('check_out', '>=', $start)
             ->get();
 
         $events = $bookings->map(function ($booking) {
-
-            // Status Colors
             $colors = [
                 'available'   => '#10b981',
                 'booked'      => '#ef4444',
                 'checked_in'  => '#3b82f6',
                 'maintenance' => '#f59e0b',
+                'cleaning'    => '#6b7280',
             ];
 
             return [
                 'id'    => $booking->id,
-
-                'title' =>
-                'Room ' .
-                    ($booking->room->room_number ?? '-') .
-                    ' - ' .
-                    ($booking->guest_name ?? 'Guest'),
-
+                'title' => 'Room ' . ($booking->room->room_number ?? '-') . ' - ' . ($booking->guest_name ?? 'Guest'),
                 'start' => $booking->check_in,
-
                 'end'   => $booking->check_out,
-
-                'backgroundColor' =>
-                $colors[$booking->status] ?? '#6366f1',
-
-                'borderColor' =>
-                $colors[$booking->status] ?? '#6366f1',
-
-                'textColor' => '#ffffff',
-
-                // Extra Data
+                'backgroundColor' => $colors[$booking->status] ?? '#6366f1',
+                'borderColor'     => $colors[$booking->status] ?? '#6366f1',
+                'textColor'       => '#ffffff',
                 'extendedProps' => [
                     'guest_name' => $booking->guest_name,
                     'phone'      => $booking->phone,
                     'status'     => $booking->status,
                     'room'       => $booking->room->room_number ?? null,
-                    'total'      => $booking->total_amount ?? 0,
+                    'total'      => $booking->total_price ?? 0,
                 ],
             ];
         });

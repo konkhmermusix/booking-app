@@ -67,13 +67,14 @@
     }
 </style>
 
-<div class="container mx-auto">
+<div class="mx-auto">
     <div class="pt-20 text-center mb-30 relative z-10">
         <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tighter mb-4">
             ទំនាក់ទំនងមក <span class="text-blue-600">ភីអេនធី</span>
         </h1>
         <p class="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium">
-            យើងនៅទីនេះដើម្បីជួយលោកអ្នក! ទំនាក់ទំនងមកយើងតាមរយៈលេខទូរស័ព្ទ អ៊ីមែល ឬបំពេញទម្រង់ផ្ញើសារខាងក្រោម។ ក្រុមការងារយើងនឹងទាក់ទងត្រឡប់ទៅលោកអ្នកវិញឱ្យបានឆាប់បំផុតតាមដែលអាចធ្វើទៅបាន។
+            ទំនាក់ទំនងមកយើងតាមរយៈលេខទូរស័ព្ទ អ៊ីមែល ឬបំពេញទម្រង់ផ្ញើសារខាងក្រោម។ <br>
+            ក្រុមការងារយើងនឹងទាក់ទងត្រឡប់ទៅលោកអ្នកវិញឱ្យបានឆាប់បំផុតតាមដែលអាចធ្វើទៅបាន។
         </p>
         <div class="h-1.5 w-30 bg-blue-600 mx-auto mt-6 rounded-full"></div>
     </div>

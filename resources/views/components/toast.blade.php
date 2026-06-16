@@ -4,14 +4,16 @@ $message = session('success') ?? session('error');
 $config = [
 'success' => [
 'icon' => 'fa-check-circle',
-'color' => 'from-emerald-500 to-teal-600',
-'shadow' => 'shadow-emerald-500/20',
+'color' => 'from-emerald-500 to-teal-500',
+'shadow' => 'shadow-emerald-500/10 dark:shadow-emerald-500/5',
+'glow' => 'bg-emerald-500/10 text-emerald-500 dark:text-emerald-400',
 'label' => 'ជោគជ័យ'
 ],
 'error' => [
 'icon' => 'fa-exclamation-triangle',
-'color' => 'from-rose-500 to-red-600',
-'shadow' => 'shadow-rose-500/20',
+'color' => 'from-rose-500 to-red-500',
+'shadow' => 'shadow-rose-500/10 dark:shadow-rose-500/5',
+'glow' => 'bg-rose-500/10 text-rose-500 dark:text-rose-400',
 'label' => 'មានបញ្ហា'
 ]
 ][$type] ?? null;
@@ -30,29 +32,32 @@ $config = [
         }, 50);
      "
     x-show="show"
-    x-transition:enter="transition ease-out duration-500"
-    x-transition:enter-start="translate-y-[-20px] opacity-0 scale-95"
-    x-transition:enter-end="translate-y-0 opacity-100 scale-100"
-    x-transition:leave="transition ease-in duration-300"
-    x-transition:leave-end="opacity-0 scale-90"
-    class="fixed top-8 right-8 z-[200] max-w-sm w-full overflow-hidden rounded-3xl bg-white dark:bg-gray-900 shadow-2xl border border-gray-100 dark:border-gray-800 {{ $config['shadow'] }}"
+    x-transition:enter="transition duration-400 ease-out"
+    x-transition:enter-start="opacity-0 scale-95 -rotate-2"
+    x-transition:enter-end="opacity-100 scale-100 rotate-0"
+    x-transition:leave="transition duration-200 ease-in"
+    x-transition:leave-end="opacity-0 scale-95"
+    class="fixed top-6 right-6 z-[200] max-w-sm w-full overflow-hidden rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-xl border border-gray-200/50 dark:border-gray-800/60 {{ $config['shadow'] }}"
     x-cloak>
 
-    <div class="p-5 flex items-start gap-4">
-        <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br {{ $config['color'] }} flex items-center justify-center text-white shadow-lg">
-            <i class="fas {{ $config['icon'] }} text-xl"></i>
+    <div class="p-4 flex items-center gap-4">
+        <div class="flex-shrink-0 w-10 h-10 rounded-xl {{ $config['glow'] }} flex items-center justify-center shadow-inner">
+            <i class="fas {{ $config['icon'] }} text-lg"></i>
         </div>
-        <div class="flex-1 pt-1">
-            <h4 class="text-sm font-bold text-gray-900 dark:text-white leading-none">{{ $config['label'] }}</h4>
-            <p class="text-[13px] text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">{{ $message }}</p>
+
+        <div class="flex-1 min-w-0">
+            <h4 class="text-sm font-semibold text-gray-900 dark:text-white tracking-wide">{{ $config['label'] }}</h4>
+            <p class="text-[13px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug truncate-2-lines">{{ $message }}</p>
         </div>
-        <button @click="show = false" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+
+        <button @click="show = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
             <i class="fas fa-times text-xs"></i>
         </button>
     </div>
-    <div class="h-1.5 w-full bg-gray-100 dark:bg-gray-800">
+
+    <div class="h-1 w-full bg-gray-100 dark:bg-gray-800/50">
         <div class="h-full bg-gradient-to-r {{ $config['color'] }} transition-all duration-75 ease-linear"
-            :style="`width: ${progress}%` text-align: left;"></div>
+            :style="`width: ${progress}%; text-align: left;` columns: 1;"></div>
     </div>
 </div>
 @endif

@@ -25,12 +25,11 @@
                         @php
                         $statusClasses = [
                         'unread' => 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
-                        'pending' => 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
                         'completed' => 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
                         ];
                         @endphp
                         <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase {{ $statusClasses[$msg->status] ?? 'bg-gray-100' }}">
-                            {{ $msg->status == 'unread' ? 'មិនទាន់អាន' : ($msg->status == 'pending' ? 'កំពុងដោះស្រាយ' : 'រួចរាល់') }}
+                            {{ $msg->status == 'unread' ? 'មិនទាន់អាន' : 'បានអានរួច' }}
                         </span>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-500 text-center">{{ $msg->created_at->format('d M, Y') }}</td>

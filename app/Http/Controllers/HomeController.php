@@ -105,7 +105,6 @@ class HomeController extends Controller
         $facilities = Facility::where('is_active', 1)->get();
         $tours = Tour::where('status', 1)->latest()->get();
 
-
         // 9. GALLERY / IMAGES
         $galleries = Gallery::with('hotel')
             ->where('is_active', 1)
@@ -113,9 +112,9 @@ class HomeController extends Controller
             ->take(9)
             ->get();
 
-        // 10. REVIEWS
         $reviews = Review::with('roomType')
             ->where('status', 1)
+            ->whereNull('parent_id')
             ->latest()
             ->take(8)
             ->get();
@@ -138,10 +137,8 @@ class HomeController extends Controller
 
     public function promotion_detail($id)
     {
-        // ទាញយកទិន្នន័យ Promotion ជាមួយទំនាក់ទំនងដែលពាក់ព័ន្ធ
         $promotion = Promotion::with(['roomType.images', 'roomType.facilities'])->findOrFail($id);
 
-        // ចាប់យក RoomType ចេញពី Promotion ងាយស្រួលហៅប្រើក្នុង Blade
         $roomType = $promotion->roomType;
 
         if (!$roomType) {

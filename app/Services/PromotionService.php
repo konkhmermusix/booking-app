@@ -24,52 +24,30 @@ class PromotionService
 
     public function storePromotion($data)
     {
+        // បើអត់មាន status ផ្ញើមកពី Frontend (ករណី Unchecked) ឱ្យវាទៅជា 0
+        // បើមាន ឱ្យបំប្លែងទៅជា integer (1) ដើម្បីកុំឱ្យមានបញ្ហា string
+        $data['status'] = isset($data['status']) ? 1 : 0;
+
         if (isset($data['image_path'])) {
-            // ប្រើ Method ពីក្នុង Trait (ឧបមាថាឈ្មោះ uploadFile)
             $data['image_path'] = $this->uploadFile($data['image_path'], 'promotions');
         }
 
         return $this->repo->create($data);
     }
 
-    // public function updatePromotion($id, $data)
-    // {
-    //     $promotion = $this->repo->getById($id);
-
-    //     if (isset($data['image_path'])) {
-    //         // លុបរូបភាពចាស់ចោលមុននឹង Upload រូបថ្មី
-    //         if ($promotion->image_path) {
-    //             $this->deleteFile($promotion->image_path);
-    //         }
-    //         // Upload រូបភាពថ្មី
-    //         $data['image_path'] = $this->uploadFile($data['image_path'], 'promotions');
-    //     }
-
-    //     return $this->repo->update($id, $data);
-    // }
-
-    // public function deletePromotion($id)
-    // {
-    //     $promotion = $this->repo->getById($id);
-
-    //     // លុបរូបភាពចេញពី Storage មុននឹងលុបទិន្នន័យពី Database
-    //     if ($promotion->image_path) {
-    //         $this->deleteFile($promotion->image_path);
-    //     }
-
-    //     return $this->repo->delete($id);
-    // }
-
     public function updatePromotion($id, $data)
     {
         $promo = $this->repo->getById($id);
+
+        $data['status'] = isset($data['status']) ? 1 : 0;
+
         if (isset($data['image_path'])) {
-            // លុបរូបចាស់ បើមានរូបថ្មីមកជំនួស
             if ($promo->image_path) {
                 $this->deleteFile($promo->image_path);
             }
             $data['image_path'] = $this->uploadFile($data['image_path'], 'promotions');
         }
+
         return $this->repo->update($id, $data);
     }
 

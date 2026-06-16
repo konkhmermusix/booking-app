@@ -44,7 +44,7 @@ class HotelService
     public function deleteHotel($id)
     {
         $hotel = $this->hotelRepo->findById($id);
-        
+
         // លុបរូបភាពចេញពី Storage មុននឹងលុបទិន្នន័យ
         if ($hotel->logo) {
             $this->deleteFile($hotel->logo);

@@ -4,22 +4,27 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HotelRequest;
+use App\Models\Hotel;
 use App\Services\HotelService;
 use Illuminate\Http\Request;
+use Exception;
 
 class HotelController extends Controller
 {
-    protected $hotelService;
+    public function __construct(
+        protected hotelService $hotelService,
+    ) {}
 
-    public function __construct(HotelService $hotelService)
-    {
-        $this->hotelService = $hotelService;
-    }
 
     public function index(Request $request)
     {
+
         $filters = $request->only(['search', 'status']);
         $hotels = $this->hotelService->listHotels($filters);
+
+        if ($request->ajax()) {
+            return view('admin.hotels.partials.hotel_list', compact('hotels'))->render();
+        }
 
         return view('admin.hotels.index', compact('hotels'));
     }
@@ -34,7 +39,7 @@ class HotelController extends Controller
         }
     }
 
-    public function update(HotelRequest $request, $id)
+    public function update(HotelRequest $request, int $id)
     {
         try {
             $this->hotelService->updateHotel($id, $request->validated());
@@ -44,7 +49,7 @@ class HotelController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         try {
             $this->hotelService->deleteHotel($id);
