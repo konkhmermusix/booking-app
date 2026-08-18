@@ -114,7 +114,7 @@
                 };
                 @endphp
 
-                <div class="relative group overflow-hidden rounded-3xl {{ $gridClass }} shadow-md">
+                <div class="relative group overflow-hidden rounded-2xl {{ $gridClass }} shadow-md">
                     <img src="{{ asset('storage/' . $item->image) }}"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         alt="Hotel Gallery">
@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 @empty
-                <div class="col-span-4 py-20 text-center bg-gray-100 dark:bg-gray-800 rounded-3xl">
+                <div class="col-span-4 py-20 text-center bg-gray-100 dark:bg-gray-800 rounded-2xl">
                     <p class="text-gray-500">មិនទាន់មានរូបភាពឡើយ</p>
                 </div>
                 @endforelse

@@ -33,24 +33,24 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 text-sm text-gray-500 text-center">{{ $msg->created_at->format('d M, Y') }}</td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
                         <div class="flex justify-end items-center gap-1">
-                            <button @click="openDetail({{ json_encode($msg) }})"
-                                class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="លម្អិត">
-                                <i class="fas fa-eye"></i>
+                            <button type="button" @click="openDetail({{ json_encode($msg) }})"
+                                class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត">
+                                <i class="fas fa-eye text-sm"></i>
                             </button>
 
-                            <button @click="editMessage({{ json_encode($msg) }})"
+                            <button type="button" @click="editMessage({{ json_encode($msg) }})"
                                 class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ">
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-edit text-sm"></i>
                             </button>
 
-                            <form action="{{ route('contact.destroy', $msg->id) }}" method="POST" class="inline">
+                            <form action="{{ route('contact.destroy', $msg->id) }}" method="POST" class="inline m-0">
                                 @csrf @method('DELETE')
                                 <button type="button" onclick="confirmDelete(this.form)"
-                                    class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                                     title="លុប">
-                                    <i class="fas fa-trash"></i>
+                                    <i class="fas fa-trash text-sm"></i>
                                 </button>
                             </form>
                         </div>

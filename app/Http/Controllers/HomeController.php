@@ -20,79 +20,97 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        // 1. INPUT (DEFAULT DATES)
-        $check_in = $request->input('check_in', Carbon::today()->format('Y-m-d'));
+        // INPUT (DEFAULT DATES & DATE FILTER DETECT)
+        $hasDateFilter = $request->filled('check_in') && $request->filled('check_out');
+        $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
         $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
-        $type_id = $request->input('room_type_id');
+        $type_id   = $request->input('room_type_id');
 
-        // 2. ROOM QUERY (AVAILABLE ONLY)
+        // Reusable availability filter closure for selected date range
+        $availabilityFilter = function ($q) use ($check_in, $check_out) {
+            $q->where('status', '!=', 'maintenance');
+            if ($check_in && $check_out) {
+                $q->whereDoesntHave('hotelbookings', function ($b) use ($check_in, $check_out) {
+                    $b->whereIn('status', ['confirmed', 'pending'])
+                        ->where('check_in', '<', $check_out)
+                        ->where('check_out', '>', $check_in);
+                });
+            }
+        };
+
+        // ROOM QUERY (AVAILABLE ONLY)
         $roomsQuery = Room::with(['roomType', 'hotel']);
 
         if ($type_id) {
             $roomsQuery->where('room_type_id', $type_id);
         }
 
-        // overlap booking check
         if ($check_in && $check_out) {
             $roomsQuery->whereDoesntHave('hotelbookings', function ($q) use ($check_in, $check_out) {
                 $q->whereIn('status', ['confirmed', 'pending'])
-                    ->where(function ($b) use ($check_in, $check_out) {
-
-                        $b->whereBetween('check_in', [$check_in, $check_out])
-                            ->orWhereBetween('check_out', [$check_in, $check_out])
-                            ->orWhere(function ($overlap) use ($check_in, $check_out) {
-                                $overlap->where('check_in', '<=', $check_in)
-                                    ->where('check_out', '>=', $check_out);
-                            });
-                    });
+                    ->where('check_in', '<', $check_out)
+                    ->where('check_out', '>', $check_in);
             });
         }
 
         $rooms = $roomsQuery->get();
 
-        // 3. SLIDES
+        // SLIDES
         $slides = Slideshow::where('is_active', true)
             ->orderBy('order_column', 'asc')
             ->get();
 
-        // 4. AVAILABLE ROOMS (HIGHLIGHT)
+        // AVAILABLE ROOMS (HIGHLIGHT)
         $availableRooms = Room::with(['roomType.images', 'hotel'])
             ->where('status', 'available')
             ->latest()
             ->take(6)
             ->get();
 
-        // 5. ROOM TYPES
+        $meetingAvailabilityFilter = function ($q) use ($check_in, $check_out) {
+            $q->where('status', '!=', 'maintenance');
+            if ($check_in && $check_out) {
+                $q->whereDoesntHave('meetingBookings', function ($b) use ($check_in, $check_out) {
+                    $b->whereIn('status', ['confirmed', 'pending'])
+                        ->where('start_date', '<=', $check_out)
+                        ->where('end_date', '>=', $check_in);
+                });
+            }
+        };
+
+        // ROOM TYPES (Stay)
         $roomTypes = RoomType::with(['images', 'facilities', 'rooms'])
             ->withCount([
-                'rooms as available_rooms_count' => function ($q) {
-                    $q->where('status', 'available');
-                }
+                'rooms as available_rooms_count' => $availabilityFilter
             ])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
-            ->where('name', 'not like', '%សាលប្រជុំ%')
-            ->whereHas('rooms', function ($q) {
-                $q->where('status', 'available');
+            ->where(function($q) {
+                $q->where('category', 'stay')
+                  ->orWhere(function($sub) {
+                      $sub->whereNull('category')
+                          ->where('name', 'not like', '%សាលប្រជុំ%');
+                  });
             })
             ->get();
 
-        // 6. MEETING ROOM TYPES
+        // MEETING ROOM TYPES
         $roomMeeting = RoomType::with(['images', 'facilities', 'rooms'])
             ->withCount([
-                'rooms as available_rooms_count' => function ($q) {
-                    $q->where('status', 'available');
-                }
+                'rooms as available_rooms_count' => $meetingAvailabilityFilter
             ])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
-            ->where('name', 'like', '%សាលប្រជុំ%')
-            ->whereHas('rooms', function ($q) {
-                $q->where('status', 'available');
+            ->where(function($q) {
+                $q->where('category', 'meeting')
+                  ->orWhere(function($sub) {
+                      $sub->whereNull('category')
+                          ->where('name', 'like', '%សាលប្រជុំ%');
+                  });
             })
             ->get();
 
-        // 7. PROMOTIONS
+        // PROMOTIONS
         $promotions = Promotion::with(['roomType.rooms' => function ($q) {
             $q->where('status', 'available');
         }])
@@ -101,11 +119,11 @@ class HomeController extends Controller
             ->latest()
             ->get();
 
-        // 8. FACILITIES + TOURS
+        // FACILITIES + TOURS
         $facilities = Facility::where('is_active', 1)->get();
         $tours = Tour::where('status', 1)->latest()->get();
 
-        // 9. GALLERY / IMAGES
+        // GALLERY / IMAGES
         $galleries = Gallery::with('hotel')
             ->where('is_active', 1)
             ->orderBy('sort_order', 'asc')
@@ -120,18 +138,19 @@ class HomeController extends Controller
             ->get();
 
         return view('frontend.index', compact(
-            'rooms',
             'slides',
+            'rooms',
             'availableRooms',
-            'check_in',
-            'check_out',
             'roomTypes',
             'roomMeeting',
+            'promotions',
             'facilities',
             'tours',
             'galleries',
-            'promotions',
             'reviews',
+            'check_in',
+            'check_out',
+            'hasDateFilter'
         ));
     }
 
@@ -160,6 +179,25 @@ class HomeController extends Controller
         return view('frontend.index', compact('hotel', 'slides'));
     }
 
+    public function hotels()
+    {
+        $hotels = Hotel::where('status', 1)->get();
+        return view('frontend.hotels', compact('hotels'));
+    }
+
+
+    public function tours(Request $request)
+    {
+        $query = Tour::where('status', 1);
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $tours = $query->latest()->paginate(9);
+
+        return view('frontend.tours', compact('tours'));
+    }
 
     public function toursdetail($id)
     {

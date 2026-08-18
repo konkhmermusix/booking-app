@@ -1,0 +1,69 @@
+# Nginx Configuration Example for Laravel (booking-app)
+
+# OPTION 1: Direct Nginx + PHP-FPM / FastCGI (Laragon / XAMPP / Native Windows / Linux)
+server {
+    listen 80;
+    server_name localhost 10.30.242.1; # អាចជំនួសដោយ Domain ឬ IP របស់អ្នក
+
+    # Path ទៅកាន់ folder "public" នៃ Laravel project របស់អ្នក
+    # Windows Example: root "D:/booking-app/public";
+    # Linux Example:   root /var/www/booking-app/public;
+    root "D:/booking-app/public";
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php index.html index.htm;
+
+    charset utf-8;
+
+    # Dynamic Routing សម្រាប់ Laravel SPA / Web
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    # Pass PHP scripts ទៅកាន់ FastCGI Server (PHP-FPM / PHP-CGI)
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000; # ផ្លាស់ប្តូរទៅ 9000 ឬ unix socket តាម server របស់អ្នក
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+        
+        # កើន Timeout ប្រសិនបើ Upload file ឬ Slip ទូទាត់
+        fastcgi_read_timeout 300;
+    }
+
+    # ហាមឃាត់ Access ទៅកាន់ hidden files (ដូចជា .env)
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+
+# OPTION 2: Nginx as Reverse Proxy (សម្រាប់ "php artisan serve" លើ Windows)
+# ប្រសិនបើអ្នក Run: php artisan serve --host=127.0.0.1 --port=8000
+#
+# server {
+#     listen 80;
+#     server_name localhost 10.30.242.1;
+#
+#     location / {
+#         proxy_pass http://127.0.0.1:8000;
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#     }
+#
+#     # Laravel Reverb (WebSockets) Proxy (ប្រសិនបើប្រើ Reverb)
+#     location /app {
+#         proxy_pass http://127.0.0.1:8080;
+#         proxy_http_version 1.1;
+#         proxy_set_header Upgrade $http_upgrade;
+#         proxy_set_header Connection "Upgrade";
+#         proxy_set_header Host $host;
+#     }
+# }

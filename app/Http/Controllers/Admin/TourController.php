@@ -22,11 +22,15 @@ class TourController extends Controller
         $tours = $this->tourService->getTours($request);
 
         if ($request->ajax()) {
-            // ប្តូរពី response()->json() មក render ជា View partial វិញ
             return view('admin.tours.partials.tours-list', compact('tours'))->render();
         }
 
-        return view('admin.tours.index', compact('tours'));
+        $totalTours = Tour::count();
+        $activeTours = Tour::where('status', 1)->count();
+        $inactiveTours = Tour::where('status', 0)->count();
+        $withMaps = Tour::whereNotNull('google_map_link')->where('google_map_link', '!=', '')->count();
+
+        return view('admin.tours.index', compact('tours', 'totalTours', 'activeTours', 'inactiveTours', 'withMaps'));
     }
 
 
@@ -62,9 +66,14 @@ class TourController extends Controller
     public function destroy(Tour $tour)
     {
         $this->tourService->deleteTour($tour);
-        return response()->json([
-            'success' => true,
-            'message' => 'បានលុបជោគជ័យ'
-        ]);
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានលុបជោគជ័យ'
+            ]);
+        }
+
+        return redirect()->route('tours.index')->with('success', 'បានលុបជោគជ័យ');
     }
 }

@@ -37,7 +37,7 @@
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 transform scale-90"
                 x-transition:enter-end="opacity-100 transform scale-100"
-                class="group relative aspect-[4/5] overflow-hidden rounded-3xl bg-gray-200 dark:bg-gray-800 shadow-xl">
+                class="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-200 dark:bg-gray-800 shadow-xl">
 
                 <img src="{{ asset('storage/' . $item->image) }}"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

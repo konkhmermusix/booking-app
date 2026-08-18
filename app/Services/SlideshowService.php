@@ -23,7 +23,6 @@ class SlideshowService
     public function updateSlide(Slideshow $slide, array $data)
     {
         if (isset($data['image'])) {
-            // លុបរូបចាស់
             if ($slide->image_path) Storage::disk('public')->delete($slide->image_path);
             $data['image_path'] = $data['image']->store('slides', 'public');
         }

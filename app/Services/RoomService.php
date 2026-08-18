@@ -7,7 +7,7 @@ use App\Traits\UploadTrait;
 
 class RoomService
 {
-    use UploadTrait; // បន្ថែម Trait សម្រាប់គ្រប់គ្រងការ Upload រូបភាព
+    use UploadTrait;
 
     protected $repository;
 
@@ -30,7 +30,6 @@ class RoomService
      */
     public function storeRoom($data)
     {
-        // ប្រសិនបើក្នុង Table Rooms អ្នកមានរូបភាព (Thumbnail)
         if (isset($data['image'])) {
             $data['image_path'] = $this->uploadFile($data['image'], 'rooms');
         }
@@ -46,7 +45,6 @@ class RoomService
         $room = $this->repository->find($id);
 
         if (isset($data['image'])) {
-            // លុបរូបចាស់ និង Upload រូបថ្មី
             $data['image_path'] = $this->uploadFile($data['image'], 'rooms', $room->image_path);
         }
 
@@ -60,12 +58,10 @@ class RoomService
     {
         $room = $this->repository->find($id);
 
-        // លក្ខខណ្ឌការពារ៖ បើបន្ទប់មានភ្ញៀវ មិនឱ្យលុប
         if ($room->status === 'booked') {
             return false;
         }
 
-        // លុបរូបភាព (បើមាន)
         if (isset($room->image_path)) {
             $this->deleteFile($room->image_path);
         }

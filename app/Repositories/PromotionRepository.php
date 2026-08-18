@@ -44,7 +44,6 @@ class PromotionRepository
 
     public function delete($id)
     {
-        // យើងប្រើ find ហើ់យទើប delete ដើម្បីឱ្យវាទាត់ Eloquent Events (ប្រសិនបើមាន)
         $promo = $this->getById($id);
         return $promo->delete();
     }

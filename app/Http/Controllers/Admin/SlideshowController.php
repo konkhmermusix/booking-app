@@ -32,7 +32,7 @@ class SlideshowController extends Controller
         ]);
 
         $this->service->createSlide($data);
-        return back()->with('success', 'បដារបានបន្ថែម ជោគជ័យ!');
+        return back()->with('success', 'បដារបានបន្ថែម ជោគជ័យ');
     }
 
     public function update(Request $request, Slideshow $slideshow)
@@ -47,12 +47,12 @@ class SlideshowController extends Controller
 
         $data['is_active'] = $request->has('is_active');
         $this->service->updateSlide($slideshow, $data);
-        return back()->with('success', 'បដារបានកែប្រែ បានជោគជ័យ!');
+        return back()->with('success', 'បដារបានកែប្រែ បានជោគជ័យ');
     }
 
     public function destroy(Slideshow $slideshow)
     {
         $this->service->deleteSlide($slideshow);
-        return back()->with('success', 'បដារបានលុប ដោយជោគជ័យ!');
+        return back()->with('success', 'បដារបានលុប ដោយជោគជ័យ');
     }
 }

@@ -94,14 +94,14 @@
 
 <script>
     document.addEventListener('click', function(e) {
-        const link = e.target.closest('.pagination a, .custom-pagination a');
+        const link = e.target.closest('.pagination a, .custom-pagination a, #promos-container .pagination a');
         if (link) {
             e.preventDefault();
             const alpineElement = document.querySelector('[x-data]');
-            if (alpineElement && alpineElement.__x && alpineElement.__x.$data) {
-                alpineElement.__x.$data.fetchUsers(link.href);
-            } else if (typeof Alpine !== 'undefined') {
-                Alpine.$data(alpineElement).fetchUsers(link.href);
+            if (alpineElement && typeof Alpine !== 'undefined' && Alpine.$data) {
+                Alpine.$data(alpineElement).fetchPromos(link.href);
+            } else if (alpineElement && alpineElement.__x && alpineElement.__x.$data) {
+                alpineElement.__x.$data.fetchPromos(link.href);
             }
         }
     });

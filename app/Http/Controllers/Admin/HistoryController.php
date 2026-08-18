@@ -33,7 +33,7 @@ class HistoryController extends Controller
      */
     public function create()
     {
-        return view('admin.history.index'); // ប្រើ index ដើម្បីបង្ហាញទាំងបញ្ជី និងហ្វមបង្កើតថ្មី
+        return view('admin.history.index');
     }
 
     /**
@@ -47,7 +47,6 @@ class HistoryController extends Controller
             'description_kh' => 'required',
         ]);
 
-        // ចំណាំ៖ ប្រើ $this->aboutService ព្រោះអ្នកបានចាក់បញ្ចូលក្នុង __construct
         HotelHistory::create($request->all());
 
         return redirect()->route('history.index')->with('success', 'បង្កើតប្រវត្តិថ្មីជោគជ័យ');
@@ -76,7 +75,7 @@ class HistoryController extends Controller
         $history = HotelHistory::findOrFail($id);
         $history->update($request->all());
 
-        // return redirect()->route('admin.history.index')->with('success', 'កែប្រែជោគជ័យ');
+        return redirect()->route('history.index')->with('success', 'កែប្រែជោគជ័យ');
     }
 
     /**

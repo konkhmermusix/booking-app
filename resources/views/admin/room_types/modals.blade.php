@@ -3,7 +3,6 @@
         min-height: 250px;
     }
 
-    /* បន្ថែមរចនាបថដើម្បីឱ្យស៊ីគ្នាជាមួយ Dark Mode របស់ Tailwind */
     .dark .ck-editor__editable {
         background-color: #1f2937 !important;
         color: #ffffff !important;
@@ -30,7 +29,6 @@
         width: 100%;
     }
 
-    /* កំណត់ទម្រង់អក្សរឡើងវិញសម្រាប់អត្ថបទដែលចេញពី CKEditor */
     .ck-content h1 {
         font-size: 2em;
         font-weight: bold;
@@ -64,7 +62,6 @@
         margin-bottom: 1rem;
     }
 
-    /* បន្ថែមទម្រង់សម្រាប់ List ក្រែងលោវាអត់ចេញចំនុចចុច */
     .ck-content ul {
         list-style-type: disc;
         padding-left: 40px;
@@ -76,7 +73,7 @@
     }
 </style>
 
-<div x-show="showAddModal" x-data="roomTypeAddHandler()" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
+<div x-show="showAddModal" x-data="{}" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showAddModal = false; previews = []" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
 
@@ -94,6 +91,20 @@
             <form action="{{ route('room_types.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="p-8 space-y-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+
+                    @if($errors->any())
+                    <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold">
+                        <div class="flex items-center gap-2 font-bold mb-1">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>សូមពិនិត្យមើលព័ត៌មានដែលបានបញ្ចូល៖</span>
+                        </div>
+                        <ul class="list-disc list-inside space-y-1">
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
@@ -120,8 +131,8 @@
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ប្រភេទសេវាកម្ម <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <select name="category" required class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none font-bold">
-                                    <option value="stay" selected>សម្រាប់ស្នាក់នៅ (Stay)</option>
-                                    <option value="meeting">សម្រាប់ប្រជុំ (Meeting)</option>
+                                    <option value="stay" selected>បន្ទប់ស្នាក់នៅ</option>
+                                    <option value="meeting">សាលប្រជុំ</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-400">
                                     <i class="fas fa-chevron-down text-xs"></i>
@@ -264,8 +275,8 @@
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ប្រភេទសេវាកម្ម <span class="text-red-500">*</span></label>
                             <div class="relative">
                                 <select name="category" x-model="currentRoomType.category" required class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none font-bold">
-                                    <option value="stay">សម្រាប់ស្នាក់នៅ (Stay)</option>
-                                    <option value="meeting">សម្រាប់ប្រជុំ (Meeting)</option>
+                                    <option value="stay">បន្ទប់ស្នាក់នៅ</option>
+                                    <option value="meeting">សាលប្រជុំ</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-gray-400">
                                     <i class="fas fa-chevron-down text-xs"></i>
@@ -401,7 +412,10 @@
                         <div class="p-4 bg-emerald-50 dark:bg-emerald-500/5 rounded-2xl border border-emerald-100 dark:border-emerald-500/10">
                             <p class="text-[10px] text-emerald-600/70 dark:text-emerald-400/60 uppercase font-black tracking-wider mb-1"
                                 x-text="currentRoomType.category === 'meeting' ? 'តម្លៃជួលសាលប្រជុំ' : 'តម្លៃគោលក្នុងមួយយប់'"></p>
-                            <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400" x-text="'$' + parseFloat(currentRoomType.base_price || 0).toFixed(2)"></p>
+                            <div class="flex flex-col">
+                                <p class="text-2xl font-black text-emerald-600 dark:text-emerald-400" x-text="'$' + parseFloat(currentRoomType.base_price || 0).toFixed(2)"></p>
+                                <p class="text-xs font-bold text-gray-400 font-mono" x-text="'(~ ' + (parseFloat(currentRoomType.base_price || 0) * {{ $khrRate }}).toLocaleString('en-US') + ' ៛)'"></p>
+                            </div>
                         </div>
 
                         <div class="p-4 bg-blue-50 dark:bg-blue-500/5 rounded-2xl border border-blue-100 dark:border-blue-500/10">

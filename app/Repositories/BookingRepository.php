@@ -20,19 +20,18 @@ class BookingRepository extends BaseRepository
                 $search = $filters['search'];
 
                 $q->where(function ($query) use ($search) {
-                    // 1. ស្វែងរកតាម លេខកូដការកក់ (Booking Code)
+                    // ស្វែងរកតាម លេខកូដការកក់ (Booking Code)
                     $query->where('booking_code', 'like', "%{$search}%")
 
-                        // 2. ស្វែងរកតាម ឈ្មោះភ្ញៀវ (User Table)
+                        // ស្វែងរកតាម ឈ្មោះភ្ញៀវ (User Table)
                         ->orWhereHas('user', function ($uQ) use ($search) {
                             $uQ->where('name', 'like', "%{$search}%")
                                 ->orWhere('email', 'like', "%{$search}%");
                         })
 
-                        // 3. ស្វែងរកតាម លេខបន្ទប់ ឬ ឈ្មោះបន្ទប់ (Room Table)
+                        // ស្វែងរកតាម លេខបន្ទប់ ឬ ឈ្មោះបន្ទប់ (Room Table)
                         ->orWhereHas('room', function ($rQ) use ($search) {
                             $rQ->where('room_number', 'like', "%{$search}%")
-                                // បើចង់រកតាមប្រភេទបន្ទប់ (Room Type) ថែមទៀត
                                 ->orWhereHas('roomType', function ($rtQ) use ($search) {
                                     $rtQ->where('name', 'like', "%{$search}%");
                                 });

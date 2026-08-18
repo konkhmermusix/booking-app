@@ -6,6 +6,7 @@ if (token) {
 
 document.addEventListener("DOMContentLoaded", function () {
     const scrollTopBtn = document.getElementById("scrollTopBtn");
+    if (!scrollTopBtn) return;
     let lastScrollTop = 0;
 
     window.addEventListener(

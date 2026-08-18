@@ -34,15 +34,12 @@ class RoomTypeService
     public function storeRoomType(array $data)
     {
         return DB::transaction(function () use ($data) {
-            // ១. បង្កើត Room Type
             $roomType = $this->repository->create($data);
 
-            // ២. ភ្ជាប់គ្រឿងបរិក្ខារ (Pivot Table)
             if (!empty($data['facilities'])) {
                 $roomType->facilities()->sync($data['facilities']);
             }
 
-            // ៣. រក្សាទុករូបភាពច្រើនសន្លឹក
             if (isset($data['images'])) {
                 foreach ($data['images'] as $image) {
                     $path = $this->uploadFile($image, 'room_types');
@@ -63,15 +60,12 @@ class RoomTypeService
             $roomType = $this->repository->find($id);
             if (!$roomType) throw new \Exception("Room Type not found.");
 
-            // ១. Update data
             $this->repository->update($id, $data);
 
-            // ២. Sync Facilities
             if (isset($data['facilities'])) {
                 $roomType->facilities()->sync($data['facilities']);
             }
 
-            // ៣. Handle Images
             if (!empty($data['images'])) {
                 foreach ($data['images'] as $image) {
                     $path = $this->uploadFile($image, 'room_types');
@@ -92,16 +86,13 @@ class RoomTypeService
 
             if (!$roomType) return false;
 
-            // ១. លុបរូបភាពចេញពី Physical Storage (Public folder)
             foreach ($roomType->images as $image) {
                 $this->deleteFile($image->image_path);
                 $image->delete(); // លុប Record ក្នុង Table room_images
             }
 
-            // ២. ផ្ដាច់ទំនាក់ទំនងជាមួយ Facilities (Pivot Table)
             $roomType->facilities()->detach();
 
-            // ៣. លុប Room Type (មេ)
             return $this->repository->delete($id);
         });
     }
@@ -111,8 +102,8 @@ class RoomTypeService
     {
         $image = RoomImage::find($imageId);
         if ($image) {
-            $this->deleteFile($image->image_path); // លុបឯកសារចេញពី Storage
-            return $image->delete(); // លុប Record ចេញពី DB
+            $this->deleteFile($image->image_path);
+            return $image->delete();
         }
         return false;
     }

@@ -76,14 +76,14 @@
 
 <script>
     document.addEventListener('click', function(e) {
-        const link = e.target.closest('.pagination a, .custom-pagination a');
+        const link = e.target.closest('.pagination a, .custom-pagination a, #users-container .pagination a');
         if (link) {
             e.preventDefault();
             const alpineElement = document.querySelector('[x-data]');
-            if (alpineElement && alpineElement.__x && alpineElement.__x.$data) {
-                alpineElement.__x.$data.fetchUsers(link.href);
-            } else if (typeof Alpine !== 'undefined') {
+            if (alpineElement && typeof Alpine !== 'undefined' && Alpine.$data) {
                 Alpine.$data(alpineElement).fetchUsers(link.href);
+            } else if (alpineElement && alpineElement.__x && alpineElement.__x.$data) {
+                alpineElement.__x.$data.fetchUsers(link.href);
             }
         }
     });

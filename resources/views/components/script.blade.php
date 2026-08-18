@@ -1,102 +1,128 @@
     @props(['script'])
 
     <script>
-        var swiper = new Swiper(".Slideshow", {
-            loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-                type: "progressbar",
-            },
-            effect: "fade", // ប្រើ Effect Fade ដើម្បីឱ្យការដូររូបភាពមើលទៅប្រណីត
-        });
-    </script>
-
-    <script>
-        const toggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-
-        function updateIcon() {
-            if (document.documentElement.classList.contains('dark')) {
-                themeIcon.className = 'fas fa-sun text-yellow-500';
-            } else {
-                themeIcon.className = 'fas fa-moon text-blue-600';
-            }
-        }
-        updateIcon();
-
-        toggleBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            if (document.documentElement.classList.contains('dark')) {
-                localStorage.theme = 'dark';
-            } else {
-                localStorage.theme = 'light';
-            }
-            updateIcon();
-        });
-
-        // Mobile Menu Logic
-        const menu = document.getElementById('menu');
-        menuBtn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-            menu.classList.toggle('flex');
-        });
-    </script>
-
-    <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = menuBtn.querySelector('i');
-
-        menuBtn.addEventListener('click', () => {
-            // បើក ឬ បិទ Menu
-            mobileMenu.classList.toggle('hidden');
-
-            // ប្តូរ Icon ចុះឡើងរវាង bars (Menu) និង times (Close)
-            if (mobileMenu.classList.contains('hidden')) {
-                // បើ Menu លាក់ (Hidden) ឱ្យចេញរូប Menu
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
-            } else {
-                // បើ Menu បើក ឱ្យចេញរូបខ្វែង Close
-                menuIcon.classList.remove('fa-bars');
-                menuIcon.classList.add('fa-times');
-            }
-        });
-
-        // បិទ Menu វិញនៅពេលចុចលើ Link ណាមួយ
-        document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                menuIcon.classList.replace('fa-times', 'fa-bars');
-            });
-        });
-    </script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        kantumruy: ['Kantumruy Pro', 'sans-serif']
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.querySelector(".CoverflowSlider")) {
+                var swiper = new Swiper(".CoverflowSlider", {
+                    effect: "coverflow",
+                    grabCursor: true,
+                    centeredSlides: true,
+                    slidesPerView: "auto",
+                    loop: true,
+                    autoplay: {
+                        delay: 3500,
+                        disableOnInteraction: false,
                     },
-                    colors: {
-                        gold: {
-                            500: '#D4AF37',
-                            600: '#C5A028'
+                    coverflowEffect: {
+                        rotate: 35,
+                        stretch: 0,
+                        depth: 120,
+                        modifier: 1,
+                        slideShadows: true,
+                    },
+                    navigation: {
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                    },
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                    },
+                });
+            } else if (document.querySelector(".Slideshow")) {
+                var swiper = new Swiper(".Slideshow", {
+                    loop: true,
+                    grabCursor: true,
+                    speed: 1500,
+                    effect: "fade",
+                    fadeEffect: {
+                        crossFade: true,
+                    },
+                    autoplay: {
+                        delay: 5000,
+                        disableOnInteraction: false,
+                    },
+                    navigation: {
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                    },
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                    },
+                });
+            }
+
+            const toggleBtn = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+
+            if (toggleBtn && themeIcon) {
+                function updateIcon() {
+                    if (document.documentElement.classList.contains('dark')) {
+                        themeIcon.className = 'fas fa-sun text-yellow-500';
+                    } else {
+                        themeIcon.className = 'fas fa-moon text-blue-600';
+                    }
+                }
+                updateIcon();
+
+                toggleBtn.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('dark');
+                    if (document.documentElement.classList.contains('dark')) {
+                        localStorage.theme = 'dark';
+                    } else {
+                        localStorage.theme = 'light';
+                    }
+                    updateIcon();
+                });
+            }
+
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (menuBtn && mobileMenu) {
+                const menuIcon = menuBtn.querySelector('i');
+                menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                    if (menuIcon) {
+                        if (mobileMenu.classList.contains('hidden')) {
+                            menuIcon.classList.remove('fa-times');
+                            menuIcon.classList.add('fa-bars');
+                        } else {
+                            menuIcon.classList.remove('fa-bars');
+                            menuIcon.classList.add('fa-times');
+                        }
+                    }
+                });
+
+                document.querySelectorAll('#mobile-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        if (menuIcon) menuIcon.classList.replace('fa-times', 'fa-bars');
+                    });
+                });
+            }
+        });
+    </script>
+
+    <script>
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            kantumruy: ['Kantumruy Pro', 'sans-serif']
+                        },
+                        colors: {
+                            gold: {
+                                500: '#D4AF37',
+                                600: '#C5A028'
+                            }
                         }
                     }
                 }
-            }
+            };
         }
 
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

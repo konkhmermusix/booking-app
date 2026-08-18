@@ -53,4 +53,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Booking::class, 'customer_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function ($user) {
+            Message::where('user_id', $user->id)->delete();
+            Conversation::where('sender_id', $user->id)
+                ->orWhere('receiver_id', $user->id)
+                ->delete();
+        });
+    }
 }

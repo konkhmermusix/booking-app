@@ -20,7 +20,7 @@ class RoomRepository extends BaseRepository
         return $this->model->newQuery()
             ->with(['roomType.images', 'hotel', 'roomType.facilities'])
 
-            // 1. Search តាមលេខបន្ទប់ ឬឈ្មោះសណ្ឋាគារ
+            // Search តាមលេខបន្ទប់ ឬឈ្មោះសណ្ឋាគារ
             ->when(!empty($filters['search']), function ($query) use ($filters) {
                 $search = $filters['search'];
                 $query->where(function ($q) use ($search) {
@@ -31,27 +31,27 @@ class RoomRepository extends BaseRepository
                 });
             })
 
-            // 2. Filter តាមស្ថានភាព (Available, Booked, Maintenance)
+            // Filter តាមស្ថានភាព (Available, Booked, Maintenance)
             ->when(!empty($filters['status']), function ($query) use ($filters) {
                 $query->where('status', $filters['status']);
             })
 
-            // 3. Filter តាមប្រភេទបន្ទប់
+            // Filter តាមប្រភេទបន្ទប់
             ->when(!empty($filters['room_type_id']), function ($query) use ($filters) {
                 $query->where('room_type_id', $filters['room_type_id']);
             })
 
-            // 4. Filter តាមសណ្ឋាគារ
+            // Filter តាមសណ្ឋាគារ
             ->when(!empty($filters['hotel_id']), function ($query) use ($filters) {
                 $query->where('hotel_id', $filters['hotel_id']);
             })
 
-            // 5. Filter តាមជាន់
+            // Filter តាមជាន់
             ->when(!empty($filters['floor']), function ($query) use ($filters) {
                 $query->where('floor', $filters['floor']);
             })
 
-            // 6. តម្រៀបទិន្នន័យ (Sorting)
+            // តម្រៀបទិន្នន័យ (Sorting)
             // បើមានការបញ្ជូន sort_status មក (asc/desc) វានឹងរៀបតាមហ្នឹង បើមិនមានទេគឺរៀបតាមថ្មីបំផុត
             ->when(!empty($filters['sort_status']), function ($query) use ($filters) {
                 $query->orderBy('status', $filters['sort_status']);
@@ -59,7 +59,7 @@ class RoomRepository extends BaseRepository
                 $query->latest();
             })
 
-            // 7. បែងចែកទំព័រ និងរក្សាទុកលក្ខខណ្ឌ Search ក្នុង URL
+            // បែងចែកទំព័រ និងរក្សាទុកលក្ខខណ្ឌ Search ក្នុង URL
             ->paginate($filters['per_page'] ?? 8)
             ->withQueryString();
     }

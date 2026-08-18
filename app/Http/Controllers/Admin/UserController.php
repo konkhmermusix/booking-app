@@ -43,7 +43,7 @@ class UserController extends Controller
             'role' => 'required|in:admin,staff,customer',
             'status' => 'required|in:active,inactive,pending',
             'password' => 'required|min:8|confirmed',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:20480' // ២០MB
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:20480'
         ]);
 
         if ($request->hasFile('avatar')) {
@@ -54,7 +54,7 @@ class UserController extends Controller
 
         User::create($data);
 
-        return back()->with('success', 'បង្កើតអ្នកប្រើប្រាស់បានជោគជ័យ!');
+        return back()->with('success', 'បង្កើតអ្នកប្រើប្រាស់បានជោគជ័យ');
     }
 
     public function update(Request $request, $id)
@@ -86,7 +86,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពបានជោគជ័យ!');
+        return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពបានជោគជ័យ');
     }
 
     public function destroy(User $user)
@@ -97,6 +97,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return back()->with('success', 'លុបអ្នកប្រើប្រាស់រួចរាល់!');
+        return back()->with('success', 'លុបអ្នកប្រើប្រាស់រួចរាល់');
     }
 }

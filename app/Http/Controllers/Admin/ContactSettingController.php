@@ -8,49 +8,63 @@ use Illuminate\Http\Request;
 
 class ContactSettingController extends Controller
 {
-    // ត្រឹមត្រូវ
+
     public function index()
     {
         $settings = ContactSetting::latest()->paginate(5);
         return view('admin.contacts_sett.index', compact('settings'));
     }
 
-    // រក្សាទុកទិន្នន័យថ្មី
     public function store(Request $request)
     {
         $data = $request->validate([
             'key'    => 'required|unique:contact_settings,key',
             'label'  => 'required',
-            'value'  => 'required',
+            'value'  => 'nullable',
             'icon'   => 'nullable',
             'color'  => 'nullable',
             'status' => 'boolean'
         ]);
 
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $fileName = time() . '_' . \Illuminate\Support\Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $data['value'] = $file->storeAs('qr', $fileName, 'public');
+        }
+
+        if (empty($data['value'])) {
+            $data['value'] = 'N/A';
+        }
+
         ContactSetting::create($data);
-        return back()->with('success', 'បន្ថែមបានជោគជ័យ!');
+        return back()->with('success', 'បន្ថែមបានជោគជ័យ');
     }
 
-    // កែប្រែទិន្នន័យ
     public function update(Request $request, $id)
     {
         $request->validate([
             'label' => 'required',
-            'value' => 'required',
         ]);
 
         $setting = ContactSetting::findOrFail($id);
+        $value = $request->value;
+
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $fileName = time() . '_' . \Illuminate\Support\Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $value = $file->storeAs('qr', $fileName, 'public');
+        }
 
         $setting->update([
-            'key' => $request->key,
+            'key'    => $request->key,
             'label'  => $request->label,
-            'value'  => $request->value,
+            'value'  => $value,
             'icon'   => $request->icon,
             'color'  => $request->color,
-            'status' => $request->has('status') ? 1 : 0, // បើ checkbox មិនបាន check វាផ្ញើមក null
+            'status' => $request->has('status') ? 1 : 0,
         ]);
 
-        return redirect()->back()->with('success', 'កែសម្រួលជោគជ័យ!');
+        return redirect()->back()->with('success', 'កែសម្រួលជោគជ័យ');
     }
 
     public function destroy($id)
@@ -58,6 +72,6 @@ class ContactSettingController extends Controller
         $setting = ContactSetting::findOrFail($id);
         $setting->delete();
 
-        return redirect()->back()->with('success', 'ទិន្នន័យត្រូវបានលុបជោគជ័យ!');
+        return redirect()->back()->with('success', 'ទិន្នន័យត្រូវបានលុបជោគជ័យ');
     }
 }

@@ -13,34 +13,44 @@ class BookingRequest extends FormRequest
 
     public function rules()
     {
+        $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
+
         return [
-            // សម្គាល់ប្រភេទនៃការកក់: 'hotel' ឬ 'meeting_room'
-            'booking_category' => 'required|in:hotel,meeting_room',
-
-            // ព័ត៌មានភ្ញៀវ Walk-in
-            'customer_name'    => 'required|string|max:255',
-            'customer_phone'   => 'required|string|max:50',
-            'special_requests' => 'nullable|string',
-
-            // លក្ខខណ្ឌរួម
+            'customer_id'      => 'required|exists:users,id',
+            'room_id'          => 'required|exists:rooms,id',
+            'check_in_date'    => $isUpdate ? 'required|date' : 'required|date|after_or_equal:today',
+            'check_out_date'   => 'required|date|after:check_in_date',
+            'number_of_guests' => 'required|integer|min:1',
             'total_price'      => 'required|numeric|min:0',
-            'payment_method'   => 'required|string',
+            'payment_status'   => 'required|in:pending,paid,failed',
+            'booking_status'   => 'required|in:pending,confirmed,completed,cancelled',
+            'notes'            => 'nullable|string',
+        ];
+    }
 
-            // លក្ខខណ្ឌសម្រាប់ Hotel
-            'hotel_id'         => 'required_if:booking_category,hotel|nullable|exists:hotels,id',
-            'room_id'          => 'required_if:booking_category,hotel|nullable|exists:rooms,id',
-            'check_in'         => 'required_if:booking_category,hotel|nullable|date|after_or_equal:today',
-            'check_out'        => 'required_if:booking_category,hotel|nullable|date|after:check_in',
-
-            // លក្ខខណ្ឌសម្រាប់ Meeting Room
-            'meeting_room_id'  => 'required_if:booking_category,meeting_room|nullable|exists:meeting_rooms,id',
-            'start_date'       => 'required_if:booking_category,meeting_room|nullable|date|after_or_equal:today',
-            'end_date'         => 'required_if:booking_category,meeting_room|nullable|date|after_or_equal:start_date',
-            'start_time'       => 'required_if:booking_category,meeting_room|nullable|date_format:H:i',
-            'end_time'         => 'required_if:booking_category,meeting_room|nullable|date_format:H:i',
-            'total_hours'      => 'required_if:booking_category,meeting_room|nullable|numeric|min:0',
-            'attendees_count'  => 'nullable|integer|min:1',
-            'setup_style'      => 'nullable|string|max:255',
+    public function messages()
+    {
+        return [
+            'customer_id.required'      => 'សូមជ្រើសរើសអតិថិជន!',
+            'customer_id.exists'        => 'អតិថិជនដែលបានជ្រើសរើសមិនត្រឹមត្រូវឡើយ!',
+            'room_id.required'          => 'សូមជ្រើសរើសបន្ទប់!',
+            'room_id.exists'            => 'បន្ទប់ដែលបានជ្រើសរើសមិនត្រឹមត្រូវឡើយ!',
+            'check_in_date.required'    => 'សូមជ្រើសរើសថ្ងៃចូលស្នាក់នៅ!',
+            'check_in_date.date'        => 'ថ្ងៃចូលស្នាក់នៅត្រូវតែជាកាលបរិច្ឆេទត្រឹមត្រូវ!',
+            'check_in_date.after_or_equal' => 'ថ្ងៃចូលស្នាក់នៅមិនអាចមុនថ្ងៃនេះបានទេ!',
+            'check_out_date.required'   => 'សូមជ្រើសរើសថ្ងៃចាកចេញ!',
+            'check_out_date.date'       => 'ថ្ងៃចាកចេញត្រូវតែជាកាលបរិច្ឆេទត្រឹមត្រូវ!',
+            'check_out_date.after'      => 'ថ្ងៃចាកចេញត្រូវតែក្រោយថ្ងៃចូលស្នាក់នៅ!',
+            'number_of_guests.required' => 'សូមបញ្ជាក់ចំនួនភ្ញៀវ!',
+            'number_of_guests.integer'  => 'ចំនួនភ្ញៀវត្រូវតែជាចំនួនគត់!',
+            'number_of_guests.min'      => 'Double Check ចំនួនភ្ញៀវត្រូវតែធំជាង ឬស្មើ ១!',
+            'total_price.required'      => 'សូមបញ្ចូលតម្លៃសរុប!',
+            'total_price.numeric'       => 'តម្លៃសរុបត្រូវតែជាលេខ!',
+            'total_price.min'           => 'តម្លៃសរុបមិនអាចអវិជ្ជមានឡើយ!',
+            'payment_status.required'   => 'សូមជ្រើសរើសស្ថានភាពការបង់ប្រាក់!',
+            'payment_status.in'         => 'ស្ថានភាពការបង់ប្រាក់មិនត្រឹមត្រូវ!',
+            'booking_status.required'   => 'សូមជ្រើសរើសស្ថានភាពការកក់!',
+            'booking_status.in'         => 'ស្ថានភាពការកក់មិនត្រឹមត្រូវ!',
         ];
     }
 }

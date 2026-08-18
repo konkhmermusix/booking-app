@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BookingDetail extends Model
 {
+    protected $table = 'hotel_booking_details';
 
     protected $fillable = [
-        'booking_id',
+        'hotel_booking_id',
         'room_id',
         'room_type_id',
         'price_at_booking',

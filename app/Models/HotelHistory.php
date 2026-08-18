@@ -23,9 +23,6 @@ class HotelHistory extends Model
         'status' => 'boolean',
     ];
 
-    /**
-     * Scope សម្រាប់ទាញយកតែទិន្នន័យដែល Active
-     */
     public function scopeActive($query)
     {
         return $query->where('status', true);

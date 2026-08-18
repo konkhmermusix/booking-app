@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Slideshow extends Model
 {
-    // បន្ថែមបន្ទាត់ខាងក្រោមនេះ
     protected $fillable = [
         'title',
         'subtitle',
@@ -15,5 +14,4 @@ class Slideshow extends Model
         'is_active',
     ];
 
-    // protected $guarded = []; // បើកចំហរគ្រប់ Field ទាំងអស់
 }

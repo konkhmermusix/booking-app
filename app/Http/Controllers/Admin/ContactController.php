@@ -44,18 +44,18 @@ class ContactController extends Controller
     public function store(ContactRequest $request)
     {
         $this->contactService->handleContactSubmission($request->validated());
-        return back()->with('success', 'បង្កើតសារត្រូវបានជោគជ័យ!');
+        return back()->with('success', 'បង្កើតសារត្រូវបានជោគជ័យ');
     }
 
     public function update(Request $request, $id)
     {
         $this->contactService->updateStatus($id, $request->status);
-        return back()->with('success', 'ស្ថានភាពសារត្រូវបានធ្វើបច្ចុប្បន្នភាព!');
+        return back()->with('success', 'ស្ថានភាពសារត្រូវបានធ្វើបច្ចុប្បន្នភាព');
     }
 
     public function destroy($id)
     {
         $this->contactService->deleteMessage($id);
-        return back()->with('success', 'សារត្រូវបានលុបចេញដោយជោគជ័យ!');
+        return back()->with('success', 'សារត្រូវបានលុបចេញដោយជោគជ័យ');
     }
 }

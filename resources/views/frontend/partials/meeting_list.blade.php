@@ -4,10 +4,12 @@
     <div x-data="{ 
             isMeetingModalOpen: false, 
             selectedMeetingRoomTypeId: null,
-            startDate: '',
-            endDate: '',
+            startDate: new Date().toISOString().split('T')[0],
+            endDate: new Date().toISOString().split('T')[0],
             openMeetingModal(id) {
                 this.selectedMeetingRoomTypeId = id;
+                if (!this.startDate) this.startDate = new Date().toISOString().split('T')[0];
+                if (!this.endDate) this.endDate = new Date().toISOString().split('T')[0];
                 this.isMeetingModalOpen = true;
             }
         }"
@@ -32,8 +34,11 @@
             <div class="absolute bottom-4 left-4 z-20">
                 <div class="bg-blue-600/95 backdrop-blur-md text-white px-3 py-1.5 rounded-xl shadow-lg border border-white/20">
                     <span class="text-[10px] opacity-80 block leading-none">ចាប់ពី</span>
-                    <span class="text-lg font-black">${{ number_format($meeting->base_price, 0) }}</span>
-                    <span class="text-[10px] opacity-80">/ម៉ោង</span>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-lg font-black">${{ $meeting->base_price == floor($meeting->base_price) ? number_format($meeting->base_price, 0) : number_format($meeting->base_price, 2) }}</span>
+                        <span class="text-[10px] opacity-80">/ម៉ោង</span>
+                    </div>
+                    <span class="text-[10px] font-semibold block opacity-90 font-mono">({{ number_format($meeting->base_price * $khrRate) }} ៛)</span>
                 </div>
             </div>
 
@@ -82,13 +87,21 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1 my-3 text-xs">
-                    @if(($meeting->available_rooms_count ?? 0) > 0)
+                    @if(isset($hasDateFilter) && !$hasDateFilter)
+                    <p class="text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                        <i class="fas fa-info-circle mr-1.5"></i> សូមជ្រើសរើសថ្ងៃខែ និងម៉ោងប្រជុំដើម្បីកក់
+                    </p>
+                    @elseif(($meeting->available_rooms_count ?? 0) > 2)
                     <p class="text-green-600 dark:text-green-400 font-medium flex items-center">
-                        <i class="fas fa-calendar-check mr-1.5"></i> ទំនេរ {{ $meeting->available_rooms_count }} សាល
+                        <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> 🟢 ទំនេរសម្រាប់កក់ {{ $meeting->available_rooms_count }} សាល
+                    </p>
+                    @elseif(($meeting->available_rooms_count ?? 0) > 0)
+                    <p class="text-amber-600 dark:text-amber-400 font-bold flex items-center">
+                        <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span> 🟢 នៅសល់ត្រឹមតែ {{ $meeting->available_rooms_count }} សាលប៉ុណ្ណោះ!
                     </p>
                     @else
                     <p class="text-red-500 font-medium flex items-center">
-                        <i class="fas fa-calendar-times mr-1.5"></i> ពេញ
+                        <span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1.5"></span> 🔴 ពេញ (កក់អស់ហើយសម្រាប់កាលបរិច្ឆេទនេះ)
                     </p>
                     @endif
                 </div>
@@ -124,7 +137,7 @@
 
         <div x-show="isMeetingModalOpen" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
             <div class="flex items-center justify-center min-h-screen px-4 py-10">
-                <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="isMeetingModalOpen = true"></div>
+                <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="isMeetingModalOpen = false"></div>
 
                 <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-3xl relative border-none overflow-hidden transition-all"
                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">

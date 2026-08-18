@@ -90,8 +90,12 @@
         const link = e.target.closest('.pagination a');
         if (link) {
             e.preventDefault();
-            const alpine = document.querySelector('[x-data]').__x.$data;
-            alpine.fetchMessages(link.href);
+            const rootElement = document.querySelector('[x-data]');
+            if (rootElement && typeof Alpine !== 'undefined' && Alpine.$data) {
+                Alpine.$data(rootElement).fetchMessages(link.href);
+            } else if (rootElement && rootElement.__x) {
+                rootElement.__x.$data.fetchMessages(link.href);
+            }
         }
     });
 </script>

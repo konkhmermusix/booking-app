@@ -23,13 +23,12 @@ class StoreTourRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'            => 'required|max:255',
-            'distance'        => 'nullable|max:100',
-            'google_map_link' => 'nullable|url',
-            // images ក្នុងទម្រង់ array
+            'name'            => 'required|string|max:255',
+            'distance'        => 'nullable|string|max:100',
+            'google_map_link' => 'nullable|string',
             'images'          => 'nullable|array',
-            'images.*'        => 'image|mimes:jpeg,JPEG,png,PNG,jpg,JPG|max:2048',
-            'description'     => 'nullable',
+            'images.*'        => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,heic|max:10240',
+            'description'     => 'nullable|string',
             'status'          => 'required'
         ];
     }

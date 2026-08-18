@@ -23,9 +23,9 @@ class ContactRequest extends FormRequest
     {
         return [
             'name'        => 'required|string|max:255',
-            'email'       => 'required|email|max:255',
+            'email'       => 'nullable|email|max:255',
             'tell'        => 'required|string|max:20',
-            'description' => 'required|string|min:10',
+            'description' => 'required|string|min:5',
         ];
     }
 
@@ -33,8 +33,10 @@ class ContactRequest extends FormRequest
     {
         return [
             'name.required' => 'សូមបញ្ចូលឈ្មោះរបស់អ្នក',
-            'email.required' => 'សូមបញ្ចូលអ៊ីមែលឱ្យបានត្រឹមត្រូវ',
+            'email.email' => 'ទម្រង់អាសយដ្ឋានអ៊ីមែលមិនត្រឹមត្រូវឡើយ',
             'tell.required' => 'សូមបញ្ចូលលេខទូរស័ព្ទ',
+            'description.required' => 'សូមបញ្ចូលសាររបស់អ្នក',
+            'description.min' => 'សាររបស់អ្នកត្រូវមានយ៉ាងហោចណាស់ ៥ តួអក្សរ',
         ];
     }
 }

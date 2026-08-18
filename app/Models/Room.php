@@ -24,9 +24,9 @@ class Room extends Model
         return $this->belongsTo(RoomType::class, 'room_type_id');
     }
 
-    public function hotelBookings(): HasMany
+    public function hotelBookings(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(HotelBooking::class);
+        return $this->belongsToMany(HotelBooking::class, 'hotel_booking_details', 'room_id', 'hotel_booking_id');
     }
 
     public function meetingBookings():HasMany
@@ -37,5 +37,10 @@ class Room extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class)->where('status', 1)->latest();
+    }
+
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
     }
 }

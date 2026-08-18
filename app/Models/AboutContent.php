@@ -9,10 +9,8 @@ class AboutContent extends Model
 {
     use HasFactory;
 
-    // កំណត់ឈ្មោះ Table (ប្រសិនបើខុសពីការរំពឹងទុករបស់ Laravel)
     protected $table = 'about_contents';
 
-    // អនុញ្ញាតឱ្យបញ្ចូលទិន្នន័យក្នុង Column ទាំងនេះ
     protected $fillable = [
         'key',
         'title_kh',
@@ -21,7 +19,6 @@ class AboutContent extends Model
         'status',
     ];
 
-    // កំណត់ប្រភេទជួរឈរ (Casting)
     protected $casts = [
         'status' => 'boolean',
     ];

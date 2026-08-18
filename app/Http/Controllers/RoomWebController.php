@@ -9,102 +9,139 @@ use App\Models\Room;
 use App\Models\HotelBooking;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RoomWebController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. INPUT
+        // INPUT & DATE FILTER DETECT
+        $hasDateFilter = $request->filled('check_in') && $request->filled('check_out');
         $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
         $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
         $type_name = $request->input('type');
         $sort      = $request->input('sort', 'asc');
         $search    = $request->input('search');
         $guests    = $request->input('guests');
+        $min_price = $request->input('min_price');
+        $max_price = $request->input('max_price');
+        $facility_param = $request->input('facility');
 
-        // 2. CATEGORIES (EXCLUDE MEETING ROOM)
+        // CATEGORIES (EXCLUDE MEETING ROOM) & FACILITIES
         $categories = RoomType::where('name', 'not like', '%សាលប្រជុំ%')
             ->select('id', 'name')
             ->distinct()
             ->get();
 
-        // 3. AVAILABILITY LOGIC (REUSABLE)
+        $facilitiesList = \App\Models\Facility::select('id', 'name', 'icon')->get();
+
+        // AVAILABILITY LOGIC (REUSABLE)
         $availabilityFilter = function ($query) use ($check_in, $check_out) {
-            $query->where('status', 'available')
+            $query->where('status', '!=', 'maintenance')
                 ->whereDoesntHave('hotelbookings', function ($b) use ($check_in, $check_out) {
-
                     $b->whereIn('status', ['confirmed', 'pending'])
-                        ->where(function ($overlap) use ($check_in, $check_out) {
-
-                            $overlap->whereBetween('check_in', [$check_in, $check_out])
-                                ->orWhereBetween('check_out', [$check_in, $check_out])
-                                ->orWhere(function ($full) use ($check_in, $check_out) {
-                                    $full->where('check_in', '<=', $check_in)
-                                        ->where('check_out', '>=', $check_out);
-                                });
-                        });
+                        ->where('check_in', '<', $check_out)
+                        ->where('check_out', '>', $check_in);
                 });
         };
 
         $query = RoomType::with(['images', 'facilities'])
-
             ->withAvg('reviews as reviews_avg_rating', 'rating')
             ->withCount('reviews')
             ->withCount([
                 'rooms as available_rooms_count' => $availabilityFilter
             ])
-            ->whereHas('rooms', $availabilityFilter)
             ->where('name', 'not like', '%សាលប្រជុំ%');
 
-
-        // type filter
         if ($type_name) {
             $query->where('name', $type_name);
         }
 
-        // search filter
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
             });
         }
 
-        // guests filter
         if ($guests) {
             $query->where('max_guests', '>=', $guests);
         }
 
-        // 6. SORT + PAGINATION
+        if ($min_price !== null && $min_price !== '') {
+            $query->where('base_price', '>=', (float)$min_price);
+        }
+        if ($max_price !== null && $max_price !== '') {
+            $query->where('base_price', '<=', (float)$max_price);
+        }
+
+        if ($facility_param) {
+            $query->whereHas('facilities', function ($f) use ($facility_param) {
+                $f->where('facilities.id', $facility_param)
+                  ->orWhere('facilities.name', 'like', "%{$facility_param}%");
+            });
+        }
+
+        if ($sort === 'rating') {
+            $query->orderByDesc('reviews_avg_rating');
+        } elseif ($sort === 'desc') {
+            $query->orderByDesc('base_price');
+        } elseif ($sort === 'newest') {
+            $query->orderByDesc('created_at');
+        } else {
+            $query->orderBy('base_price', 'asc');
+        }
+
         $roomTypes = $query
-            ->orderBy('base_price', $sort === 'desc' ? 'desc' : 'asc')
             ->paginate(6)
             ->withQueryString();
 
-        // 7. AJAX RESPONSE
         if ($request->ajax()) {
-            return view('frontend.partials.room_list', compact('roomTypes'))->render();
+            return view('frontend.partials.room_list', compact('roomTypes', 'hasDateFilter', 'check_in', 'check_out'))->render();
         }
 
-        // 8. RETURN VIEW
+
         return view('frontend.rooms', compact(
             'roomTypes',
             'categories',
+            'facilitiesList',
             'check_in',
             'check_out',
             'sort',
             'search',
             'guests',
-            'type_name'
+            'type_name',
+            'min_price',
+            'max_price',
+            'facility_param',
+            'hasDateFilter'
         ));
     }
 
     // សម្រាប់ Stay Room
-    public function room_detail($id)
+    public function room_detail(Request $request, $id)
     {
+        $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
+        $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
+
         $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->findOrFail($id);
+
+        $availableRoomsCount = Room::where('room_type_id', $roomType->id)
+            ->where('status', '!=', 'maintenance')
+            ->whereNotExists(function ($query) use ($check_in, $check_out) {
+                $query->select(DB::raw(1))
+                    ->from('hotel_bookings')
+                    ->join('hotel_booking_details', 'hotel_bookings.id', '=', 'hotel_booking_details.hotel_booking_id')
+                    ->whereColumn('rooms.id', 'hotel_booking_details.room_id')
+                    ->whereIn('hotel_bookings.status', ['confirmed', 'pending'])
+                    ->where(function ($q) use ($check_in, $check_out) {
+                        $q->where('hotel_bookings.check_in', '<', $check_out)
+                          ->where('hotel_bookings.check_out', '>', $check_in);
+                    });
+            })
+            ->count();
 
         $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
             ->where('id', '!=', $roomType->id)
@@ -112,7 +149,38 @@ class RoomWebController extends Controller
             ->take(3)
             ->get();
 
-        return view('frontend.room_details', compact('roomType', 'similarRooms'));
+        return view('frontend.room_details', compact('roomType', 'similarRooms', 'check_in', 'check_out', 'availableRoomsCount'));
+    }
+
+    public function checkAvailability(Request $request)
+    {
+        $roomTypeId = $request->input('room_type_id');
+        $checkIn    = $request->input('check_in');
+        $checkOut   = $request->input('check_out');
+
+        if (!$roomTypeId || !$checkIn || !$checkOut) {
+            return response()->json(['available' => false, 'count' => 0]);
+        }
+
+        $availableRoomsCount = Room::where('room_type_id', $roomTypeId)
+            ->where('status', '!=', 'maintenance')
+            ->whereNotExists(function ($query) use ($checkIn, $checkOut) {
+                $query->select(DB::raw(1))
+                    ->from('hotel_bookings')
+                    ->join('hotel_booking_details', 'hotel_bookings.id', '=', 'hotel_booking_details.hotel_booking_id')
+                    ->whereColumn('rooms.id', 'hotel_booking_details.room_id')
+                    ->whereIn('hotel_bookings.status', ['confirmed', 'pending'])
+                    ->where(function ($q) use ($checkIn, $checkOut) {
+                        $q->where('hotel_bookings.check_in', '<', $checkOut)
+                          ->where('hotel_bookings.check_out', '>', $checkIn);
+                    });
+            })
+            ->count();
+
+        return response()->json([
+            'available' => $availableRoomsCount > 0,
+            'count'     => $availableRoomsCount
+        ]);
     }
 
     // For 
@@ -139,7 +207,14 @@ class RoomWebController extends Controller
             'status'       => 1
         ]);
 
-        return back()->with('success', 'បានផ្ញើការវាយតម្លៃដោយជោគជ័យ!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានផ្ញើការវាយតម្លៃដោយជោគជ័យ'
+            ]);
+        }
+
+        return back()->with('success', 'បានផ្ញើការវាយតម្លៃដោយជោគជ័យ');
     }
 
     public function storeReply(Request $request)
@@ -151,7 +226,7 @@ class RoomWebController extends Controller
             'comment'      => 'required|string',
         ]);
 
-        Review::create([
+        $reply = Review::create([
             'room_type_id' => $request->room_type_id,
             'user_id'      => Auth::id(),
             'parent_id'    => $request->parent_id,
@@ -161,7 +236,22 @@ class RoomWebController extends Controller
             'status'       => 1
         ]);
 
-        return back()->with('success', 'បានផ្ញើការឆ្លើយតបដោយជោគជ័យ!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានផ្ញើការឆ្លើយតបដោយជោគជ័យ',
+                'reply'   => [
+                    'id' => $reply->id,
+                    'name' => $reply->name,
+                    'comment' => $reply->comment,
+                    'created_at' => $reply->created_at->diffForHumans(),
+                    'is_admin' => ($reply->user_id == 1),
+                    'can_edit' => Auth::check() && ($reply->user_id == Auth::id() || Auth::id() == 1)
+                ]
+            ]);
+        }
+
+        return back()->with('success', 'បានផ្ញើការឆ្លើយតបដោយជោគជ័យ');
     }
 
     public function updateReview(Request $request, $id)
@@ -169,7 +259,10 @@ class RoomWebController extends Controller
         $review = Review::findOrFail($id);
 
         if ($review->user_id !== Auth::id() && Auth::id() !== 1) {
-            return back()->with('error', 'អ្នកគ្មានសិទ្ធិកែប្រែមតិយោបល់នេះទេ!');
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'អ្នកគ្មានសិទ្ធិកែប្រែមតិយោបល់នេះទេ'], 403);
+            }
+            return back()->with('error', 'អ្នកគ្មានសិទ្ធិកែប្រែមតិយោបល់នេះទេ');
         }
 
         $request->validate([
@@ -183,20 +276,39 @@ class RoomWebController extends Controller
         }
         $review->save();
 
-        return back()->with('success', 'បានកែប្រែមតិយោបល់រួចរាល់!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានកែប្រែមតិយោបល់រួចរាល់',
+                'comment' => $review->comment,
+                'rating'  => $review->rating
+            ]);
+        }
+
+        return back()->with('success', 'បានកែប្រែមតិយោបល់រួចរាល់');
     }
 
-    public function deleteReview($id)
+    public function deleteReview(Request $request, $id)
     {
         $review = Review::findOrFail($id);
 
         if ($review->user_id !== Auth::id() && Auth::id() !== 1) {
-            return back()->with('error', 'អ្នកគ្មានសិទ្ធិលុបមតិយោបល់នេះទេ!');
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'អ្នកគ្មានសិទ្ធិលុបមតិយោបល់នេះទេ'], 403);
+            }
+            return back()->with('error', 'អ្នកគ្មានសិទ្ធិលុបមតិយោបល់នេះទេ');
         }
 
         Review::where('parent_id', $review->id)->delete();
         $review->delete();
 
-        return back()->with('success', 'បានលុបមតិយោបល់ដោយជោគជ័យ!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានលុបមតិយោបល់ដោយជោគជ័យ'
+            ]);
+        }
+
+        return back()->with('success', 'បានលុបមតិយោបល់ដោយជោគជ័យ');
     }
 }

@@ -20,10 +20,7 @@ class ChatService
 
     public function sendMessage($data, $senderId)
     {
-        // បើមានរូបភាព ប្រើ Trait ដើម្បី Upload
         if (isset($data['images']) && is_array($data['images'])) {
-            // ក្នុងករណីផ្ញើរូបច្រើន អ្នកអាចយកតែមួយ ឬបង្កើត loop
-            // ឧទាហរណ៍យកតែរូបទី១
             $data['file_path'] = $this->uploadFile($data['images'][0]);
         }
 
@@ -35,7 +32,6 @@ class ChatService
             'is_read'         => false,
         ]);
 
-        // បាញ់ Event ទៅ Reverb (Real-time)
         broadcast(new MessageSent($message->load('user')))->toOthers();
 
         return $message;

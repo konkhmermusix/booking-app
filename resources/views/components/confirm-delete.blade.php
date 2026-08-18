@@ -1,5 +1,5 @@
 <script>
-    window.confirmDelete = (form) => {
+    window.confirmDelete = (target, url = null) => {
         const isDark = document.documentElement.classList.contains('dark');
         Swal.fire({
             title: 'តើអ្នកប្រាកដទេ?',
@@ -28,17 +28,42 @@
                 htmlContainer: 'text-sm opacity-80',
                 confirmButton: 'rounded-2xl px-6 py-3 font-bold text-sm tracking-wide focus:ring-0',
                 cancelButton: 'rounded-2xl px-6 py-3 font-bold text-sm tracking-wide focus:ring-0'
-            },
-            preConfirm: () => {
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve(true);
-                    }, 500);
-                });
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit();
+                if (target && typeof target.submit === 'function') {
+                    target.submit();
+                } else if (typeof target === 'string' || typeof target === 'number') {
+                    let form = document.getElementById('delete-form');
+                    let targetUrl = url || `${window.location.pathname.replace(/\/$/, '')}/${target}`;
+                    
+                    if (form) {
+                        form.action = targetUrl;
+                        form.submit();
+                    } else {
+                        const tempForm = document.createElement('form');
+                        tempForm.method = 'POST';
+                        tempForm.action = targetUrl;
+
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                        if (csrfToken) {
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = '_token';
+                            csrfInput.value = csrfToken;
+                            tempForm.appendChild(csrfInput);
+                        }
+
+                        const methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        methodInput.value = 'DELETE';
+                        tempForm.appendChild(methodInput);
+
+                        document.body.appendChild(tempForm);
+                        tempForm.submit();
+                    }
+                }
             }
         });
     }

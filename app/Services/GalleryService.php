@@ -23,10 +23,8 @@ class GalleryService
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
-                // Upload តាម Trait
                 $path = $this->uploadFile($file, 'gallery');
-
-                // រក្សាទុកតាម Repo
+                
                 $this->repo->create([
                     'hotel_id' => $hotel_id,
                     'image' => $path,
@@ -34,6 +32,28 @@ class GalleryService
                 ]);
             }
         }
+    }
+
+    public function updateGallery($request, $gallery)
+    {
+        $data = [];
+
+        if ($request->has('is_active')) {
+            $data['is_active'] = (int) $request->input('is_active');
+        }
+
+        if ($request->hasFile('image')) {
+            if (!empty($gallery->image)) {
+                $this->deleteFile($gallery->image);
+            }
+            $data['image'] = $this->uploadFile($request->file('image'), 'gallery');
+        }
+
+        if (!empty($data)) {
+            $gallery->update($data);
+        }
+
+        return $gallery;
     }
 
     public function deleteGallery($gallery)

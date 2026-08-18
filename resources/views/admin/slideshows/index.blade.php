@@ -1,4 +1,6 @@
 @extends('layouts.admin')
+
+@section('title', 'គ្រប់គ្រងបដារ')
 @section('content')
 <div class="space-y-6" x-data="{ showAddModal: false, showEditModal: false, showDetailModal: false, currentSlide: {} }">
 
@@ -43,13 +45,13 @@
                                 {{ $slide->is_active ? 'បង្ហាញ' : 'មិនបង្ហាញ' }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-right flex gap-3 justify-end">
-                            <div class="flex justify-end gap-2 space-2">
-                                <button @click="currentSlide = {{ $slide->toJson() }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលម្អិត"><i class="fas fa-eye text-sm"></i></button>
-                                <button @click="currentSlide = {{ $slide->toJson() }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                            <div class="flex justify-end items-center gap-1">
+                                <button type="button" @click="currentSlide = {{ $slide->toJson() }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+                                <button type="button" @click="currentSlide = {{ $slide->toJson() }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
                                 <button type="button"
                                     onclick="confirmDelete('{{ $slide->id }}')"
-                                    class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                                     title="លុប">
                                     <i class="fas fa-trash text-sm"></i>
                                 </button>
@@ -57,14 +59,14 @@
                         </td>
                     </tr>
                     @empty
-                    <div class="col-span-full">@include('admin.rooms.partials.empty-state')</div>
+                    <div class="col-span-full">@include('admin.rooms.partials.empty_state')</div>
                     @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 
-    <div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-[1.5rem] shadow-sm border-none transition-colors">
+    <div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border-none transition-colors">
         <div class="dark:text-white">
             {{ $slides->links() }}
         </div>

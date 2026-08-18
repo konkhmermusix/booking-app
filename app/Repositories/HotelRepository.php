@@ -8,10 +8,16 @@ class HotelRepository
 {
     public function getAll($filters = [])
     {
-        $query = Hotel::query();
+        $query = Hotel::query()->withCount('rooms');
 
         if (!empty($filters['search'])) {
-            $query->where('name', 'like', '%' . $filters['search'] . '%');
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('phone', 'like', '%' . $search . '%')
+                  ->orWhere('address', 'like', '%' . $search . '%');
+            });
         }
 
         if (isset($filters['status']) && $filters['status'] !== "") {

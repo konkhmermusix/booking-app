@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MeetingBooking extends Model
 {
-    // ១. កំណត់ឈ្មោះតារាងឱ្យត្រូវទៅនឹង Database (ព្រោះវាមាន "s" នៅខាងចុង)
     protected $table = 'meeting_bookings';
 
-    // ២. អនុញ្ញាតឱ្យធ្វើ Mass Assignment (បង្កើត ឬកែប្រែទិន្នន័យបាន)
     protected $fillable = [
+        'booking_code',
+        'booking_type',
         'user_id',
+        'customer_name',
+        'customer_phone',
+        'customer_email',
         'meeting_room_id',
         'start_date',
         'end_date',
@@ -20,17 +23,16 @@ class MeetingBooking extends Model
         'end_time',
         'total_hours',
         'total_price',
-        'status',
-        'booking_code',
+        'payment_method',
         'attendees_count',
         'setup_style',
         'special_requests',
-        'payment_method'
+        'status',
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'start_date' => 'date:Y-m-d',
+        'end_date' => 'date:Y-m-d',
         'total_hours' => 'decimal:2',
         'total_price' => 'decimal:2',
         'attendees_count' => 'integer',
@@ -46,5 +48,10 @@ class MeetingBooking extends Model
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class, 'meeting_room_id');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'meeting_booking_id');
     }
 }

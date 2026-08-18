@@ -7,7 +7,7 @@ use App\Repositories\RoomRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\Room;
-use App\Models\MeetingRoomBooking; // បើមាន Model សម្រាប់តារាងទី៣
+use App\Models\MeetingBooking;
 
 class BookingService
 {
@@ -34,7 +34,7 @@ class BookingService
             // រៀបចំទម្រង់អត្ថបទសម្រាប់កត់ចូល special_requests
             $walkInInfo = "【ភ្ញៀវ Walk-in】 ឈ្មោះ: " . $data['customer_name'] . " | លេខទូរស័ព្ទ: " . $data['customer_phone'];
             $finalRequests = !empty($data['special_requests'])
-                ? $walkInInfo . " | សំណូមពរ: " . $data['special_requests']
+                ? $walkInInfo . " | មតិផ្សេងៗ: " . $data['special_requests']
                 : $walkInInfo;
 
             $bookingCode = 'PNT-' . strtoupper(Str::random(6));
@@ -42,11 +42,11 @@ class BookingService
             // កាត់ខណ្ឌចែកទៅតាមប្រភេទនៃការកក់
             if ($data['booking_category'] === 'hotel') {
 
-                // ១. បញ្ចូលទៅតារាងទី១ (hotel_bookings)
+                // បញ្ចូលទៅតារាងទី១ (hotel_bookings)
                 $booking = $this->bookingRepo->create([
                     'booking_code'     => $bookingCode,
                     'hotel_id'         => $data['hotel_id'],
-                    'user_id'          => null, // Table ១ អនុញ្ញាតឱ្យ NULL
+                    'user_id'          => null,
                     'room_id'          => $data['room_id'],
                     'check_in'         => $data['check_in'],
                     'check_out'        => $data['check_out'],
@@ -58,7 +58,7 @@ class BookingService
                     'status'           => 'confirmed',
                 ]);
 
-                // ២. បញ្ចូលទៅតារាងទី២ (hotel_booking_details)
+                // បញ្ចូលទៅតារាងទី២ (hotel_booking_details)
                 $room = Room::findOrFail($data['room_id']);
                 $booking->details()->create([
                     'room_id'          => $room->id,
@@ -66,17 +66,17 @@ class BookingService
                     'price_at_booking' => $data['total_price'],
                 ]);
 
-                // ៣. បច្ចុប្បន្នភាពស្ថានភាពបន្ទប់
+                // បច្ចុប្បន្នភាពស្ថានភាពបន្ទប់
                 $this->roomRepo->updateStatus($data['room_id'], 'booked');
 
                 return $booking;
             } else if ($data['booking_category'] === 'meeting_room') {
 
-                // ករណីកក់បន្ទប់ប្រជុំ (តារាងទី៣)
-                // ដោយសារ user_id ក្នុង Table ៣ គឺ NOT NULL យើងត្រូវប្រើតួលេខ 0 ឬ ID របស់ Admin ជំនួស
-                $meetingBooking = DB::table('meeting_room_bookings')->insertGetId([
+                // ករណីកក់បន្ទប់ប្រជុំ — ប្រើ MeetingBooking Model + meeting_bookings table
+                // user_id ប្រើ ID របស់ Admin ដែល Login (Walk-in ក្នុងនាម Admin)
+                $meetingBooking = MeetingBooking::create([
                     'booking_code'     => $bookingCode,
-                    'user_id'          => 0, // ដាក់ 0 តំណាងឱ្យភ្ញៀវក្រៅប្រព័ន្ធ (Walk-in)
+                    'user_id'          => auth()->id(),
                     'meeting_room_id'  => $data['meeting_room_id'],
                     'start_date'       => $data['start_date'],
                     'end_date'         => $data['end_date'],
@@ -89,11 +89,10 @@ class BookingService
                     'setup_style'      => $data['setup_style'] ?? null,
                     'special_requests' => $finalRequests,
                     'status'           => 'confirmed',
-                    'created_at'       => now(),
-                    'updated_at'       => now(),
                 ]);
 
-                // អាចថែម Logic update status បន្ទប់ប្រជុំនៅទីនេះ (បើមាន)
+                // ប្តូរស្ថានភាពបន្ទប់ប្រជុំទៅជា booked
+                $this->roomRepo->updateStatus($data['meeting_room_id'], 'booked');
 
                 return $meetingBooking;
             }

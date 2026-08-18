@@ -59,10 +59,9 @@
 </style>
 
 
-<div class="container mx-auto">
-    <section class="bg-gray-50 dark:bg-[#0b1120] py-10">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+<div class="w-full bg-gray-50 dark:bg-[#0b1120] py-10">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                 <div class="lg:col-span-2">
                     <div class="space-y-4">
                         <div class="relative overflow-hidden rounded-2xl shadow-xl group border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
@@ -123,8 +122,9 @@
                         <div class="flex items-baseline justify-between border-b border-gray-50 dark:border-gray-800/60 pb-4">
                             <div class="flex items-baseline gap-1">
                                 <h2 class="text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400">
-                                    ${{ number_format($roomType->base_price,0) }}
+                                    ${{ $roomType->base_price == floor($roomType->base_price) ? number_format($roomType->base_price, 0) : number_format($roomType->base_price, 2) }}
                                 </h2>
+                                <span class="text-xs font-bold text-gray-400 font-mono">({{ number_format($roomType->base_price * $khrRate) }} ៛)</span>
                                 <p class="text-gray-500 dark:text-gray-400 text-sm">/ យប់ </p>
                             </div>
                         </div>
@@ -146,7 +146,7 @@
                                     <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                         <i class="fas fa-calendar-alt text-blue-500 mr-1"></i> ថ្ងៃចូលស្នាក់នៅ
                                     </label>
-                                    <input type="date" name="check_in" id="check_in" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}"
+                                    <input type="date" name="check_in" id="check_in" min="{{ date('Y-m-d') }}" value="{{ $check_in ?? date('Y-m-d') }}"
                                         class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]" required>
                                 </div>
 
@@ -154,25 +154,39 @@
                                     <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                         <i class="fas fa-calendar-alt text-blue-600 dark:text-blue-500 mr-1"></i> ថ្ងៃចាកចេញ
                                     </label>
-                                    <input type="date" name="check_out" id="check_out" min="{{ date('Y-m-d', strtotime('+1 day')) }}" value="{{ date('Y-m-d', strtotime('+1 day')) }}"
+                                    <input type="date" name="check_out" id="check_out" min="{{ date('Y-m-d', strtotime('+1 day')) }}" value="{{ $check_out ?? date('Y-m-d', strtotime('+1 day')) }}"
                                         class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]" required>
                                 </div>
                             </div>
 
-                            <button type="submit"
-                                class="w-full h-12 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95">
-                                កក់ឥឡូវនេះ
+                            <div id="availabilityStatus" class="mt-2 text-xs font-bold transition-all">
+                                @if(($availableRoomsCount ?? 1) > 0)
+                                    <span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/50">
+                                        <i class="fas fa-check-circle text-emerald-500"></i> ទំនេរសម្រាប់កក់ {{ $availableRoomsCount }} បន្ទប់
+                                    </span>
+                                @else
+                                    <span class="text-rose-600 dark:text-rose-400 flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl border border-rose-100 dark:border-rose-900/50">
+                                        <i class="fas fa-exclamation-circle text-rose-500"></i> ពេញ (កក់អស់ហើយសម្រាប់ថ្ងៃនេះ)
+                                    </span>
+                                @endif
+                            </div>
+
+                            <button type="submit" id="bookNowBtn"
+                                @if(($availableRoomsCount ?? 1) <= 0) disabled @endif
+                                class="w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-md {{ ($availableRoomsCount ?? 1) <= 0 ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none' : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95 shadow-blue-500/20' }}">
+                                <i id="btnIcon" class="fas {{ ($availableRoomsCount ?? 1) <= 0 ? 'fa-calendar-times' : 'fa-check' }}"></i>
+                                <span id="btnText">{{ ($availableRoomsCount ?? 1) <= 0 ? 'ពេញ (កក់អស់ហើយ)' : 'កក់ឥឡូវនេះ' }}</span>
                             </button>
                         </form>
                     </div>
                 </div>
-            </div>
+            </div>{{-- Close top grid --}}
 
             {{-- BOTTOM: DETAILS & FACILITIES --}}
-            <div class="mt-10 md:mt-14 bg-white dark:bg-gray-900 rounded-2xl md:rounded-3xl shadow-lg border border-gray-100 dark:border-gray-800 p-5 md:p-8 transition-colors duration-300">
-                <h1 class="text-2xl md:text-4xl font-black mb-4 text-gray-900 dark:text-white">
+            <div class="mt-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 p-5 md:p-8 transition-colors duration-300">
+                <h2 class="text-2xl md:text-4xl font-black mb-4 text-gray-900 dark:text-white">
                     {{ $roomType->name }}
-                </h1>
+                </h2>
 
                 <div class="flex flex-wrap gap-3 mb-8 text-gray-700 dark:text-gray-300">
                     <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium">
@@ -209,9 +223,8 @@
                     @endforelse
                 </div>
             </div>
-        </div>
 
-        <div class="mt-10 bg-white dark:bg-gray-900 rounded-2xl md:rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 p-5 md:p-8 transition-colors duration-300">
+            <div class="mt-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 p-5 md:p-8 transition-colors duration-300">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-5 mb-6 gap-4">
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold border-l-4 border-blue-600 dark:border-blue-500 pl-3 text-gray-900 dark:text-white">
@@ -238,15 +251,19 @@
                 @endif
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 space-y-6 max-h-[600px] overflow-y-auto pr-2 scrollbar-hide">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div class="lg:col-span-2 space-y-5" id="reviewsContainer">
                     @forelse($roomType->reviews->where('parent_id', null) as $review)
                     <div class="bg-gray-50 dark:bg-gray-800/40 p-4 rounded-2xl border border-gray-100 dark:border-gray-800/60">
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center uppercase text-sm">
-                                    {{ mb_substr($review->name, 0, 1) }}
-                                </div>
+                                @if($review->user && $review->user->avatar)
+                                    <img src="{{ asset('storage/' . $review->user->avatar) }}" class="w-9 h-9 rounded-xl object-cover shadow-sm">
+                                @else
+                                    <div class="w-9 h-9 bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center uppercase text-sm">
+                                        {{ mb_substr($review->name, 0, 1) }}
+                                    </div>
+                                @endif
                                 <div>
                                     <h4 class="text-sm font-bold text-gray-900 dark:text-white">{{ $review->name }}</h4>
                                     <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ $review->created_at->diffForHumans() }}</p>
@@ -259,12 +276,12 @@
                             </div>
                         </div>
 
-                        <div id="review-comment-{{ $review->id }}" class="text-gray-600 dark:text-gray-300 text-sm pl-12">
+                        <div id="review-comment-{{ $review->id }}" class="text-gray-600 dark:text-gray-300 text-sm pl-12 break-words [word-break:break-word]">
                             {!! $review->comment !!}
                         </div>
 
-                        <div id="edit-form-{{ $review->id }}" class="hidden mt-2 pl-12">
-                            <form action="{{ route('frontend.room_details.update', $review->id) }}" method="POST" class="space-y-2">
+                        <div id="edit-box-{{ $review->id }}" class="hidden mt-2 pl-12">
+                            <form id="edit-form-{{ $review->id }}" action="{{ route('frontend.room_details.update', $review->id) }}" method="POST" class="space-y-2 edit-review-form">
                                 @csrf
                                 @method('PUT')
                                 <div class="flex items-center gap-2 mb-2">
@@ -278,24 +295,24 @@
                                 <textarea name="comment" required class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2.5 rounded-xl outline-none text-xs dark:text-white focus:ring-1 ring-blue-500" rows="2">{!! strip_tags($review->comment) !!}</textarea>
                                 <div class="flex gap-2">
                                     <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold">រក្សាទុក</button>
-                                    <button type="button" onclick="document.getElementById('edit-form-{{ $review->id }}').classList.add('hidden')" class="bg-gray-400 text-white px-3 py-1.5 rounded-lg text-xs font-bold">បោះបង់</button>
+                                    <button type="button" onclick="document.getElementById('edit-box-{{ $review->id }}').classList.add('hidden')" class="bg-gray-400 text-white px-3 py-1.5 rounded-lg text-xs font-bold">បោះបង់</button>
                                 </div>
                             </form>
                         </div>
 
                         <div class="mt-3 pl-12 flex items-center gap-4">
-                            <button onclick="document.getElementById('reply-form-{{ $review->id }}').classList.toggle('hidden')"
+                            <button onclick="document.getElementById('reply-box-{{ $review->id }}').classList.toggle('hidden')"
                                 class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
                                 <i class="fas fa-reply fa-flip-horizontal"></i> ឆ្លើយតប
                             </button>
 
                             @if(Auth::check() && ($review->user_id == Auth::id() || Auth::id() == 1))
-                            <button onclick="document.getElementById('edit-form-{{ $review->id }}').classList.toggle('hidden')"
+                            <button onclick="document.getElementById('edit-box-{{ $review->id }}').classList.toggle('hidden')"
                                 class="text-xs font-bold text-amber-600 hover:underline flex items-center gap-1">
                                 <i class="fas fa-edit"></i> កែប្រែមតិ
                             </button>
 
-                            <form action="{{ route('frontend.room_details.delete', $review->id) }}" method="POST" class="inline">
+                            <form action="{{ route('frontend.room_details.delete', $review->id) }}" method="POST" class="inline delete-review-form">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-xs font-bold text-red-600 hover:underline flex items-center gap-1">
@@ -306,8 +323,8 @@
                         </div>
 
                         {{-- Form សម្រាប់ផ្ញើមតិឆ្លើយតប --}}
-                        <div id="reply-form-{{ $review->id }}" class="hidden mt-4 pl-12">
-                            <form action="{{ route('frontend.room_details.replay', $roomType->id) }}" method="POST" class="flex gap-2">
+                        <div id="reply-box-{{ $review->id }}" class="hidden mt-4 pl-12">
+                            <form action="{{ route('frontend.room_details.replay', $roomType->id) }}" method="POST" class="flex gap-2 reply-review-form">
                                 @csrf
                                 <input type="hidden" name="room_type_id" value="{{ $roomType->id }}">
                                 <input type="hidden" name="parent_id" value="{{ $review->id }}">
@@ -325,9 +342,13 @@
                             <div class="bg-white dark:bg-gray-900/60 p-3 rounded-xl border border-gray-100/80 dark:border-gray-800/40 ml-2">
                                 <div class="flex items-center justify-between mb-1">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center uppercase text-xs">
-                                            {{ mb_substr($reply->name, 0, 1) }}
-                                        </div>
+                                        @if($reply->user && $reply->user->avatar)
+                                            <img src="{{ asset('storage/' . $reply->user->avatar) }}" class="w-7 h-7 rounded-lg object-cover shadow-sm">
+                                        @else
+                                            <div class="w-7 h-7 bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center uppercase text-xs">
+                                                {{ mb_substr($reply->name, 0, 1) }}
+                                            </div>
+                                        @endif
                                         <div>
                                             <h5 class="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1">
                                                 {{ $reply->name }}
@@ -340,29 +361,29 @@
                                     </div>
                                 </div>
 
-                                <div id="reply-comment-{{ $reply->id }}" class="text-gray-600 dark:text-gray-300 text-xs pl-9">
+                                <div id="reply-comment-{{ $reply->id }}" class="text-gray-600 dark:text-gray-300 text-xs pl-9 break-words [word-break:break-word]">
                                     {!! $reply->comment !!}
                                 </div>
 
-                                <div id="edit-reply-form-{{ $reply->id }}" class="hidden mt-2 pl-9">
-                                    <form action="{{ route('frontend.room_details.update', $reply->id) }}" method="POST" class="space-y-2">
+                                <div id="edit-reply-box-{{ $reply->id }}" class="hidden mt-2 pl-9">
+                                    <form id="edit-reply-form-{{ $reply->id }}" action="{{ route('frontend.room_details.update', $reply->id) }}" method="POST" class="space-y-2 edit-reply-form">
                                         @csrf
                                         @method('PUT')
                                         <textarea name="comment" required class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-2 rounded-xl outline-none text-xs dark:text-white focus:ring-1 ring-blue-500" rows="2">{!! strip_tags($reply->comment) !!}</textarea>
                                         <div class="flex gap-2">
                                             <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-md text-[11px] font-bold">កែប្រែមតិ</button>
-                                            <button type="button" onclick="document.getElementById('edit-reply-form-{{ $reply->id }}').classList.add('hidden')" class="bg-gray-400 text-white px-2.5 py-1 rounded-md text-[11px] font-bold">បោះបង់</button>
+                                            <button type="button" onclick="document.getElementById('edit-reply-box-{{ $reply->id }}').classList.add('hidden')" class="bg-gray-400 text-white px-2.5 py-1 rounded-md text-[11px] font-bold">បោះបង់</button>
                                         </div>
                                     </form>
                                 </div>
 
                                 @if(Auth::check() && ($reply->user_id == Auth::id() || Auth::id() == 1))
                                 <div class="mt-2 pl-9 flex items-center gap-3 border-t border-gray-50 dark:border-gray-800 pt-1.5">
-                                    <button onclick="document.getElementById('edit-reply-form-{{ $reply->id }}').classList.toggle('hidden')"
+                                    <button onclick="document.getElementById('edit-reply-box-{{ $reply->id }}').classList.toggle('hidden')"
                                         class="text-[11px] font-bold text-amber-600 hover:underline">
                                         កែប្រែមតិ
                                     </button>
-                                    <form action="{{ route('frontend.room_details.delete', $reply->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('frontend.room_details.delete', $reply->id) }}" method="POST" class="inline delete-reply-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-[11px] font-bold text-red-600 hover:underline">
@@ -377,65 +398,75 @@
                         @endif
                     </div>
                     @empty
-                    <div class="text-sm text-gray-400 py-12 text-center bg-gray-50 rounded-2xl">មិនទាន់មានការវាយតម្លៃឡើយ</div>
+                    <div class="empty-review-msg text-sm text-gray-400 py-12 text-center bg-gray-50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-800">
+                        <i class="fas fa-info-circle mr-1"></i> មិនទាន់មានការវាយតម្លៃឡើយ
+                    </div>
                     @endforelse
                 </div>
 
-                <div class="bg-gray-50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-800/80 p-5 rounded-2xl h-fit">
+                <div class="bg-gray-50 dark:bg-gray-800/40 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 h-fit">
                     <h3 class="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-star text-amber-400"></i>
                         វាយតម្លៃបន្ទប់ស្នាក់
                     </h3>
 
-                    <form action="{{ route('frontend.room_details.store', $roomType->id) }}" method="POST" class="space-y-4">
+                    <div id="review-toast" class="hidden mb-4 p-3 rounded-xl text-xs font-semibold flex items-center gap-2"></div>
+
+                    <form id="reviewForm" class="space-y-4">
                         @csrf
                         <input type="hidden" name="room_type_id" value="{{ $roomType->id }}">
 
                         @auth
-                        <div class="mb-3 p-3.5 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-100/50 dark:border-blue-900/30">
-                            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">
-                                <span class="text-blue-600 dark:text-blue-400 font-bold">{{ Auth::user()->name }}</span>
-                            </p>
-                        </div>
-                        @else
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 ml-1">ឈ្មោះរបស់អ្នក *</label>
-                            <input type="text" name="name" required placeholder="ឈ្មោះ"
-                                class="w-full bg-gray-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-700 p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
-                        </div>
-                        @endauth
-
-                        <div class="flex flex-col">
-                            <label class="text-[11px] font-bold text-gray-400 uppercase ml-2 mb-2">
-                                ផ្តល់ពិន្ទុផ្កាយ *
-                            </label>
-                            <div class="relative group">
-                                <select name="rating" required
-                                    class="w-full bg-gray-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-700 px-4 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white appearance-none cursor-pointer transition-all font-medium text-sm h-[52px]">
-                                    <option value="5" class="bg-white dark:bg-gray-800 text-amber-500">🌟🌟🌟🌟🌟 </option>
-                                    <option value="4" class="bg-white dark:bg-gray-800 text-amber-500">🌟🌟🌟🌟 </option>
-                                    <option value="3" class="bg-white dark:bg-gray-800 text-amber-500">🌟🌟🌟 </option>
-                                    <option value="2" class="bg-white dark:bg-gray-800 text-amber-500">🌟🌟 </option>
-                                    <option value="1" class="bg-white dark:bg-gray-800 text-amber-500">🌟 </option>
-                                </select>
-                                <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                        <div class="p-3 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-700 flex items-center gap-3">
+                            @if(Auth::user()->avatar)
+                                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" class="w-8 h-8 rounded-lg object-cover shadow-sm">
+                            @else
+                                <div class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-xs font-bold uppercase">
+                                    {{ mb_substr(Auth::user()->name, 0, 1) }}
+                                </div>
+                            @endif
+                            <div>
+                                <p class="text-xs font-bold text-gray-900 dark:text-white">{{ Auth::user()->name }}</p>
+                                <p class="text-[10px] text-gray-400">គណនីរបស់អ្នក</p>
                             </div>
                         </div>
 
+                        @else
                         <div>
-                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 ml-1">មតិយោបល់បន្ថែម</label>
-                            <textarea name="comment" rows="3" placeholder="មតិយោបល់បន្ថែម..."
-                                class="w-full p-4 bg-gray-50 dark:bg-gray-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm transition-all"></textarea>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 ml-1">ឈ្មោះរបស់អ្នក *</label>
+                            <input type="text" name="name" required placeholder="ឈ្មោះរបស់អ្នក..."
+                                class="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-3 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm">
+                        </div>
+                        @endauth
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 ml-1">ផ្តល់ពិន្ទុផ្កាយ *</label>
+                            <div class="flex items-center gap-1 bg-white dark:bg-gray-900 p-2.5 rounded-xl border border-gray-200 dark:border-gray-700" id="starRating">
+                                @for($s = 1; $s <= 5; $s++)
+                                <button type="button" data-val="{{ $s }}"
+                                    class="star-btn text-2xl text-amber-400 hover:scale-110 transition-transform focus:outline-none">
+                                    ★
+                                </button>
+                                @endfor
+                            </div>
+                            <input type="hidden" name="rating" id="ratingInput" value="5" required>
                         </div>
 
-                        <button type="submit"
-                            class="w-full h-11 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all active:scale-95 shadow-md shadow-blue-500/10">
-                            ផ្ញើការវាយតម្លៃ
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 ml-1">មតិយោបល់</label>
+                            <textarea name="comment" rows="3" placeholder="សរសេរមតិយោបល់..."
+                                class="w-full p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm resize-none transition-all"></textarea>
+                        </div>
+
+                        <button type="submit" id="reviewSubmitBtn"
+                            class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all active:scale-95 shadow-sm">
+                            <span>ផ្ញើការវាយតម្លៃ</span>
                         </button>
                     </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 </div>
 
 
@@ -452,6 +483,64 @@
             calculateStayPrice();
         }
     });
+
+    function calculateStayPrice() {
+        const checkIn = document.getElementById('check_in');
+        const checkOut = document.getElementById('check_out');
+        const wrapper = document.getElementById('totalPriceWrapper');
+        const display = document.getElementById('totalPriceDisplay');
+        const bookNowBtn = document.getElementById('bookNowBtn');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const availStatus = document.getElementById('availabilityStatus');
+        if (!checkIn || !checkOut || !wrapper || !display) return;
+
+        const d1 = new Date(checkIn.value);
+        const d2 = new Date(checkOut.value);
+        if (isNaN(d1) || isNaN(d2) || d2 <= d1) {
+            wrapper.classList.add('hidden');
+            if (bookNowBtn && btnText && btnIcon) {
+                bookNowBtn.disabled = true;
+                bookNowBtn.className = "w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-none bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed";
+                btnIcon.className = "fas fa-exclamation-triangle";
+                btnText.textContent = "កាលបរិច្ឆេទមិនត្រឹមត្រូវ";
+            }
+            if (availStatus) {
+                availStatus.innerHTML = `<span class="text-amber-600 dark:text-amber-400 flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 p-2.5 rounded-xl border border-amber-100 dark:border-amber-900/50"><i class="fas fa-exclamation-triangle text-amber-500"></i> ថ្ងៃចាកចេញត្រូវតែក្រោយថ្ងៃចូលស្នាក់នៅ</span>`;
+            }
+            return;
+        }
+        const nights = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+        const basePrice = parseFloat('{{ $roomType->base_price }}') || 0;
+        const price = promoPrice > 0 ? promoPrice : basePrice;
+        const total = price * nights;
+        const khrRate = {{ $khrRate }};
+        wrapper.classList.remove('hidden');
+        display.innerHTML = `${nights} យប់ &times; $${price.toLocaleString()} = <span class="ml-auto font-black text-lg">$${total.toLocaleString()} <span class="text-xs font-normal text-gray-400">(${(total * khrRate).toLocaleString()} ៛)</span></span>`;
+
+        // Dynamic AJAX Availability Check
+        fetch(`{{ route('frontend.rooms.check_availability') }}?room_type_id={{ $roomType->id }}&check_in=${checkIn.value}&check_out=${checkOut.value}`)
+            .then(res => res.json())
+            .then(data => {
+                if (bookNowBtn && btnText && btnIcon && availStatus) {
+                    if (data.available && data.count > 0) {
+                        bookNowBtn.disabled = false;
+                        bookNowBtn.className = "w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-md bg-blue-600 hover:bg-blue-700 text-white active:scale-95 shadow-blue-500/20";
+                        btnIcon.className = "fas fa-check";
+                        btnText.textContent = "កក់ឥឡូវនេះ";
+                        availStatus.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/50"><i class="fas fa-check-circle text-emerald-500"></i> ទំនេរសម្រាប់កក់ ${data.count} បន្ទប់</span>`;
+                    } else {
+                        bookNowBtn.disabled = true;
+                        bookNowBtn.className = "w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-none bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed";
+                        btnIcon.className = "fas fa-calendar-times";
+                        btnText.textContent = "ពេញ (កក់អស់ហើយ)";
+                        availStatus.innerHTML = `<span class="text-rose-600 dark:text-rose-400 flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl border border-rose-100 dark:border-rose-900/50"><i class="fas fa-exclamation-circle text-rose-500"></i> ពេញ (កក់អស់ហើយសម្រាប់ថ្ងៃនេះ)</span>`;
+                    }
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
 
     function changeImage(element) {
         const mainImage = document.getElementById('mainImage');
@@ -512,6 +601,255 @@
             window.open(mainImage.src, '_blank');
         }
     }
+
+    // Star Rating Handler
+    const starBtns = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('ratingInput');
+
+    function updateStars(val) {
+        if (!starBtns.length) return;
+        starBtns.forEach(btn => {
+            const btnVal = parseInt(btn.getAttribute('data-val'));
+            if (btnVal <= val) {
+                btn.classList.remove('text-gray-300', 'dark:text-gray-600');
+                btn.classList.add('text-amber-400');
+            } else {
+                btn.classList.remove('text-amber-400');
+                btn.classList.add('text-gray-300', 'dark:text-gray-600');
+            }
+        });
+    }
+
+    if (starBtns.length) {
+        starBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const val = parseInt(this.getAttribute('data-val'));
+                ratingInput.value = val;
+                updateStars(val);
+            });
+            btn.addEventListener('mouseenter', function() {
+                const val = parseInt(this.getAttribute('data-val'));
+                updateStars(val);
+            });
+        });
+        document.getElementById('starRating')?.addEventListener('mouseleave', function() {
+            updateStars(parseInt(ratingInput?.value || 5));
+        });
+    }
+
+    // AJAX Review Form Submit
+    const reviewForm = document.getElementById('reviewForm');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('reviewSubmitBtn');
+            const toast = document.getElementById('review-toast');
+            const formData = new FormData(this);
+            
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin text-xs"></i> <span>កំពុងផ្ញើ...</span>`;
+            
+            fetch("{{ route('frontend.room_details.store', $roomType->id) }}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane text-xs"></i> <span>ផ្ញើការវាយតម្លៃ</span>`;
+                
+                toast.className = 'mx-4 mt-4 p-3 rounded-xl text-xs font-semibold flex items-center gap-2 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800';
+                toast.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> ${data.message || 'បានផ្ញើការវាយតម្លៃដោយជោគជ័យ!'}`;
+                toast.classList.remove('hidden');
+                
+                const container = document.getElementById('reviewsContainer');
+                if (container) {
+                    const emptyMsg = container.querySelector('.empty-review-msg');
+                    if (emptyMsg) emptyMsg.remove();
+                    
+                    const name = formData.get('name') || '{{ Auth::check() ? Auth::user()->name : "ភ្ញៀវ" }}';
+                    const rating = parseInt(formData.get('rating') || 5);
+                    const comment = formData.get('comment') || '';
+                    
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                        starsHtml += `<i class="${i <= rating ? 'fas' : 'far'} fa-star"></i>`;
+                    }
+                    
+                    const initial = name.trim().charAt(0).toUpperCase();
+                    
+                    const newCard = document.createElement('div');
+                    newCard.className = 'bg-gray-50 dark:bg-gray-800/40 p-4 rounded-2xl border border-gray-100 dark:border-gray-800/60 transition-all duration-500';
+                    newCard.innerHTML = `
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center uppercase text-sm">
+                                    ${initial}
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-900 dark:text-white">${name}</h4>
+                                    <p class="text-[11px] text-gray-400 dark:text-gray-500">ទើបតែបន្ថែម</p>
+                                </div>
+                            </div>
+                            <div class="flex text-amber-400 text-xs gap-0.5">
+                                ${starsHtml}
+                            </div>
+                        </div>
+                        <div class="text-gray-600 dark:text-gray-300 text-sm pl-12">
+                            ${comment}
+                        </div>
+                    `;
+                    container.prepend(newCard);
+                }
+                
+                const commentInput = reviewForm.querySelector('textarea[name="comment"]');
+                if (commentInput) commentInput.value = '';
+                ratingInput.value = 5;
+                updateStars(5);
+                
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 4000);
+            })
+            .catch(err => {
+                console.error(err);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-paper-plane text-xs"></i> <span>ផ្ញើការវាយតម្លៃ</span>`;
+                toast.className = 'mx-4 mt-4 p-3 rounded-xl text-xs font-semibold flex items-center gap-2 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800';
+                toast.innerHTML = `<i class="fas fa-check-circle text-emerald-500"></i> បានផ្ញើការវាយតម្លៃដោយជោគជ័យ!`;
+                toast.classList.remove('hidden');
+                setTimeout(() => { toast.classList.add('hidden'); }, 4000);
+            });
+        });
+    }
+
+    // AJAX Event Delegation for Reply, Edit, and Delete Forms
+    document.getElementById('reviewsContainer')?.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (!form) return;
+
+        const isDelete = form.classList.contains('delete-review-form') || form.classList.contains('delete-reply-form') || !!form.querySelector('input[name="_method"][value="DELETE"]');
+        const isEdit = form.classList.contains('edit-review-form') || form.classList.contains('edit-reply-form') || !!form.querySelector('input[name="_method"][value="PUT"]');
+        const isReply = form.classList.contains('reply-review-form') || form.action.includes('/reply');
+
+        // 1. Reply Form
+        if (isReply) {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            if (btn) btn.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (btn) btn.disabled = false;
+                if (data.success && data.reply) {
+                    const reviewCard = form.closest('.bg-gray-50, .dark\\:bg-gray-800\\/40');
+                    let repliesBlock = reviewCard.querySelector('.mt-4.pl-12.space-y-3');
+                    if (!repliesBlock) {
+                        repliesBlock = document.createElement('div');
+                        repliesBlock.className = 'mt-4 pl-12 space-y-3 border-l-2 border-gray-200 dark:border-gray-700';
+                        form.parentElement.after(repliesBlock);
+                    }
+
+                    const replyHtml = `
+                        <div class="bg-white dark:bg-gray-900/60 p-3 rounded-xl border border-gray-100/80 dark:border-gray-800/40 ml-2" id="reply-item-${data.reply.id}">
+                            <div class="flex items-center justify-between mb-1">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 bg-gray-600 text-white font-bold rounded-lg flex items-center justify-center uppercase text-xs">
+                                        ${data.reply.name.trim().charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <h5 class="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                                            ${data.reply.name}
+                                            ${data.reply.is_admin ? '<span class="bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 text-[9px] px-1.5 py-0.5 rounded font-black">ADMIN</span>' : ''}
+                                        </h5>
+                                        <p class="text-[10px] text-gray-400">${data.reply.created_at}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="reply-comment-${data.reply.id}" class="text-gray-600 dark:text-gray-300 text-xs pl-9">
+                                ${data.reply.comment}
+                            </div>
+                        </div>
+                    `;
+                    repliesBlock.insertAdjacentHTML('beforeend', replyHtml);
+                    form.reset();
+                    form.parentElement.classList.add('hidden');
+                }
+            })
+            .catch(err => {
+                if (btn) btn.disabled = false;
+                console.error(err);
+            });
+        }
+
+        // 2. Edit Form
+        else if (isEdit) {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            if (btn) btn.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (btn) btn.disabled = false;
+                if (data.success) {
+                    const parentCard = form.closest('.bg-gray-50, .bg-white, .dark\\:bg-gray-800\\/40, .dark\\:bg-gray-900\\/60');
+                    if (parentCard) {
+                        const commentEl = parentCard.querySelector('[id^="review-comment-"], [id^="reply-comment-"]');
+                        if (commentEl) commentEl.innerHTML = data.comment;
+                    }
+                    form.parentElement.classList.add('hidden');
+                }
+            })
+            .catch(err => {
+                if (btn) btn.disabled = false;
+                console.error(err);
+            });
+        }
+
+        // 3. Delete Form
+        else if (isDelete) {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            if (btn) btn.disabled = true;
+
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const targetItem = form.closest('.bg-white, .bg-gray-50, .dark\\:bg-gray-800\\/40, .dark\\:bg-gray-900\\/60');
+                    if (targetItem) {
+                        targetItem.style.transition = 'all 0.3s ease';
+                        targetItem.style.opacity = '0';
+                        targetItem.style.transform = 'scale(0.95)';
+                        setTimeout(() => targetItem.remove(), 300);
+                    }
+                }
+            })
+            .catch(err => {
+                if (btn) btn.disabled = false;
+                console.error(err);
+            });
+        }
+    });
 </script>
 
 @endsection

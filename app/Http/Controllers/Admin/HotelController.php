@@ -18,7 +18,6 @@ class HotelController extends Controller
 
     public function index(Request $request)
     {
-
         $filters = $request->only(['search', 'status']);
         $hotels = $this->hotelService->listHotels($filters);
 
@@ -26,14 +25,18 @@ class HotelController extends Controller
             return view('admin.hotels.partials.hotel_list', compact('hotels'))->render();
         }
 
-        return view('admin.hotels.index', compact('hotels'));
+        $totalHotels = Hotel::count();
+        $activeHotels = Hotel::where('status', 1)->count();
+        $inactiveHotels = Hotel::where('status', 0)->count();
+
+        return view('admin.hotels.index', compact('hotels', 'totalHotels', 'activeHotels', 'inactiveHotels'));
     }
 
     public function store(HotelRequest $request)
     {
         try {
             $this->hotelService->storeHotel($request->validated());
-            return back()->with('success', 'សណ្ឋាគារត្រូវបានរក្សាទុកដោយជោគជ័យ!');
+            return back()->with('success', 'សណ្ឋាគារត្រូវបានរក្សាទុកដោយជោគជ័យ');
         } catch (\Exception $e) {
             return back()->with('error', 'មានបញ្ហា៖ ' . $e->getMessage());
         }
@@ -43,7 +46,7 @@ class HotelController extends Controller
     {
         try {
             $this->hotelService->updateHotel($id, $request->validated());
-            return back()->with('success', 'សណ្ឋាគារត្រូវបានធ្វើបច្ចុប្បន្នភាព!');
+            return back()->with('success', 'សណ្ឋាគារត្រូវបានធ្វើបច្ចុប្បន្នភាព');
         } catch (\Exception $e) {
             return back()->with('error', 'មានបញ្ហា៖ ' . $e->getMessage());
         }
@@ -53,7 +56,7 @@ class HotelController extends Controller
     {
         try {
             $this->hotelService->deleteHotel($id);
-            return back()->with('success', 'សណ្ឋាគារត្រូវបានលុប!');
+            return back()->with('success', 'សណ្ឋាគារត្រូវបានលុប');
         } catch (\Exception $e) {
             return back()->with('error', 'មិនអាចលុបបាន៖ ' . $e->getMessage());
         }

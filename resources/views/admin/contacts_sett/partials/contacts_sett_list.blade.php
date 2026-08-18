@@ -31,14 +31,15 @@
                     </span>
                 </td>
                
-                <td class="px-6 py-4 text-right flex justify-end gap-1">
-                    <button @click="openEdit({{ $item }})" class="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg">
-                        <i class="fas fa-edit"></i>
-                    </button>
-
-                    <button @click="currentContact = {{ $item }}; showDeleteModal = true" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                    <div class="flex justify-end items-center gap-1">
+                        <button type="button" @click="openEdit({{ $item }})" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button type="button" @click="currentContact = {{ $item }}; showDeleteModal = true" class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
             @endforeach

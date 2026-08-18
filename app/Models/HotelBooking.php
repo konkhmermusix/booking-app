@@ -10,20 +10,23 @@ class HotelBooking extends Model
 
     protected $table = 'hotel_bookings';
 
-    // Mass assignable fields
-
     protected $fillable = [
+        'booking_code',
+        'booking_type',
         'user_id',
         'hotel_id',
         'room_id',
+        'customer_name',
+        'customer_phone',
+        'customer_email',
         'check_in',
         'check_out',
-        'total_price',
-        'status',
-        'booking_code',
         'check_in_time',
         'check_out_time',
-        'special_requests'
+        'total_price',
+        'payment_method',
+        'special_requests',
+        'status',
     ];
 
     public function user(): BelongsTo
@@ -31,13 +34,11 @@ class HotelBooking extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Booking ត្រូវបានធ្វើនៅ Hotel មួយ
     public function hotel(): BelongsTo
     {
         return $this->belongsTo(Hotel::class);
     }
 
-    // Booking ត្រូវបាន assign ទៅ Room មួយ
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
@@ -45,7 +46,7 @@ class HotelBooking extends Model
 
     public function details()
     {
-        return $this->hasMany(BookingDetail::class);
+        return $this->hasMany(HotelBookingDetail::class, 'hotel_booking_id');
     }
 
     public function payment()
@@ -53,11 +54,23 @@ class HotelBooking extends Model
         return $this->hasOne(Payment::class);
     }
 
-    // Optional: Accessor for number of nights
     public function getNightsAttribute(): int
     {
         return $this->check_in && $this->check_out
             ? \Carbon\Carbon::parse($this->check_in)->diffInDays($this->check_out)
             : 0;
+    }
+
+    public static function statusLabel(string $status): string
+    {
+        return match ($status) {
+            'pending'     => 'រង់ចាំពិនិត្យ',
+            'confirmed'   => 'បានបញ្ជាក់',
+            'completed'   => 'បានបញ្ចប់',
+            'checked_in'  => 'ចូលស្នាក់នៅ',
+            'checked_out', 'completed' => 'ចាកចេញ',
+            'cancelled'   => 'បោះបង់',
+            default       => $status,
+        };
     }
 }

@@ -8,9 +8,6 @@
 
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400">
-                        <i class="fa-solid fa-map-location-dot text-xl"></i>
-                    </div>
                     <div>
                         <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">បន្ថែមកន្លែងទេសចរណ៍</h3>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Create New Tour Destination</p>
@@ -21,7 +18,17 @@
 
             <form action="{{ route('tours.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="p-10 space-y-6">
+                <div class="p-8 space-y-6 max-h-[65vh] overflow-y-auto custom-scrollbar">
+                    @if($errors->any())
+                        <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-xs font-bold space-y-1">
+                            <p class="font-black">មានបញ្ហាក្នុងការបញ្ចូលទិន្នន័យ ៖</p>
+                            <ul class="list-disc list-inside space-y-0.5">
+                                @foreach($errors->all() as $err)
+                                    <li>{{ $err }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                         <div class="space-y-3">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">ឈ្មោះកន្លែង <span class="text-red-500">*</span></label>
@@ -62,25 +69,14 @@
 
                             <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-4">
                                 <template x-for="(img, index) in imagePreviews" :key="index">
-                                    <div class="relative group aspect-square rounded-2xl overflow-hidden border dark:border-gray-700 shadow-sm">
-                                        <img :src="img.url" class="w-full h-full object-cover transition-transform group-hover:scale-110">
-
-                                        <button type="button" @click="removePreview(index)"
-                                            class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
-                                            <i class="fa-solid fa-times text-[10px]"></i>
+                                    <div class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700/80 shadow-xs bg-gray-100 dark:bg-gray-800">
+                                        <img :src="img.url" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <button type="button" @click="removePreview(index)" title="លុបរូបភាព"
+                                            class="absolute top-2 right-2 w-7 h-7 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white rounded-xl flex items-center justify-center shadow-md transition-all cursor-pointer">
+                                            <i class="fa-solid fa-xmark text-xs"></i>
                                         </button>
                                     </div>
-                                </template>
-
-                                <template x-if="showEditModal && currentTour.image">
-                                    <template x-for="(oldImg, idx) in (Array.isArray(currentTour.image) ? currentTour.image : [currentTour.image])" :key="'old-'+idx">
-                                        <div class="relative group aspect-square rounded-2xl overflow-hidden border border-blue-200">
-                                            <img :src="'/storage/' + oldImg" class="w-full h-full object-cover opacity-80">
-                                            <div class="absolute inset-0 flex items-center justify-center bg-blue-600/20">
-                                                <span class="text-[8px] font-black text-white uppercase bg-blue-600 px-2 py-1 rounded-full">រូបភាពចាស់</span>
-                                            </div>
-                                        </div>
-                                    </template>
                                 </template>
                             </div>
                         </div>
@@ -128,10 +124,7 @@
             x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-amber-50 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400">
-                        <i class="fa-solid fa-pen-to-square text-xl"></i>
-                    </div>
+                <div class="flex items-center gap-4">                
                     <div>
                         <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">កែសម្រួលព័ត៌មាន</h3>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Update Tour Details</p>
@@ -143,7 +136,7 @@
             <form :action="`{{ url('admin/tours') }}/${currentTour.id}`" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="p-10 space-y-6">
+                <div class="p-8 space-y-6 max-h-[65vh] overflow-y-auto custom-scrollbar">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                         <div class="space-y-3">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">ឈ្មោះកន្លែង</label>
@@ -181,26 +174,25 @@
 
                             <div class="grid grid-cols-3 sm:grid-cols-4 gap-4 mt-4">
                                 <template x-for="(img, index) in imagePreviews" :key="index">
-                                    <div class="relative group aspect-square rounded-2xl overflow-hidden border dark:border-gray-700 shadow-sm">
-                                        <img :src="img.url" class="w-full h-full object-cover transition-transform group-hover:scale-110">
-
-                                        <button type="button" @click="removePreview(index)"
-                                            class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
-                                            <i class="fa-solid fa-times text-[10px]"></i>
+                                    <div class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700/80 shadow-xs bg-gray-100 dark:bg-gray-800">
+                                        <img :src="img.url" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                        <button type="button" @click="removePreview(index)" title="លុបរូបភាព"
+                                            class="absolute top-2 right-2 w-7 h-7 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white rounded-xl flex items-center justify-center shadow-md transition-all cursor-pointer">
+                                            <i class="fa-solid fa-xmark text-xs"></i>
                                         </button>
                                     </div>
                                 </template>
 
                                 <template x-if="showEditModal && currentTour.image">
-                                    <template x-for="(oldImg, idx) in currentTour.image" :key="'old-'+idx">
-                                        <div class="relative group">
-                                            <img :src="'/storage/' + oldImg" class="w-20 h-20 object-cover rounded-lg">
-
+                                    <template x-for="(oldImg, idx) in (Array.isArray(currentTour.image) ? currentTour.image : [currentTour.image])" :key="'old-'+idx">
+                                        <div class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700/80 shadow-xs bg-gray-100 dark:bg-gray-800">
+                                            <img :src="'/storage/' + oldImg" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                                             <input type="hidden" name="existing_images[]" :value="oldImg">
-
-                                            <button type="button" @click="currentTour.image.splice(idx, 1)"
-                                                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1">
-                                                <i class="fa-solid fa-xmark"></i>
+                                            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                            <button type="button" @click="currentTour.image.splice(idx, 1)" title="លុបរូបភាព"
+                                                class="absolute top-2 right-2 w-7 h-7 bg-rose-500 hover:bg-rose-600 active:scale-95 text-white rounded-xl flex items-center justify-center shadow-md transition-all cursor-pointer">
+                                                <i class="fa-solid fa-xmark text-xs"></i>
                                             </button>
                                         </div>
                                     </template>
@@ -258,7 +250,7 @@
                 </button>
             </div>
 
-            <div class="p-10 space-y-6">
+            <div class="p-8 space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
                 <div>
                     <h3 class="text-2xl font-black dark:text-white uppercase tracking-tight" x-text="currentTour.name"></h3>
                     <div class="flex items-center gap-2 mt-2">

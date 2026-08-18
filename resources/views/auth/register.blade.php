@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 @section('title', 'ចុះឈ្មោះ')
 @section('content')
-<div class="max-w-5xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row border dark:border-gray-700">
+<div class="max-w-5xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
     {{-- Left Banner --}}
     <div class="hidden lg:flex lg:w-1/3 bg-[#002B5B] dark:bg-black p-10 text-white flex-col justify-center">
         <h2 class="text-3xl font-bold mb-4 italic">សណ្ឋាគារ <span class="text-yellow-400 font-serif">ភីអេនធី</span></h2>
@@ -28,7 +28,7 @@
                     <input type="text" name="name" value="{{ old('name') }}" required placeholder="ឈ្មោះពេញ"
                         class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border @error('name') border-red-500 @else border-gray-200 @enderror rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 </div>
-                @error('name') <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Phone --}}
@@ -41,7 +41,7 @@
                     <input type="tel" name="phone" value="{{ old('phone') }}" required placeholder="លេខទូរស័ព្ទ"
                         class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border @error('phone') border-red-500 @else border-gray-200 @enderror rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 </div>
-                @error('phone') <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                @error('phone') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Email --}}
@@ -54,7 +54,7 @@
                     <input type="email" name="email" value="{{ old('email') }}" required placeholder="អ៊ីមែល"
                         class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 </div>
-                @error('email') <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                @error('email') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Password --}}
@@ -70,7 +70,7 @@
                         <i class="fas" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
                     </button>
                 </div>
-                @error('password') <p class="text-[10px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                @error('password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             {{-- Confirm Password --}}

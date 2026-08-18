@@ -1,199 +1,316 @@
+<!-- Table View Mode -->
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden" x-transition>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-50/50 dark:bg-gray-900/50">
                 <tr>
-                    <th class="px-6 py-4 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">លេខបន្ទប់</th>
-                    <th class="px-6 py-4 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ឈ្មោះសណ្ឋាគារ</th>
-                    <th class="px-6 py-4 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ប្រភេទ</th>
-                    <th class="px-6 py-4 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ជាន់</th>
-                    <th class="px-6 py-4 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ស្ថានភាព</th>
-                    <th class="px-6 py-4 text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-right">សកម្មភាព</th>
+                    <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">លេខបន្ទប់</th>
+                    <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ប្រភេទបន្ទប់</th>
+                    <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">សណ្ឋាគារ</th>
+                    <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-center">ជាន់</th>
+                    <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-right">តម្លៃ/យប់</th>
+                    <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-center">ស្ថានភាព</th>
+                    <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-right">សកម្មភាព</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50 dark:divide-gray-700">
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                 @forelse($rooms as $room)
-                <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
-                    <td class="px-6 py-4 font-bold text-blue-600 dark:text-blue-400">{{ $room->room_number }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{{ $room->hotel->name }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{{ $room->roomType->name }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">{{ $room->floor }}</td>
-                    <td class="px-6 py-4">
-                        <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase 
-                        @if($room->status === 'available') text-green-500 
-                        @elseif($room->status === 'booked') text-blue-500 
-                        @else text-orange-500 @endif">
-
-                            <span class="w-1.5 h-1.5 rounded-full 
-                            @if($room->status === 'available') bg-green-500 
-                            @elseif($room->status === 'booked') bg-blue-500 
-                            @else bg-orange-500 @endif">
-                            </span>
-
-                            @if($room->status === 'available')
-                            បន្ទប់ទំនេរ
-                            @elseif($room->status === 'booked')
-                            មានភ្ញៀវ
-                            @elseif($room->status === 'maintenance')
-                            ជួសជុល
+                @php
+                    $roomTypeImg = $room->roomType && $room->roomType->images->count() > 0 
+                        ? asset('storage/' . $room->roomType->images->first()->image_path) 
+                        : null;
+                    $price = $room->roomType->base_price ?? 0;
+                    $statusKhmer = match($room->status) {
+                        'available'   => 'បន្ទប់ទំនេរ',
+                        'booked'      => 'មានភ្ញៀវ',
+                        'maintenance' => 'ជួសជុល',
+                        default       => $room->status
+                    };
+                    $statusBadgeClass = match($room->status) {
+                        'available'   => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200',
+                        'booked'      => 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border-blue-200',
+                        'maintenance' => 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-200',
+                        default       => 'bg-gray-100 text-gray-800'
+                    };
+                @endphp
+                <tr class="group hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-all">
+                    <td class="px-6 py-4 font-bold dark:text-white uppercase text-xs flex items-center gap-4">
+                        <div class="w-14 h-11 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center">
+                            @if($roomTypeImg)
+                                <img src="{{ $roomTypeImg }}" class="w-full h-full object-cover">
                             @else
-                            {{ $room->status }}
+                                <div class="w-full h-full flex items-center justify-center bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-black text-xs">
+                                    <i class="fas fa-door-closed"></i>
+                                </div>
                             @endif
+                        </div>
+                        <div>
+                            <span class="font-mono font-black text-blue-600 dark:text-blue-400 text-sm">No. {{ $room->room_number }}</span>
+                        </div>
+                    </td>
+
+                    <td class="px-6 py-4 text-xs font-bold text-gray-800 dark:text-gray-200">
+                        {{ $room->roomType->name ?? 'មិនទាន់កំណត់' }}
+                    </td>
+
+                    <td class="px-6 py-4 text-xs text-gray-500 dark:text-gray-400 font-medium">
+                        {{ $room->hotel->name ?? 'មិនមាន' }}
+                    </td>
+
+                    <td class="px-6 py-4 text-xs text-center font-bold text-gray-700 dark:text-gray-300">
+                        ជាន់ទី {{ $room->floor }}
+                    </td>
+
+                    <td class="px-6 py-4 text-right font-black text-emerald-600 dark:text-emerald-400 text-sm whitespace-nowrap">
+                        <div>${{ number_format($price, 2) }}</div>
+                        <div class="text-[11px] text-gray-400 font-normal font-mono">({{ number_format($price * $khrRate) }} ៛)</div>
+                    </td>
+
+                    <td class="px-6 py-4 text-center">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border {{ $statusBadgeClass }}">
+                            {{ $statusKhmer }}
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-right space-x-4">
-                        <button @click="currentRoom = { 
-                                room_number: '{{ $room->room_number }}', 
-                                floor: '{{ $room->floor }}', 
-                                status: '{{ $room->status }}',
-                                hotel_name: '{{ $room->hotel->name ?? 'មិនទាន់មាន' }}', 
-                                room_type_name: '{{ $room->roomType->name ?? 'មិនទាន់មាន' }}',
-                                price: '{{ number_format($room->roomType->base_price ?? 0, 2) }}'
-                            }; showDetailModal = true"
-                            title="មើលលម្អិត"
-                            class="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors p-2">
-                            <i class="fas fa-eye text-sm"></i>
-                        </button>
-                        <button @click="currentRoom = {{ $room }}; showEditModal = true" title="កែប្រែ" class="text-blue-500 hover:text-blue-700 dark:hover:text-blue-400"><i class="fas fa-edit text-sm"></i></button>
-                        <button onclick="confirmDelete('{{ $room->id }}')" title="លុប" class="text-red-500 hover:text-red-700 dark:hover:text-red-400"><i class="fas fa-trash text-sm"></i></button>
+
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                        <div class="flex justify-end items-center gap-1">
+                            <button type="button"
+                                @click="currentRoom = { 
+                                    room_number: '{{ $room->room_number }}', 
+                                    floor: '{{ $room->floor }}', 
+                                    status: '{{ $room->status }}',
+                                    hotel_name: '{{ $room->hotel->name ?? 'មិនទាន់មាន' }}', 
+                                    room_type_name: '{{ $room->roomType->name ?? 'មិនទាន់មាន' }}',
+                                    price: '{{ number_format($price, 2) }}'
+                                }; showDetailModal = true"
+                                class="p-2 text-gray-400 hover:text-blue-500 transition-colors"
+                                title="មើលលម្អិត">
+                                <i class="fas fa-eye text-sm"></i>
+                            </button>
+
+                            <button type="button"
+                                @click="currentRoom = {{ json_encode($room) }}; showEditModal = true"
+                                class="p-2 text-gray-400 hover:text-amber-500 transition-colors"
+                                title="កែប្រែ">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+
+                            <button type="button"
+                                onclick="confirmDelete('{{ $room->id }}')"
+                                class="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                title="លុប">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 @empty
-                <div class="col-span-full">@include('admin.rooms.partials.empty_state')</div>
+                <tr>
+                    <td colspan="7" class="px-6 py-12">
+                        @include('admin.rooms.partials.empty_state')
+                    </td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 </div>
 
+<!-- List View Mode -->
 <div x-show="viewMode === 'list'" class="space-y-3" x-transition>
     @forelse($rooms as $room)
-    <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all border-none">
+    @php
+        $roomTypeImg = $room->roomType && $room->roomType->images->count() > 0 
+            ? asset('storage/' . $room->roomType->images->first()->image_path) 
+            : null;
+        $price = $room->roomType->base_price ?? 0;
+        $statusKhmer = match($room->status) {
+            'available'   => 'បន្ទប់ទំនេរ',
+            'booked'      => 'មានភ្ញៀវ',
+            'maintenance' => 'ជួសជុល',
+            default       => $room->status
+        };
+        $statusBadgeClass = match($room->status) {
+            'available'   => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200',
+            'booked'      => 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border-blue-200',
+            'maintenance' => 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-200',
+            default       => 'bg-gray-100 text-gray-800'
+        };
+    @endphp
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm flex items-center justify-between hover:shadow-md transition-all border-none">
         <div class="flex items-center gap-4">
-            <div class="w-20 h-10 rounded-xl bg-gray-50 dark:bg-gray-700 flex items-center justify-center font-bold text-blue-600 dark:text-blue-400">{{ $room->room_number }}</div>
+            <div class="w-16 h-14 rounded-xl overflow-hidden bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex flex-col items-center justify-center flex-shrink-0 font-black">
+                @if($roomTypeImg)
+                    <img src="{{ $roomTypeImg }}" class="w-full h-full object-cover">
+                @else
+                    <span class="text-xs font-mono font-black">No. {{ $room->room_number }}</span>
+                @endif
+            </div>
+
             <div>
-                <h4 class="font-bold text-sm text-gray-800 dark:text-gray-100">{{ $room->roomType->name }}</h4>
-                <p class="text-[10px] text-gray-400 dark:text-gray-500 italic">ជាន់ទី {{ $room->floor }} | {{ $room->hotel->name }}</p>
+                <div class="flex items-center gap-2">
+                    <span class="font-mono font-black text-blue-600 dark:text-blue-400 text-sm">No. {{ $room->room_number }}</span>
+                    <span class="text-xs font-bold text-gray-800 dark:text-gray-100">• {{ $room->roomType->name ?? 'បន្ទប់ស្នាក់នៅ' }}</span>
+                </div>
+                <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 flex items-center gap-2">
+                    <span><i class="fas fa-layer-group text-[10px]"></i> ជាន់ទី {{ $room->floor }}</span>
+                    <span>|</span>
+                    <span><i class="fas fa-hotel text-[10px]"></i> {{ $room->hotel->name ?? 'មិនមាន' }}</span>
+                </p>
             </div>
         </div>
-        <div class="flex items-center gap-6">
-            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase transition-colors
-            @if($room->status === 'available') 
-                bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400
-            @elseif($room->status === 'booked') 
-                bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400
-            @else 
-                bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-400
-            @endif">
 
-                @if($room->status === 'available')
-                បន្ទប់ទំនេរ
-                @elseif($room->status === 'booked')
-                មានភ្ញៀវ
-                @elseif($room->status === 'maintenance')
-                ជួសជុល
-                @else
-                {{ $room->status }}
-                @endif
+        <div class="flex items-center gap-4">
+            <div class="text-right">
+                <span class="font-black text-emerald-600 dark:text-emerald-400 text-sm">${{ number_format($price, 2) }}</span>
+                <span class="text-[11px] text-gray-400 font-normal font-mono block">({{ number_format($price * $khrRate) }} ៛)</span>
+            </div>
+
+            <span class="px-3 py-1 rounded-full text-[10px] font-bold border {{ $statusBadgeClass }}">
+                {{ $statusKhmer }}
             </span>
 
-            <div class="flex gap-2 text-gray-500 dark:text-gray-400">
+            <div class="flex items-center gap-1 text-gray-400">
                 <button @click="currentRoom = { 
                     room_number: '{{ $room->room_number }}', 
                     floor: '{{ $room->floor }}', 
                     status: '{{ $room->status }}',
                     hotel_name: '{{ $room->hotel->name ?? 'មិនទាន់មាន' }}', 
                     room_type_name: '{{ $room->roomType->name ?? 'មិនទាន់មាន' }}',
-                    price: '{{ number_format($room->roomType->base_price ?? 0, 2) }}'
+                    price: '{{ number_format($price, 2) }}'
                 }; showDetailModal = true"
                     title="មើលលម្អិត"
-                    class="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors p-2">
-                    <i class="fas fa-eye"></i>
+                    class="p-2 hover:text-blue-500 transition-colors">
+                    <i class="fas fa-eye text-sm"></i>
                 </button>
-                <button @click="currentRoom = {{ $room }}; showEditModal = true" title="កែប្រែ"
-                    class="hover:text-blue-500 dark:hover:text-blue-400 p-2 transition-colors">
-                    <i class="fas fa-edit"></i>
+                <button @click="currentRoom = {{ json_encode($room) }}; showEditModal = true" title="កែប្រែ"
+                    class="p-2 hover:text-amber-500 transition-colors">
+                    <i class="fas fa-edit text-sm"></i>
                 </button>
                 <button onclick="confirmDelete('{{ $room->id }}')" title="លុប"
-                    class="hover:text-red-500 dark:hover:text-red-400 p-2 transition-colors">
-                    <i class="fas fa-trash"></i>
+                    class="p-2 hover:text-red-500 transition-colors">
+                    <i class="fas fa-trash text-sm"></i>
                 </button>
             </div>
         </div>
     </div>
     @empty
-    <div class="col-span-full">@include('admin.rooms.partials.empty_state')</div>
+    @include('admin.rooms.partials.empty_state')
     @endforelse
 </div>
 
+<!-- Grid View Mode (Matching room_types UI Style) -->
 <div x-show="viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" x-transition>
     @forelse($rooms as $room)
+    @php
+        $roomTypeImg = $room->roomType && $room->roomType->images->count() > 0 
+            ? asset('storage/' . $room->roomType->images->first()->image_path) 
+            : null;
+        $price = $room->roomType->base_price ?? 0;
+        $maxGuests = $room->roomType->max_guests ?? 2;
+        $statusKhmer = match($room->status) {
+            'available'   => 'បន្ទប់ទំនេរ',
+            'booked'      => 'មានភ្ញៀវ',
+            'maintenance' => 'ជួសជុល',
+            default       => $room->status
+        };
+        $statusBadgeClass = match($room->status) {
+            'available'   => 'bg-emerald-500 text-white',
+            'booked'      => 'bg-blue-500 text-white',
+            'maintenance' => 'bg-amber-500 text-white',
+            default       => 'bg-gray-500 text-white'
+        };
+    @endphp
     <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all group border-none">
-        <div class="flex justify-between items-start mb-4">
-            <div class="w-20 h-12 rounded-2xl flex items-center justify-center font-bold text-lg 
-                @if($room->status === 'available') 
-                    bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400
-                @elseif($room->status === 'booked') 
-                    bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400
-                @else 
-                    bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400
-                @endif">
-                {{ $room->room_number }}
+        <!-- Top Image / Thumbnail Container -->
+        <div class="h-44 -mx-5 -mt-5 mb-4 overflow-hidden rounded-t-2xl relative group/img bg-gradient-to-br from-blue-900 via-slate-800 to-indigo-950">
+            @if($roomTypeImg)
+                <img src="{{ $roomTypeImg }}"
+                    class="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500">
+            @else
+                <div class="w-full h-full flex flex-col items-center justify-center text-white/40">
+                    <i class="fa-solid fa-door-open text-4xl mb-2"></i>
+                    <span class="text-[10px] uppercase font-black tracking-widest">No. {{ $room->room_number }}</span>
+                </div>
+            @endif
+
+            <!-- Floating Room Status Badge (Top Right) -->
+            <div class="absolute top-3 right-3 shadow-md">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider {{ $statusBadgeClass }}">
+                    {{ $statusKhmer }}
+                </span>
             </div>
 
-            <div class="flex gap-1 lg:opacity-0 group-hover:opacity-100 transition-opacity">
-                <button @click="currentRoom = { 
-                    room_number: '{{ $room->room_number }}', 
-                    floor: '{{ $room->floor }}', 
-                    status: '{{ $room->status }}',
-                    hotel_name: '{{ $room->hotel->name ?? 'មិនទាន់មាន' }}', 
-                    room_type_name: '{{ $room->roomType->name ?? 'មិនទាន់មាន' }}',
-                    price: '{{ number_format($room->roomType->base_price ?? 0, 2) }}'
-                }; showDetailModal = true"
-                    title="មើលលម្អិត"
-                    class="text-indigo-500 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors p-2">
-                    <i class="fas fa-eye"></i>
+            <!-- Floating Price Pill (Bottom Left) -->
+            <div class="absolute bottom-3 left-3 bg-white/95 dark:bg-gray-900/95 backdrop-blur px-3 py-1 rounded-xl shadow-md border border-gray-100 dark:border-gray-800">
+                <span class="text-xs font-black text-blue-600 dark:text-blue-400">${{ number_format($price, 0) }}</span>
+                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-400 ml-1 font-mono">({{ number_format($price * $khrRate) }} ៛)</span>
+            </div>
+
+            <!-- Hover Action Overlay -->
+            <div class="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300">
+                <button type="button"
+                    @click="currentRoom = { 
+                        room_number: '{{ $room->room_number }}', 
+                        floor: '{{ $room->floor }}', 
+                        status: '{{ $room->status }}',
+                        hotel_name: '{{ $room->hotel->name ?? 'មិនទាន់មាន' }}', 
+                        room_type_name: '{{ $room->roomType->name ?? 'មិនទាន់មាន' }}',
+                        price: '{{ number_format($price, 2) }}'
+                    }; showDetailModal = true"
+                    class="p-2.5 bg-white/90 dark:bg-gray-800/90 hover:bg-blue-600 hover:text-white text-gray-700 rounded-xl transition shadow-md"
+                    title="មើលលម្អិត">
+                    <i class="fas fa-eye text-sm"></i>
                 </button>
-                <button @click="currentRoom = {{ $room }}; showEditModal = true" title="កែប្រែ" class="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg">
-                    <i class="fas fa-edit"></i>
+
+                <button type="button"
+                    @click="currentRoom = {{ json_encode($room) }}; showEditModal = true"
+                    class="p-2.5 bg-white/90 dark:bg-gray-800/90 hover:bg-amber-600 hover:text-white text-gray-700 rounded-xl transition shadow-md"
+                    title="កែប្រែ">
+                    <i class="fas fa-edit text-sm"></i>
                 </button>
-                <button onclick="confirmDelete('{{ $room->id }}')" title="លុប" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg">
-                    <i class="fas fa-trash"></i>
+
+                <button type="button"
+                    onclick="confirmDelete('{{ $room->id }}')"
+                    class="p-2.5 bg-white/90 dark:bg-gray-800/90 hover:bg-rose-600 hover:text-white text-gray-700 rounded-xl transition shadow-md"
+                    title="លុប">
+                    <i class="fas fa-trash text-sm"></i>
                 </button>
             </div>
         </div>
 
-        <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ $room->roomType->name }}</h3>
-
-        <div class="flex items-center gap-2 mt-1 mb-2">
-            <span class="w-2 h-2 rounded-full 
-                @if($room->status === 'available') bg-green-500 
-                @elseif($room->status === 'booked') bg-blue-500 
-                @else bg-orange-500 @endif">
-            </span>
-            <span class="text-[11px] font-bold 
-                @if($room->status === 'available') text-green-600 dark:text-green-400
-                @elseif($room->status === 'booked') text-blue-600 dark:text-blue-400
-                @else text-orange-600 dark:text-orange-400 @endif">
-                @if($room->status === 'available') បន្ទប់ទំនេរ
-                @elseif($room->status === 'booked') មានភ្ញៀវ
-                @else ជួសជុល @endif
-            </span>
+        <!-- Room Header Info -->
+        <div class="flex justify-between items-start mb-2">
+            <div>
+                <h3 class="font-black text-gray-800 dark:text-gray-100 text-base uppercase tracking-tight">No. {{ $room->room_number }}</h3>
+                <p class="text-xs font-bold text-blue-600 dark:text-blue-400 mt-0.5">{{ $room->roomType->name ?? 'មិនទាន់កំណត់' }}</p>
+            </div>
         </div>
 
-        <p class="text-sm text-gray-400 dark:text-gray-500 uppercase font-semibold tracking-wider">
-            ជាន់ទី {{ $room->floor }} • {{ $room->hotel->name }}
+        <!-- Details Badges Row -->
+        <div class="flex items-center gap-2 my-3">
+            <div class="flex items-center gap-1 text-[10px] font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/60 px-2.5 py-1 rounded-lg">
+                <i class="fa-solid fa-layer-group text-blue-500"></i> ជាន់ទី {{ $room->floor }}
+            </div>
+            <div class="flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-lg">
+                <i class="fa-solid fa-users"></i> {{ $maxGuests }} នាក់
+            </div>
+        </div>
+
+        <!-- Hotel Name Footer Tag -->
+        <p class="text-[11px] text-gray-400 dark:text-gray-500 font-medium truncate pt-2 border-t border-gray-100 dark:border-gray-700/50">
+            <i class="fas fa-hotel text-[10px] mr-1"></i> {{ $room->hotel->name ?? 'មិនទាន់មានសណ្ឋាគារ' }}
         </p>
     </div>
     @empty
-    <div class="col-span-full">@include('admin.rooms.partials.empty_state')</div>
+    <div class="col-span-full">
+        @include('admin.rooms.partials.empty_state')
+    </div>
     @endforelse
 </div>
 
-
-
-
-<div class="mt-4 bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border-none transition-colors">
+<!-- Pagination Container -->
+<div class="mt-6 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border-none transition-colors pagination">
     <div class="dark:text-white">
         {{ $rooms->links() }}
     </div>

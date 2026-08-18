@@ -52,12 +52,12 @@
                         </span>
                     </td>
 
-                    <td class="px-6 py-4 text-right flex gap-3 justify-end">
-                        <div class="flex justify-end gap-2 space-2">
-                            <button @click="currentFacility = {{ $facility->toJson() }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលម្អិត"><i class="fas fa-eye text-sm"></i></button>
-                            <button @click="currentFacility = {{ $facility->toJson() }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                        <div class="flex justify-end items-center gap-1">
+                            <button type="button" @click="currentFacility = {{ $facility->toJson() }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+                            <button type="button" @click="currentFacility = {{ $facility->toJson() }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
 
-                            <form action="{{ route('facilities.destroy', $facility->id) }}" method="POST" class="inline-block">
+                            <form action="{{ route('facilities.destroy', $facility->id) }}" method="POST" class="inline m-0">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button"

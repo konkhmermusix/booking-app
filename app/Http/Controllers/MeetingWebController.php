@@ -5,21 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\RoomType;
+use App\Models\Room;
 use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MeetingWebController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. ចាប់យក INPUT ពី Request
+        // ចាប់យក INPUT ពី Request
+        $hasDateFilter = $request->filled('check_in');
         $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
-        $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
+        $check_out = $request->input('check_out', $check_in);
         $sort      = $request->input('sort', 'asc');
         $search    = $request->input('search');
         $guests    = $request->input('guests');
 
-        // 2. លក្ខខណ្ឌសម្រាប់សម្គាល់ថាជា "សាលប្រជុំ" (Reusable Meeting Logic)
+        // លក្ខខណ្ឌសម្រាប់សម្គាល់ថាជា "សាលប្រជុំ" (Reusable Meeting Logic)
         $meetingCondition = function ($query) {
             $query->where('name', 'like', '%សាលប្រជុំ%')
                 ->orWhere('name', 'like', '%សាលប្រជុំធំ%')
@@ -31,34 +34,27 @@ class MeetingWebController extends Controller
                 ->orWhere('name', 'like', '%Ballroom%');
         };
 
-        // 3. AVAILABILITY LOGIC (ពិនិត្យបន្ទប់ទំនេរ)
+        // AVAILABILITY LOGIC (ពិនិត្យបន្ទប់ទំនេរ)
         $availabilityFilter = function ($query) use ($check_in, $check_out) {
-            $query->where('status', 'available')
-                ->whereDoesntHave('hotelbookings', function ($b) use ($check_in, $check_out) {
+            $query->where('status', '!=', 'maintenance')
+                ->whereDoesntHave('meetingBookings', function ($b) use ($check_in, $check_out) {
                     $b->whereIn('status', ['confirmed', 'pending'])
-                        ->where(function ($overlap) use ($check_in, $check_out) {
-                            $overlap->whereBetween('check_in', [$check_in, $check_out])
-                                ->orWhereBetween('check_out', [$check_in, $check_out])
-                                ->orWhere(function ($full) use ($check_in, $check_out) {
-                                    $full->where('check_in', '<=', $check_in)
-                                        ->where('check_out', '>=', $check_out);
-                                });
-                        });
+                        ->where('start_date', '<=', $check_out)
+                        ->where('end_date', '>=', $check_in);
                 });
         };
 
-        // 4. MAIN QUERY
+        // MAIN QUERY
         $query = RoomType::with(['images', 'facilities'])
             ->withAvg('reviews as reviews_avg_rating', 'rating')
             ->withCount('reviews')
             ->withCount([
                 'rooms as available_rooms_count' => $availabilityFilter
             ])
-            ->withCount('reviews')
             ->where($meetingCondition);
 
 
-        // 5. បន្ថែម FILTERS (ប្រសិនបើមានការជ្រើសរើស)
+        // បន្ថែម FILTERS (ប្រសិនបើមានការជ្រើសរើស)
         // ស្វែងរកតាមឈ្មោះ
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -71,35 +67,57 @@ class MeetingWebController extends Controller
             $query->where('max_guests', '>=', $guests);
         }
 
-        // 6. រៀបលំដាប់ និងបែងចែកទំព័រ (SORT + PAGINATION)
+        // រៀបលំដាប់ និងបែងចែកទំព័រ (SORT + PAGINATION)
         $meetingRooms = $query
             ->orderBy('base_price', $sort === 'desc' ? 'desc' : 'asc')
             ->paginate(6)
             ->withQueryString();
 
-        // 7. AJAX RESPONSE (សម្រាប់ Filter ប្តូរទិន្នន័យដោយមិន Refresh Page)
+        // AJAX RESPONSE (សម្រាប់ Filter ប្តូរទិន្នន័យដោយមិន Refresh Page)
         if ($request->ajax()) {
-            return view('frontend.partials.meeting_list', compact('meetingRooms'))->render();
+            return view('frontend.partials.meeting_list', compact('meetingRooms', 'hasDateFilter'))->render();
         }
 
-        // 8. បោះទិន្នន័យទៅកាន់ View
+        // បោះទិន្នន័យទៅកាន់ View
         return view('frontend.meeting', compact(
             'meetingRooms',
             'check_in',
             'check_out',
             'sort',
             'search',
-            'guests'
+            'guests',
+            'hasDateFilter'
         ));
     }
 
     // សម្រាប់ Meeting Hall
-    public function meeting_detail($id)
+    public function meeting_detail(Request $request, $id)
     {
+        $startDate = $request->input('start_date', Carbon::today()->format('Y-m-d'));
+        $endDate   = $request->input('end_date', Carbon::today()->format('Y-m-d'));
+        $startTime = $request->input('start_time', '08:00');
+        $endTime   = $request->input('end_time', '17:00');
+
         $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')
             ->findOrFail($id);
+
+        $availableRoomsCount = Room::where('room_type_id', $roomType->id)
+            ->where('status', '!=', 'maintenance')
+            ->whereNotExists(function ($query) use ($startDate, $endDate, $startTime, $endTime) {
+                $query->select(DB::raw(1))
+                    ->from('meeting_bookings')
+                    ->whereColumn('rooms.id', 'meeting_bookings.meeting_room_id')
+                    ->whereIn('meeting_bookings.status', ['confirmed', 'pending'])
+                    ->where(function ($q) use ($startDate, $endDate, $startTime, $endTime) {
+                        $q->where('meeting_bookings.start_date', '<=', $endDate)
+                          ->where('meeting_bookings.end_date', '>=', $startDate)
+                          ->where('meeting_bookings.start_time', '<', $endTime)
+                          ->where('meeting_bookings.end_time', '>', $startTime);
+                    });
+            })
+            ->count();
 
         $similarRooms = RoomType::where('hotel_id', $roomType->hotel_id)
             ->where('id', '!=', $roomType->id)
@@ -111,7 +129,41 @@ class MeetingWebController extends Controller
             ->take(3)
             ->get();
 
-        return view('frontend.meeting_details', compact('roomType', 'similarRooms'));
+        return view('frontend.meeting_details', compact('roomType', 'similarRooms', 'availableRoomsCount'));
+    }
+
+    public function checkAvailability(Request $request)
+    {
+        $roomTypeId = $request->input('room_type_id');
+        $startDate  = $request->input('start_date');
+        $endDate    = $request->input('end_date');
+        $startTime  = $request->input('start_time');
+        $endTime    = $request->input('end_time');
+
+        if (!$roomTypeId || !$startDate || !$endDate || !$startTime || !$endTime) {
+            return response()->json(['available' => false, 'count' => 0]);
+        }
+
+        $availableRoomsCount = Room::where('room_type_id', $roomTypeId)
+            ->where('status', '!=', 'maintenance')
+            ->whereNotExists(function ($query) use ($startDate, $endDate, $startTime, $endTime) {
+                $query->select(DB::raw(1))
+                    ->from('meeting_bookings')
+                    ->whereColumn('rooms.id', 'meeting_bookings.meeting_room_id')
+                    ->whereIn('meeting_bookings.status', ['confirmed', 'pending'])
+                    ->where(function ($q) use ($startDate, $endDate, $startTime, $endTime) {
+                        $q->where('meeting_bookings.start_date', '<=', $endDate)
+                          ->where('meeting_bookings.end_date', '>=', $startDate)
+                          ->where('meeting_bookings.start_time', '<', $endTime)
+                          ->where('meeting_bookings.end_time', '>', $startTime);
+                    });
+            })
+            ->count();
+
+        return response()->json([
+            'available' => $availableRoomsCount > 0,
+            'count'     => $availableRoomsCount
+        ]);
     }
 
     public function storeReview(Request $request)
@@ -137,7 +189,14 @@ class MeetingWebController extends Controller
             'status'       => 1
         ]);
 
-        return back()->with('success', 'បានផ្ញើការវាយតម្លៃដោយជោគជ័យ!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានផ្ញើការវាយតម្លៃដោយជោគជ័យ'
+            ]);
+        }
+
+        return back()->with('success', 'បានផ្ញើការវាយតម្លៃដោយជោគជ័យ');
     }
 
     public function storeReply(Request $request)
@@ -149,7 +208,7 @@ class MeetingWebController extends Controller
             'comment'      => 'required|string',
         ]);
 
-        Review::create([
+        $reply = Review::create([
             'room_type_id' => $request->room_type_id,
             'user_id'      => Auth::id(),
             'parent_id'    => $request->parent_id,
@@ -159,7 +218,22 @@ class MeetingWebController extends Controller
             'status'       => 1
         ]);
 
-        return back()->with('success', 'បានផ្ញើការឆ្លើយតបដោយជោគជ័យ!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានផ្ញើការឆ្លើយតបដោយជោគជ័យ',
+                'reply'   => [
+                    'id' => $reply->id,
+                    'name' => $reply->name,
+                    'comment' => $reply->comment,
+                    'created_at' => $reply->created_at->diffForHumans(),
+                    'is_admin' => ($reply->user_id == 1),
+                    'can_edit' => Auth::check() && ($reply->user_id == Auth::id() || Auth::id() == 1)
+                ]
+            ]);
+        }
+
+        return back()->with('success', 'បានផ្ញើការឆ្លើយតបដោយជោគជ័យ');
     }
 
     public function updateReview(Request $request, $id)
@@ -167,7 +241,10 @@ class MeetingWebController extends Controller
         $review = Review::findOrFail($id);
 
         if ($review->user_id !== Auth::id() && Auth::id() !== 1) {
-            return back()->with('error', 'អ្នកគ្មានសិទ្ធិកែប្រែមតិយោបល់នេះទេ!');
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'អ្នកគ្មានសិទ្ធិកែប្រែមតិយោបល់នេះទេ'], 403);
+            }
+            return back()->with('error', 'អ្នកគ្មានសិទ្ធិកែប្រែមតិយោបល់នេះទេ');
         }
 
         $request->validate([
@@ -181,20 +258,39 @@ class MeetingWebController extends Controller
         }
         $review->save();
 
-        return back()->with('success', 'បានកែប្រែមតិយោបល់រួចរាល់!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានកែប្រែមតិយោបល់រួចរាល់',
+                'comment' => $review->comment,
+                'rating'  => $review->rating
+            ]);
+        }
+
+        return back()->with('success', 'បានកែប្រែមតិយោបល់រួចរាល់');
     }
 
-    public function deleteReview($id)
+    public function deleteReview(Request $request, $id)
     {
         $review = Review::findOrFail($id);
 
         if ($review->user_id !== Auth::id() && Auth::id() !== 1) {
-            return back()->with('error', 'អ្នកគ្មានសិទ្ធិលុបមតិយោបល់នេះទេ!');
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'អ្នកគ្មានសិទ្ធិលុបមតិយោបល់នេះទេ'], 403);
+            }
+            return back()->with('error', 'អ្នកគ្មានសិទ្ធិលុបមតិយោបល់នេះទេ');
         }
 
         Review::where('parent_id', $review->id)->delete();
         $review->delete();
 
-        return back()->with('success', 'បានលុបមតិយោបល់ដោយជោគជ័យ!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'បានលុបមតិយោបល់ដោយជោគជ័យ'
+            ]);
+        }
+
+        return back()->with('success', 'បានលុបមតិយោបល់ដោយជោគជ័យ');
     }
 }

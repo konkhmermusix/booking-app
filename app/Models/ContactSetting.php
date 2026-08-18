@@ -9,13 +9,9 @@ class ContactSetting extends Model
 {
     use HasFactory;
 
-    // កំណត់ឈ្មោះ Table (ប្រសិនបើឈ្មោះ Model មិនទាន់ត្រូវតាមស្តង់ដារ)
     protected $table = 'contact_settings';
 
-    /**
-     * fillable: អនុញ្ញាតឱ្យបញ្ចូលទិន្នន័យតាមរយៈ Array
-     * នេះការពារកុំឱ្យ User បញ្ចូលទិន្នន័យទៅ Column ដែលយើងមិនចង់ (ឧទាហរណ៍: id)
-     */
+ 
     protected $fillable = [
         'key',
         'label',
@@ -25,17 +21,26 @@ class ContactSetting extends Model
         'status',
     ];
 
-    /**
-     * casts: បំប្លែងប្រភេទទិន្នន័យឱ្យបានត្រឹមត្រូវរាល់ពេលទាញយក
-     * ជួយឱ្យ 'status' ក្លាយជា boolean (true/false) ស្វ័យប្រវត្តិ
-     */
+ 
     protected $casts = [
         'status' => 'boolean',
     ];
 
     public function setKeyAttribute($value)
     {
-        // បំប្លែងទៅជាអក្សរតូច និងដូរដកឃ្លាទៅជា underscore
         $this->attributes['key'] = strtolower(str_replace(' ', '_', $value));
+    }
+
+    public static function getExchangeRate($default = 4050): float
+    {
+        try {
+            $setting = self::whereIn('key', ['khr_rate', 'exchange_rate', 'usd_khr_rate', 'riel_rate'])
+                ->where('status', 1)
+                ->first();
+            if ($setting && is_numeric($setting->value) && (float)$setting->value > 0) {
+                return (float) $setting->value;
+            }
+        } catch (\Exception $e) {}
+        return (float) $default;
     }
 }

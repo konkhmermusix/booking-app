@@ -22,7 +22,17 @@ class ContactWebController extends Controller
         $allSettings = ContactSetting::where('status', true)->get();
 
         $mapData = $allSettings->where('key', 'map_link')->first();
-        $contacts = $allSettings->where('key', '!=', 'map_link');
+
+        $excludedKeys = ['map_link', 'qr_code_image', 'bank_account_name', 'bank_account_number', 'bank_name'];
+        $contacts = $allSettings->reject(function ($item) use ($excludedKeys) {
+            $key = strtolower($item->key);
+            $label = strtolower($item->label);
+            return in_array($key, $excludedKeys)
+                || str_starts_with($key, 'qr_')
+                || str_starts_with($key, 'bank_')
+                || str_contains($label, 'qr')
+                || str_contains($label, 'ធនាគារ');
+        });
 
         return view('frontend.contact', compact('contacts', 'mapData'));
     }
@@ -32,16 +42,12 @@ class ContactWebController extends Controller
         try {
             $data = $request->validated();
 
-            $data['description'] = clean($request->description);
-            // $data['description'] = Purifier::clean($request->description);
-            // $data['description'] = strip_tags($request->description, '<p><br><b><strong><ul><li>');
-            // $data['description'] = strip_tags($request->description, '<p><br><b><strong><ul><li><ol><h1><h2><h3>');
-
+            $data['description'] = strip_tags(trim($request->description));
             $data['status'] = 'unread';
 
             $this->contactService->handleContactSubmission($data);
 
-            return back()->with('success', 'សាររបស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ!');
+            return back()->with('success', 'សាររបស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'មានបញ្ហាបច្ចេកទេស៖ ' . $e->getMessage());
         }

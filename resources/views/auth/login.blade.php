@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 @section('title', 'ចូលប្រើ')
 @section('content')
-<div class="max-w-4xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row border dark:border-gray-700">
+<div class="max-w-4xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
     {{-- Banner --}}
     <div class="hidden md:flex md:w-1/2 bg-[#002B5B] dark:bg-black p-12 text-white flex-col justify-center relative overflow-hidden">
         <h2 class="text-4xl font-bold mb-4 italic">សណ្ឋាគារ <span class="text-yellow-400 font-serif">ភីអេនធី</span></h2>
@@ -24,24 +24,25 @@
                 <div class="relative group">
                     <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"></i>
                     <input type="email" name="email" value="{{ old('email') }}" required placeholder="អ៊ីម៉ែល"
-                        class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                 </div>
-                <p class="mt-1 invisible peer-placeholder-shown:visible text-[10px] text-red-500"></p>
+                @error('email') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div x-data="{ show: false }">
                 <div class="flex justify-between mb-1">
                     <label class="block text-xs font-bold text-gray-500 uppercase">ពាក្យសម្ងាត់</label>
-                    <a href="{{ route('password.request') }}" class="text-[10px] text-blue-500 hover:underline">ភ្លេចពាក្យសម្ងាត់?</a>
+                    <a href="{{ route('password.request') }}" class="text-xs text-blue-500 hover:underline">ភ្លេចពាក្យសម្ងាត់?</a>
                 </div>
                 <div class="relative group">
                     <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"></i>
                     <input :type="show ? 'text' : 'password'" name="password" required placeholder="ពាក្យសម្ងាត់"
-                        class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="w-full pl-11 pr-4 py-3 text-gray-900 bg-gray-50 border @error('password') border-red-500 @else border-gray-200 @enderror rounded-xl outline-none focus:ring-2 ring-blue-500/50 transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                         <i class="fas" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
                     </button>
                 </div>
+                @error('password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <button type="submit" class="w-full bg-[#002B5B] dark:bg-blue-600 text-white py-3.5 rounded-xl font-bold shadow-lg hover:bg-blue-800 transition-all transform active:scale-95">

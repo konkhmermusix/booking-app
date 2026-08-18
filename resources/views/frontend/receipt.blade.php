@@ -1,167 +1,211 @@
 @extends('layouts.app')
-@section('title', 'វិក្កយបត្រ #' . $booking->booking_code)
+@section('title', 'វិក្កយបត្រ #' . ($primaryCode ?? $booking->booking_code) . ' | សណ្ឋាគារ ភីអេនធី ផាលេស')
 @section('content')
 
-<div class="container mx-auto py-10 px-4">
+@php
+    $hotelAddress = \App\Models\ContactSetting::where('key', 'address')->where('status', 1)->value('value') ?? 'ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្តត្បូងឃ្មុំ (ខាងកើតរង្វង់មូល ប្រាំមួយមករា)';
+    $hotelPhone   = \App\Models\ContactSetting::where('key', 'phone')->where('status', 1)->value('value') ?? '096 711 9798 / 071 4 711 979';
+    $hotelEmail   = \App\Models\ContactSetting::where('key', 'email')->where('status', 1)->value('value') ?? 'info@pnt-hotel.com';
+    $khrRate      = \App\Models\ContactSetting::getExchangeRate();
 
-    <div class="flex justify-center gap-4 mb-8 no-print">
-        <a href="{{ route('mybookings') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2">
-            ត្រឡប់ក្រោយ
-        </a>
-        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
-            ព្រីនវិក្កយបត្រ
-        </button>
-    </div>
+    $bookingUser = null;
+    if (!empty($booking->user_id)) {
+        $bookingUser = \App\Models\User::find($booking->user_id);
+    }
 
-    <div class="pos-receipt bg-white text-black p-6 mx-auto border border-gray-200 shadow-sm font-mono text-sm max-w-[380px]">
+    $cName  = $customerName ?? (!empty($booking->customer_name) ? $booking->customer_name : ($bookingUser->name ?? (Auth::check() ? Auth::user()->name : 'ភ្ញៀវស្នាក់នៅ')));
+    $cPhone = $customerPhone ?? (!empty($booking->customer_phone) ? $booking->customer_phone : ($bookingUser->phone ?? (Auth::check() ? Auth::user()->phone : 'N/A')));
+    $cEmail = $customerEmail ?? (!empty($booking->customer_email) ? $booking->customer_email : ($bookingUser->email ?? (Auth::check() ? Auth::user()->email : 'N/A')));
+    $displayCode = $primaryCode ?? ($booking->booking_code ?? 'PNT-RECEIPT');
+    $items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : (isset($allDetails) && count($allDetails) > 0 ? $allDetails : collect([$details]));
+    $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
+@endphp
 
-        <div class="text-center space-y-1 mb-4">
-            <div class="text-xl font-black uppercase">សណ្ឋាគារ ភីអេនធី ផាលេស</div>
-            <div class="text-[11px] text-gray-650">ត្បូងឃ្មុំ, កម្ពុជា</div>
-            <div class="text-[11px] text-gray-650">Tel: 0964301974</div>
+<div class="w-full bg-gray-100 dark:bg-[#0b1120] min-h-screen py-8 transition-colors duration-300">
+    <div class="container mx-auto px-4 max-w-3xl">
+
+        {{-- TOP ACTION BAR --}}
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <a href="{{ route('mybookings') }}"
+                class="inline-flex items-center gap-2 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2.5 rounded-xl font-bold text-xs shadow-xs border border-gray-200 dark:border-gray-800 transition-all active:scale-95">
+                <i class="fas fa-arrow-left text-xs"></i>
+                <span>ត្រឡប់ទៅប្រវត្តិកក់</span>
+            </a>
+
+            @if(Auth::check() && isset($booking->id) && in_array($booking->status ?? '', ['pending', 'confirmed', 'approved']))
+            <form id="cancel-form-receipt" action="{{ route('bookings.cancel', $booking->id) }}" method="POST" class="inline-block">
+                @csrf
+                <button type="button" onclick="confirmCancelReceipt('cancel-form-receipt')"
+                    class="inline-flex items-center gap-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white px-4 py-2.5 rounded-xl font-bold text-xs border border-red-200 dark:border-red-900/40 transition-all active:scale-95 cursor-pointer">
+                    <i class="fas fa-times-circle text-xs"></i>
+                    <span>បោះបង់</span>
+                </button>
+            </form>
+            @endif
         </div>
 
-        <div class="border-b border-dashed border-gray-400 my-3"></div>
+        {{-- INVOICE/RECEIPT CARD --}}
+        <div id="receipt-card" class="invoice-card bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 p-8 md:p-10 transition-colors duration-300 text-gray-800 dark:text-gray-200">
 
-        <div class="space-y-1 text-xs">
-            <div class="flex justify-between">
-                <span>កូដយោង :</span>
-                <span class="font-bold">{{ $booking->booking_code }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>កាលបរិច្ឆេទ :</span>
-                <span>{{ date('d-M-Y H:i A', strtotime($booking->created_at ?? now())) }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>អតិថិជន :</span>
-                <span class="font-bold">{{ Auth::user()->name }}</span>
-            </div>
-        </div>
+            {{-- HEADER --}}
+            <div class="border-b border-gray-200 dark:border-gray-800 pb-6 mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-16 h-16 shrink-0">
+                            <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="PNT Palace Hotel Logo" class="w-full h-full object-contain">
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tight">សណ្ឋាគារ ភីអេនធី ផាលេស</h1>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">PNT PALACE HOTEL & RESORT</p>
+                        </div>
+                    </div>
 
-        <div class="border-b border-dashed border-gray-400 my-3"></div>
-
-        <div class="text-xs space-y-3">
-            <div class="grid grid-cols-12 font-bold uppercase border-b border-gray-200 pb-1">
-                <div class="col-span-7">ពិពណ៌នា</div>
-                <div class="col-span-5 text-right">សរុប</div>
-            </div>
-
-            <div class="grid grid-cols-12 items-start">
-                <div class="col-span-7 space-y-0.5">
-                    <div class="text-[11px] text-gray-600">({{ $details->type_name ?? 'N/A' }})</div>
-
-                    <div class="text-[10px] text-gray-500 italic bg-gray-50 p-1 rounded mt-1">
-                        @if($type === 'hotel')
-                        <span>In: {{ $booking->check_in }}<br>Out: {{ $booking->check_out }}</span>
-                        @else
-                        <span>Date: {{ $booking->start_date }}<br>Time: {{ $booking->start_time }} - {{ $booking->end_time }}</span>
-                        @endif
+                    <div class="sm:text-right">
+                        <h2 class="text-lg font-black text-blue-600 dark:text-blue-400 uppercase tracking-wide">វិក្កយបត្រ / RECEIPT</h2>
+                        <p class="text-xs font-mono font-bold text-gray-700 dark:text-gray-300 mt-0.5">លេខ ៖ #{{ $displayCode }}</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400">
+                            កាលបរិច្ឆេទ ៖ <span class="font-medium text-gray-700 dark:text-gray-300">{{ date('d/m/Y h:i A', strtotime($booking->created_at ?? now())) }}</span>
+                        </p>
                     </div>
                 </div>
-                <div class="col-span-5 text-right font-bold text-sm pt-0.5">
-                    ${{ number_format($booking->total_price, 2) }}
+
+                {{-- HOTEL CONTACT INFO --}}
+                <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800/60 flex flex-wrap items-center justify-between text-xs text-gray-500 dark:text-gray-400 gap-2">
+                    <div><i class="fas fa-map-marker-alt text-blue-500 mr-1"></i> {{ $hotelAddress }}</div>
+                    <div class="flex items-center gap-4">
+                        <span><i class="fas fa-phone text-blue-500 mr-1"></i> {{ $hotelPhone }}</span>
+                        <span><i class="fas fa-envelope text-blue-500 mr-1"></i> {{ $hotelEmail }}</span>
+                    </div>
                 </div>
             </div>
+
+            {{-- INFORMATION GRID: CUSTOMER & BOOKING --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl border border-gray-100 dark:border-gray-800 text-xs">
+                <div>
+                    <h3 class="font-bold text-gray-900 dark:text-white uppercase text-[11px] tracking-wider mb-2 text-blue-600 dark:text-blue-400">
+                        ព័ត៌មានអតិថិជន (Customer Information)
+                    </h3>
+                    <div class="space-y-1 text-gray-700 dark:text-gray-300">
+                        <p><span class="text-gray-500 dark:text-gray-400">ឈ្មោះ ៖</span> <strong class="text-gray-900 dark:text-white">{{ $cName }}</strong></p>
+                        <p><span class="text-gray-500 dark:text-gray-400">ទូរស័ព្ទ ៖</span> {{ $cPhone }}</p>
+                        <p><span class="text-gray-500 dark:text-gray-400">អ៊ីមែល ៖</span> {{ $cEmail }}</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-gray-900 dark:text-white uppercase text-[11px] tracking-wider mb-2 text-blue-600 dark:text-blue-400">
+                        ព័ត៌មានការកក់
+                    </h3>
+                    <div class="space-y-1 text-gray-700 dark:text-gray-300">
+                        <p><span class="text-gray-500 dark:text-gray-400">ប្រភេទ ៖</span>
+                            <strong>{{ $type === 'combined' ? 'បន្ទប់ស្នាក់នៅ និងសាលប្រជុំ' : ($type === 'hotel' ? 'បន្ទប់សណ្ឋាគារ' : 'សាលប្រជុំ') }}</strong>
+                        </p>
+                        <p><span class="text-gray-500 dark:text-gray-400">វិធីសាស្ត្រទូទាត់ ៖</span>
+                            {{ isset($payment->method) && $payment->method === 'qr' ? 'ស្កែនឃ្យូអរកូដ' : 'ទូទាត់សាច់ប្រាក់នៅសណ្ឋាគារ' }}
+                        </p>
+                        <p><span class="text-gray-500 dark:text-gray-400">ស្ថានភាពការទូទាត់ ៖</span>
+                            @if($payment && ($payment->status === 'paid' || (isset($payment->payment_status) && $payment->payment_status === 'paid')))
+                                <span class="font-bold text-emerald-600 dark:text-emerald-400">បានទូទាត់រួច</span>
+                            @elseif($booking->status === 'cancelled')
+                                <span class="font-bold text-red-600 dark:text-red-400">បានបោះបង់</span>
+                            @else
+                                <span class="font-bold text-amber-600 dark:text-amber-400">រង់ចាំការផ្ទៀងផ្ទាត់</span>
+                            @endif
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ITEMS TABLE --}}
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-bold uppercase text-[11px] border-y border-gray-200 dark:border-gray-700">
+                            <th class="py-3 px-3 w-10 text-center">ល.រ</th>
+                            <th class="py-3 px-3">ប្រភេទ/បរិយាយ</th>
+                            <th class="py-3 px-3">កាលបរិច្ឆេទ</th>
+                            <th class="py-3 px-3 text-right">តម្លៃសរុប</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                        @foreach($items as $index => $item)
+                        <tr>
+                            <td class="py-3.5 px-3 text-center text-gray-500 font-medium">{{ $index + 1 }}</td>
+                            <td class="py-3.5 px-3">
+                                <div class="font-bold text-gray-900 dark:text-white text-sm">
+                                    {{ $item->type_name ?? (($item->item_type ?? $type) === 'hotel' ? 'បន្ទប់ស្នាក់នៅ' : 'សាលប្រជុំ') }}
+                                </div>
+                            </td>
+                            <td class="py-3.5 px-3 text-gray-700 dark:text-gray-300">
+                                @if(($item->item_type ?? $type) === 'hotel')
+                                    <span>{{ \Carbon\Carbon::parse($item->check_in ?? $booking->check_in)->format('d/m/Y') }} ដល់ {{ \Carbon\Carbon::parse($item->check_out ?? $booking->check_out)->format('d/m/Y') }}</span>
+                                @else
+                                    <span>{{ \Carbon\Carbon::parse($item->start_date ?? $booking->start_date)->format('d/m/Y') }} ({{ $item->start_time ?? $booking->start_time }} - {{ $item->end_time ?? $booking->end_time }})</span>
+                                @endif
+                            </td>
+                            <td class="py-3.5 px-3 text-right font-bold text-sm text-gray-900 dark:text-white font-mono">
+                                ${{ number_format($item->price ?? ($totalAmount / count($items)), 2) }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- SUMMARY --}}
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-6 border-t border-gray-200 dark:border-gray-800 pt-5">
+                <div class="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                    <p class="font-bold text-gray-700 dark:text-gray-300 uppercase">ចំណាំ ៖</p>
+                    <p>• សូមរក្សាទុកវិក្កយបត្រនេះសម្រាប់បង្ហាញជូនបុគ្គលិកពេលចូលស្នាក់នៅ។</p>
+                    <p>• អត្រាប្តូរប្រាក់ ៖ ១ ដុល្លារ = {{ number_format($khrRate) }} រៀល</p>
+                </div>
+
+                <div class="w-full sm:w-64 space-y-2 text-xs">
+                    <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                        <span>សរុបទឹកប្រាក់ ៖</span>
+                        <span class="font-bold text-gray-900 dark:text-white font-mono">${{ number_format($totalAmount, 2) }}</span>
+                    </div>
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-2 flex justify-between items-baseline">
+                        <span class="font-extrabold text-gray-900 dark:text-white text-sm">ទឹកប្រាក់សរុប ៖</span>
+                        <div class="text-right">
+                            <span class="text-xl font-black text-blue-600 dark:text-blue-400 font-mono block">${{ number_format($totalAmount, 2) }}</span>
+                            <span class="text-[11px] text-gray-500 dark:text-gray-400 font-mono font-semibold">(~ {{ number_format($totalAmount * $khrRate) }} ៛)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- FOOTER --}}
+            <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800/80 text-center text-xs text-gray-500 dark:text-gray-400">
+                <p class="font-bold text-gray-700 dark:text-gray-300">សូមអរគុណសម្រាប់ការជ្រើសរើស សណ្ឋាគារ ភីអេនធី ផាលេស !</p>
+                <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Thank you for choosing PNT Palace Hotel & Resort</p>
+            </div>
         </div>
-
-        <div class="border-b border-dashed border-gray-400 my-4"></div>
-
-        <div class="space-y-1.5">
-            <div class="flex justify-between text-xs">
-                <span>សរុបទឹកប្រាក់ :</span>
-                <span>${{ number_format($booking->total_price, 2) }}</span>
-            </div>
-            <div class="flex justify-between text-xs">
-                <span>បញ្ចុះតម្លៃ :</span>
-                <span>$0.00</span>
-            </div>
-            <div class="flex justify-between font-black text-xs pt-1 border-t border-gray-200">
-                <span>សរុបត្រូវទូទាត់ :</span>
-                <span>${{ number_format($booking->total_price, 2) }}</span>
-            </div>
-        </div>
-
-        <div class="border-b border-dashed border-gray-400 my-4"></div>
-
-        <div class="text-center space-y-2 py-2 bg-gray-50 border border-gray-200 rounded-xl">
-            <div class="text-[11px] font-black text-blue-700">
-                គណនីវេរប្រាក់
-            </div>
-
-            <div class="w-28 h-28 bg-white p-1 mx-auto border border-gray-200 rounded-lg flex items-center justify-center shadow-inner">
-                <img src="{{ asset('images/qr/ac.jpg') }}" alt="QRcode" class="w-full h-full object-contain">
-            </div>
-        </div>
-
-        <div class="border-b border-dashed border-gray-400 my-4"></div>
-
-        <div class="text-center space-y-2">
-            <div class="text-xs font-bold uppercase">
-                ស្ថានភាព៖
-                <span class="{{ $payment && $payment->status === 'paid' ? 'text-green-600' : 'text-amber-600' }}">
-                    {{ $payment && $payment->status === 'paid' ? 'បង់ប្រាក់រួច' : 'រង់ចាំពិនិត្យ' }}
-                </span>
-            </div>
-
-            <div class="text-[10px] text-gray-500 italic mt-4 space-y-1">
-                <div>Thank you for choosing our services!</div>
-            </div>
-        </div>
-
     </div>
 </div>
 
-<style>
-    /* កំណត់ទម្រង់ពុម្ពអក្សរស្រដៀងម៉ាស៊ីនគិតលុយសម្រាប់ទំព័រទាំងមូល */
-    .pos-receipt {
-        font-family: 'Courier New', Courier, monospace, 'Khmer OS Battambang';
+<script>
+    function confirmCancelReceipt(formId) {
+        Swal.fire({
+            title: 'បញ្ជាក់ការបោះបង់?',
+            text: 'តើលោកអ្នកពិតជាចង់បោះបង់ការកក់នេះមែនទេ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'បាទ/ចាស, បោះបង់!',
+            cancelButtonText: 'បោះបង់',
+            customClass: {
+                popup: 'rounded-2xl',
+                confirmButton: 'rounded-xl font-bold px-4 py-2 text-xs',
+                cancelButton: 'rounded-xl font-bold px-4 py-2 text-xs'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
     }
-
-    @media print {
-
-        .no-print,
-        header,
-        footer,
-        nav,
-        .sidebar {
-            display: none !important;
-        }
-
-        @page {
-            size: 80mm auto;
-            margin: 0;
-        }
-
-        body {
-            background: white !important;
-            color: black !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        .container {
-            max-w: 100% !important;
-            width: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-
-        .pos-receipt {
-            border: none !important;
-            box-shadow: none !important;
-            width: 100% !important;
-            max-w: 100% !important;
-            padding: 8px !important;
-            margin: 0 !important;
-            height: auto !important;
-        }
-
-        .bg-gray-50 {
-            background-color: #f9fafb !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-    }
-</style>
+</script>
 
 @endsection

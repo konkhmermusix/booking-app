@@ -18,17 +18,21 @@ class RoomTypeRepository extends BaseRepository
     // នៅក្នុង RoomTypeRepository.php
     public function getRoomTypes(array $filters = []): LengthAwarePaginator
     {
-        // បន្ថែម withCount('rooms') ដើម្បីបង្ហាញចំនួនបន្ទប់ក្នុងតារាងបញ្ជីតែម្ដង
-        $query = $this->model->newQuery()->with(['hotel', 'images'])->withCount('rooms');
+        $query = $this->model->newQuery()->with(['hotel', 'images', 'facilities'])->withCount('rooms');
 
         if (!empty($filters['hotel_id'])) {
             $query->where('hotel_id', $filters['hotel_id']);
+        }
+
+        if (!empty($filters['category'])) {
+            $query->where('category', $filters['category']);
         }
 
         if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%")
                     ->orWhereHas('hotel', function ($h) use ($search) {
                         $h->where('name', 'like', "%{$search}%");
                     });
@@ -36,7 +40,7 @@ class RoomTypeRepository extends BaseRepository
         }
 
         return $query->latest()
-            ->paginate($filters['per_page'] ?? 4)
+            ->paginate($filters['per_page'] ?? 8)
             ->withQueryString();
     }
 

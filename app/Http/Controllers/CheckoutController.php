@@ -16,7 +16,7 @@ class CheckoutController extends Controller
     {
         $cart = session()->get('cart', []);
         if (empty($cart)) {
-            return redirect()->route('cart.index')->with('error', 'កន្ត្រករបស់អ្នកទំនេរ សូមជ្រើសរើសបន្ទប់សិន!');
+            return redirect()->route('cart.index')->with('error', 'កន្ត្រករបស់អ្នកទំនេរ សូមជ្រើសរើសបន្ទប់សិន');
         }
 
         $subtotal = 0;
@@ -34,7 +34,7 @@ class CheckoutController extends Controller
     {
         $request->validate([
             'name'           => 'required|string|max:255',
-            'phone'          => 'required|string|max:50',
+            'phone'          => 'required|string|max:20',
             'email'          => 'required|email',
             'payment_method' => 'required|string',
             'payment_slip'   => 'nullable|string'
@@ -42,102 +42,168 @@ class CheckoutController extends Controller
 
         $cart = session()->get('cart', []);
         if (empty($cart)) {
-            return response()->json(['status' => 'error', 'message' => 'កន្ត្រកទំនេរ!']);
+            return response()->json(['status' => 'error', 'message' => 'កន្ត្រកទំនេរ']);
         }
 
         try {
             DB::beginTransaction();
             $userId = Auth::id();
             $generatedCodes = [];
+            $paymentMethodEnum = ($request->payment_method === 'cash') ? 'cash' : 'qr';
             $slipPath = null;
 
-            if ($request->payment_method === 'aba' && $request->payment_slip) {
-                $slipPath = $this->uploadBase64($request->payment_slip, 'slips');
-            }
-
-            $paymentMethodEnum = ($request->payment_method === 'aba') ? 'qr' : 'cash';
-
-            // បង្កើត Array ថ្មីសម្រាប់ទុកព័ត៌មានដែលបានកក់ពិតប្រាកដ ដើម្បីផ្ញើទៅ Telegram
-            $bookedItemsForTelegram = [];
-
-            foreach ($cart as $item) {
-                $roomId = $item['id']; // ID បន្ទប់ដែល User បានរើសពិតប្រាកដ
-
-                // 🌟 ១. ឆែកមើលថា បន្ទប់ដែលគាត់រើសហ្នឹងទំនេរអត់?
-                if (!$this->isRoomAvailable($roomId, $item)) {
-                    // បើមិនទំនេរទេ គឺបោះ Error ប្រាប់ភ្ញៀវភ្លាមៗ មិនបាច់ដូរបន្ទប់ស្វ័យប្រវត្តិនាំឱ្យខុសប្រភេទទៀតឡើយ
+            if ($paymentMethodEnum === 'qr') {
+                if (!$request->payment_slip) {
                     DB::rollBack();
                     return response()->json([
                         'status'  => 'error',
-                        'message' => "សុំទោសផង! បន្ទប់ដែលអ្នកបានជ្រើសរើសត្រូវបានគេកក់រួចហើយនៅក្នុងកាលបរិច្ឆេទនេះ។ សូមជ្រើសរើសថ្ងៃខែ ឬបន្ទប់ផ្សេង!"
+                        'message' => 'សូមអាប់ឡូតរូបភាពបង្កាន់ដៃបង់ប្រាក់ជាមុនសិន'
                     ]);
                 }
 
-                // --- ផ្នែករក្សាទុកទិន្នន័យទៅ Database ---
+                $slipPath = $this->uploadBase64($request->payment_slip, 'slips');
+
+                $cartTotal = array_sum(array_column($cart, 'total_price'));
+
+                if ($slipPath && file_exists(storage_path('app/public/' . $slipPath))) {
+                    $photoFullPath = storage_path('app/public/' . $slipPath);
+                    $ocrService = new \App\Services\SlipOcrService();
+                    $ocrResult = $ocrService->verifySlip($photoFullPath, $cartTotal);
+
+                    if ($ocrResult['status'] === 'fake') {
+                        DB::rollBack();
+                        @unlink($photoFullPath);
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => $ocrResult['message'] ?? "រូបភាពដែលលោកអ្នកបានអាប់ឡូត មិនមែនជា «បង្កាន់ដៃទូទាត់ប្រាក់ធនាគារ» ពិតប្រាកដឡើយ សូមអាប់ឡូតរូបភាពបង្កាន់ដៃបង់ប្រាក់ដែលទទួលបានពី Mobile Banking App (ABA, ACLEDA, Wing, Bakong...)"
+                        ]);
+                    }
+
+                    if ($ocrResult['status'] === 'mismatch') {
+                        DB::rollBack();
+                        @unlink($photoFullPath);
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => $ocrResult['message'] ?? "បង្កាន់ដៃបង់ប្រាក់របស់អ្នកមិនត្រូវគ្នានឹងចំនួនទឹកប្រាក់ត្រូវបង់ (\${$cartTotal}) ឡើយ សូមពិនិត្យមើលរូបភាពបង្កាន់ដៃបង់ប្រាក់ឡើងវិញ ឬអាប់ឡូតរូបភាពបង្កាន់ដៃបង់ប្រាក់ឱ្យគ្រប់ចំនួន"
+                        ]);
+                    }
+
+                    if ($ocrResult['status'] === 'wrong_account') {
+                        DB::rollBack();
+                        @unlink($photoFullPath);
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => $ocrResult['message'] ?? "រូបភាពបង្កាន់ដៃបង់ប្រាក់របស់អ្នកទូទាត់ទៅគណនីខុស សូមស្គែនឃ្យូអរកូដត្រឹមត្រូវ ហើយទូទាត់ម្ដងទៀត"
+                        ]);
+                    }
+
+                    if ($ocrResult['status'] !== 'exact') {
+                        DB::rollBack();
+                        @unlink($photoFullPath);
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => $ocrResult['message'] ?? "សូមអធ្យាស្រ័យផង យើងមិនអាចផ្ទៀងផ្ទាត់រូបភាពបង្កាន់ដៃបង់ប្រាក់របស់អ្នកបានឡើយ សូមអាប់ឡូតរូបភាពបង្កាន់ដៃបង់ប្រាក់ច្បាស់លាស់ដែលបានទូទាត់ប្រាក់នៅថ្ងៃនេះ ឱ្យបានគ្រប់ចំនួន (\${$cartTotal})"
+                        ]);
+                    }
+                }
+            }
+
+            foreach ($cart as $item) {
+                $roomId = $item['id'];
+                if (!$this->isRoomAvailable($roomId, $item)) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status'  => 'error',
+                        'message' => "សុំទោសផង បន្ទប់ដែលអ្នកបានជ្រើសរើសត្រូវបានគេកក់រួចហើយនៅក្នុងកាលបរិច្ឆេទនេះ។ សូមជ្រើសរើសថ្ងៃខែ ឬបន្ទប់ផ្សេង"
+                    ]);
+                }
+            }
+
+            $hotelItems   = array_filter($cart, fn($i) => ($i['type'] ?? 'hotel') === 'hotel');
+            $meetingItems = array_filter($cart, fn($i) => ($i['type'] ?? 'hotel') === 'meeting');
+
+            $bookedItemsForTelegram = [];
+
+            if (!empty($hotelItems)) {
                 $bookingCode = 'PNT-' . strtoupper(Str::random(6));
                 $generatedCodes[] = $bookingCode;
 
-                if (isset($item['type']) && $item['type'] == 'hotel') {
-                    $hotelId = DB::table('rooms')->where('id', $roomId)->value('hotel_id');
-                    $roomTypeId = DB::table('rooms')->where('id', $roomId)->value('room_type_id');
+                $firstHotelItem = reset($hotelItems);
+                $firstRoomId    = $firstHotelItem['id'];
+                $hotelId        = DB::table('rooms')->where('id', $firstRoomId)->value('hotel_id');
 
-                    // ទាញយកឈ្មោះប្រភេទបន្ទប់ពិតប្រាកដចេញពី DB
-                    $roomTypeName = DB::table('room_types')->where('id', $roomTypeId)->value('name') ?? 'មិនស្គាល់';
+                $totalHotelPrice = array_sum(array_column($hotelItems, 'total_price'));
 
-                    $hotelBookingId = DB::table('hotel_bookings')->insertGetId([
-                        'user_id'          => $userId,
-                        'hotel_id'         => $hotelId,
-                        'room_id'          => $roomId,
-                        'check_in'         => $item['check_in'] ?? null,
-                        'check_out'        => $item['check_out'] ?? null,
-                        'check_in_time'    => $item['check_in_time'] ?? null,
-                        'check_out_time'   => $item['check_out_time'] ?? null,
-                        'total_price'      => $item['total_price'],
-                        'status'           => 'pending',
-                        'booking_code'     => $bookingCode,
-                        'special_requests' => $request->special_requests ?? null,
-                        'created_at'       => now(),
-                        'updated_at'       => now(),
-                    ]);
+                $hotelBookingId = DB::table('hotel_bookings')->insertGetId([
+                    'user_id'          => $userId,
+                    'hotel_id'         => $hotelId,
+                    'room_id'          => $firstRoomId,
+                    'customer_name'    => $request->name,
+                    'customer_phone'   => $request->phone,
+                    'customer_email'   => $request->email,
+                    'check_in'         => $firstHotelItem['check_in'] ?? null,
+                    'check_out'        => $firstHotelItem['check_out'] ?? null,
+                    'check_in_time'    => $firstHotelItem['check_in_time'] ?? null,
+                    'check_out_time'   => $firstHotelItem['check_out_time'] ?? null,
+                    'total_price'      => $totalHotelPrice,
+                    'status'           => 'pending',
+                    'booking_code'     => $bookingCode,
+                    'special_requests' => $request->special_requests ?? null,
+                    'created_at'       => now(),
+                    'updated_at'       => now(),
+                ]);
+
+                foreach ($hotelItems as $item) {
+                    $rId = $item['id'];
+                    $rTypeId = DB::table('rooms')->where('id', $rId)->value('room_type_id');
+                    $rTypeName = DB::table('room_types')->where('id', $rTypeId)->value('name') ?? 'មិនស្គាល់';
 
                     DB::table('hotel_booking_details')->insert([
                         'hotel_booking_id' => $hotelBookingId,
-                        'room_id'          => $roomId,
-                        'room_type_id'     => $roomTypeId,
-                        'price_at_booking' => $item['price_at_booking'] ?? $item['total_price'],
+                        'room_id'          => $rId,
+                        'room_type_id'     => $rTypeId,
+                        'price_at_booking' => $item['price'] ?? ($item['total_price'] / ($item['total_nights'] ?? 1)),
                         'created_at'       => now(),
                         'updated_at'       => now(),
                     ]);
 
-                    DB::table('payments')->insert([
-                        'hotel_booking_id'   => $hotelBookingId,
-                        'meeting_booking_id' => null,
-                        'method'             => $paymentMethodEnum,
-                        'amount'             => $item['total_price'],
-                        'currency'           => 'USD',
-                        'transaction_id'     => ($request->payment_method === 'aba') ? 'TXN-' . strtoupper(Str::random(10)) : null,
-                        'payment_slip'       => $slipPath,
-                        'status'             => 'pending',
-                        'paid_at'            => ($paymentMethodEnum === 'cash') ? null : now(),
-                        'created_at'         => now(),
-                        'updated_at'         => now(),
-                    ]);
-
-                    // រក្សាទុកទិន្នន័យដើម្បីបាញ់ទៅ Telegram
                     $bookedItemsForTelegram[] = [
-                        'type'          => 'hotel',
-                        'room_type'     => $roomTypeName,
-                        'check_in'      => $item['check_in'],
-                        'check_out'     => $item['check_out'],
-                        'total_price'   => $item['total_price']
+                        'type'         => 'hotel',
+                        'booking_code' => $bookingCode,
+                        'room_type'    => $rTypeName,
+                        'check_in'     => $item['check_in'],
+                        'check_out'    => $item['check_out'],
+                        'total_price'  => $item['total_price']
                     ];
-                } else {
-                    // សម្រាប់សាលប្រជុំ (Meeting Room Logic)
-                    $meetingRoomName = DB::table('rooms')->where('id', $roomId)->value('room_number') ?? 'មិនស្គាល់';
+                }
+
+                DB::table('payments')->insert([
+                    'hotel_booking_id'   => $hotelBookingId,
+                    'meeting_booking_id' => null,
+                    'method'             => $paymentMethodEnum,
+                    'amount'             => $totalHotelPrice,
+                    'currency'           => 'USD',
+                    'transaction_id'     => ($paymentMethodEnum === 'qr') ? 'TXN-' . strtoupper(Str::random(10)) : null,
+                    'payment_slip'       => $slipPath,
+                    'status'             => 'pending',
+                    'paid_at'            => null, // ទុក NULL សិន ដើម្បីរង់ចាំ Admin ពិនិត្យមើល Slip / ទទួលសាច់ប្រាក់ ទើបប្តូរទៅ paid
+                    'created_at'         => now(),
+                    'updated_at'         => now(),
+                ]);
+            }
+
+            // === ដំណើរការកក់សាលប្រជុំ (MEETING ROOMS) ===
+            if (!empty($meetingItems)) {
+                foreach ($meetingItems as $item) {
+                    $mBookingCode = 'PNT-' . strtoupper(Str::random(6));
+                    $generatedCodes[] = $mBookingCode;
+
+                    $mRoomId = $item['id'];
+                    $meetingRoomName = DB::table('rooms')->where('id', $mRoomId)->value('room_number') ?? 'មិនស្គាល់';
 
                     $meetingBookingId = DB::table('meeting_bookings')->insertGetId([
                         'user_id'          => $userId,
-                        'meeting_room_id'  => $roomId,
+                        'meeting_room_id'  => $mRoomId,
                         'start_date'       => $item['start_date'],
                         'end_date'         => $item['end_date'],
                         'start_time'       => $item['start_time'],
@@ -145,7 +211,7 @@ class CheckoutController extends Controller
                         'total_hours'      => $item['total_hours'] ?? null,
                         'total_price'      => $item['total_price'],
                         'status'           => 'pending',
-                        'booking_code'     => $bookingCode,
+                        'booking_code'     => $mBookingCode,
                         'special_requests' => $request->special_requests ?? null,
                         'created_at'       => now(),
                         'updated_at'       => now(),
@@ -157,47 +223,49 @@ class CheckoutController extends Controller
                         'method'             => $paymentMethodEnum,
                         'amount'             => $item['total_price'],
                         'currency'           => 'USD',
-                        'transaction_id'     => ($request->payment_method === 'aba') ? 'TXN-' . strtoupper(Str::random(10)) : null,
+                        'transaction_id'     => ($paymentMethodEnum === 'qr') ? 'TXN-' . strtoupper(Str::random(10)) : null,
                         'payment_slip'       => $slipPath,
                         'status'             => 'pending',
-                        'paid_at'            => ($paymentMethodEnum === 'cash') ? null : now(),
+                        'paid_at'            => null,
                         'created_at'         => now(),
                         'updated_at'         => now(),
                     ]);
 
-                    // រក្សាទុកទិន្នន័យដើម្បីបាញ់ទៅ Telegram
                     $bookedItemsForTelegram[] = [
-                        'type'          => 'meeting',
-                        'room_name'     => $meetingRoomName,
-                        'start_date'    => $item['start_date'],
-                        'end_date'      => $item['end_date'],
-                        'start_time'    => $item['start_time'],
-                        'end_time'      => $item['end_time'],
-                        'total_price'   => $item['total_price']
+                        'type'         => 'meeting',
+                        'booking_code' => $mBookingCode,
+                        'room_name'    => $meetingRoomName,
+                        'start_date'   => $item['start_date'],
+                        'end_date'     => $item['end_date'],
+                        'start_time'   => $item['start_time'],
+                        'end_time'     => $item['end_time'],
+                        'total_price'  => $item['total_price']
                     ];
                 }
             }
 
             DB::commit();
 
-            // 🚀 --- ផ្នែកផ្ញើសារជូនដំណឹងទៅកាន់គ្រុប Telegram ---
+            // ផ្នែកផ្ញើសារជូនដំណឹងទៅកាន់គ្រុប Telegram 
             try {
-                $paymentText = ($request->payment_method === 'aba') ? '💳 ស្កែន QR (ABA)' : '💵 ទូទាត់សាច់ប្រាក់ផ្ទាល់';
+                $paymentText = ($paymentMethodEnum === 'qr') ? 'ស្កែនឃ្យូអរកូដ' : 'ទូទាត់សាច់ប្រាក់ផ្ទាល់';
                 $specialRequests = $request->special_requests ? $request->special_requests : 'គ្មាន';
 
-                $telegramMsg = "🔔 <b>មានការកក់ថ្មីពីគេហទំព័រ!</b>\n";
+                $telegramMsg = "🔔 <b>មានការកក់ថ្មីពីគេហទំព័រ</b>\n";
                 $telegramMsg .= "----------------------------------\n";
                 $telegramMsg .= "👤 <b>ឈ្មោះភ្ញៀវ:</b> {$request->name}\n";
                 $telegramMsg .= "📞 <b>លេខទូរស័ព្ទ:</b> {$request->phone}\n";
                 $telegramMsg .= "✉️ <b>អ៊ីមែល:</b> {$request->email}\n";
                 $telegramMsg .= "💰 <b>វិធីទូទាត់:</b> {$paymentText}\n";
-                $telegramMsg .= "📝 <b>សំណូមពរពិសេស:</b> {$specialRequests}\n";
+                $telegramMsg .= "📝 <b>មតិផ្សេងៗ:</b> {$specialRequests}\n";
                 $telegramMsg .= "----------------------------------\n";
 
                 $roomNo = 1;
                 $totalAmount = 0;
 
                 foreach ($bookedItemsForTelegram as $bookedItem) {
+                    $itemCode = $bookedItem['booking_code'] ?? 'N/A';
+
                     if ($bookedItem['type'] == 'hotel') {
                         // គណនាចំនួនយប់
                         $checkInDate  = \Carbon\Carbon::parse($bookedItem['check_in']);
@@ -206,6 +274,7 @@ class CheckoutController extends Controller
                         $nights       = $nights == 0 ? 1 : $nights;
 
                         $telegramMsg .= "🏨 <b>ការកក់ទី {$roomNo}: (បន្ទប់សណ្ឋាគារ)</b>\n";
+                        $telegramMsg .= "🆔 <b>Booking Code:</b> <code>{$itemCode}</code>\n";
                         $telegramMsg .= "🛏️ <b>ប្រភេទបន្ទប់:</b> {$bookedItem['room_type']}\n";
                         $telegramMsg .= "🗓️ <b>ថ្ងៃចូល:</b> {$bookedItem['check_in']}\n";
                         $telegramMsg .= "🗓️ <b>ថ្ងៃចេញ:</b> {$bookedItem['check_out']}\n";
@@ -217,6 +286,7 @@ class CheckoutController extends Controller
                         $days      = $startDate->diffInDays($endDate) + 1;
 
                         $telegramMsg .= "🏢 <b>ការកក់ទី {$roomNo}: (សាលប្រជុំ)</b>\n";
+                        $telegramMsg .= "🆔 <b>Booking Code:</b> <code>{$itemCode}</code>\n";
                         $telegramMsg .= "🎪 <b>ឈ្មោះសាល:</b> {$bookedItem['room_name']}\n";
                         $telegramMsg .= "🗓️ <b>កាលបរិច្ឆេទ:</b> {$bookedItem['start_date']} ដល់ {$bookedItem['end_date']}\n";
                         $telegramMsg .= "⏰ <b>ម៉ោង:</b> {$bookedItem['start_time']} - {$bookedItem['end_time']}\n";
@@ -228,22 +298,54 @@ class CheckoutController extends Controller
                     $roomNo++;
                 }
 
+                $allCodesStr = implode(', ', $generatedCodes);
                 $telegramMsg .= "----------------------------------\n";
                 $telegramMsg .= "💵 <b>សរុបទឹកប្រាក់រួម: \${$totalAmount}</b>\n";
-                $telegramMsg .= "🆔 <b>Booking Code:</b> <code>" . ($generatedCodes[0] ?? 'N/A') . "</code>\n";
+                $telegramMsg .= "🆔 <b>លេខកូដកក់:</b> <code>{$allCodesStr}</code>\n";
 
-                // ផ្ញើទៅ Telegram
-                $this->sendTelegramNotification($telegramMsg);
+                $photoFullPath = null;
+                if ($slipPath && file_exists(storage_path('app/public/' . $slipPath))) {
+                    $photoFullPath = storage_path('app/public/' . $slipPath);
+
+                    $ocrService = new \App\Services\SlipOcrService();
+                    $ocrResult = $ocrService->verifySlip($photoFullPath, $totalAmount);
+
+                    $telegramMsg .= "----------------------------------\n";
+                    $telegramMsg .= "លទ្ធផលបានផ្ទៀងផ្ទាត់:\n";
+                    $telegramMsg .= "{$ocrResult['message']}\n";
+                    $telegramMsg .= "សូមចូលទៅប្រព័ន្ធដើម្បីបញ្ជាក់ការកក់នេះបន្ថែមទៀត\n";
+                }
+
+                $this->sendTelegramNotification($telegramMsg, $photoFullPath);
             } catch (\Exception $telegramError) {
                 \Log::error('Telegram Notification Error: ' . $telegramError->getMessage());
             }
 
-            // សម្អាតកន្ត្រកចេញពី Session
+            // ផ្នែកផ្ញើអ៊ីមែលបញ្ជាក់ការកក់ទៅភ្ញៀវ 
+            try {
+                $emailBody = "សួស្តី {$request->name},\n\n"
+                    . "ការកក់របស់ {$request->name}, នៅ សណ្ឋាគារ ភីអេនធី ផាលេស ត្រូវបានបញ្ជូនដោយជោគជ័យ\n\n"
+                    . "លេខកូដកក់: " . implode(', ', $generatedCodes) . "\n"
+                    . "ឈ្មោះអតិថិជន: {$request->name}\n"
+                    . "លេខទូរស័ព្ទ: {$request->phone}\n"
+                    . "វិធីទូទាត់: {$paymentText}\n\n"
+                    . "សូមអរគុណសម្រាប់ការជ្រើសរើសសណ្ឋាគាររបស់យើងខ្ញុំ យើងខ្ញុំនឹងបញ្ជាក់ព័ត៌មានបន្ថែមក្នុងពេលឆាប់ៗនេះ។\n\n"
+                    . "ដោយការគោរពពី,\n"
+                    . "សណ្ឋាគារ ភីអេនធី ផាលេស";
+
+                \Illuminate\Support\Facades\Mail::raw($emailBody, function ($message) use ($request) {
+                    $message->to($request->email)
+                        ->subject('ការបញ្ជាក់ការកក់បន្ទប់ - សណ្ឋាគារ ភីអេនធី ផាលេស');
+                });
+            } catch (\Exception $mailError) {
+                \Log::error('Booking Email Confirmation Error: ' . $mailError->getMessage());
+            }
+
             session()->forget('cart');
 
             return response()->json([
                 'status'        => 'success',
-                'message'       => 'ការកក់ និងការទូទាត់របស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ!',
+                'message'       => 'ការកក់ និងការទូទាត់របស់អ្នកត្រូវបានបញ្ជូនដោយជោគជ័យ',
                 'booking_code'  => $generatedCodes[0],
                 'booking_codes' => $generatedCodes
             ]);
@@ -258,7 +360,6 @@ class CheckoutController extends Controller
 
     private function isRoomAvailable($roomId, $item)
     {
-        // ១. ឆែកមើលស្ថានភាពផ្ទាល់របស់បន្ទប់ គឺហាមតែបន្ទប់កំពុងជួសជុល (maintenance) ប៉ុណ្ណោះ
         $room = DB::table('rooms')->where('id', $roomId)->first();
         if (!$room || $room->status === 'maintenance') {
             return false;
@@ -266,24 +367,29 @@ class CheckoutController extends Controller
 
         $category = DB::table('room_types')->where('id', $room->room_type_id)->value('category');
 
-        // បន្ថែមការឆែក៖ ប្រសិនបើជាប្រភេទបន្ទប់ស្នាក់នៅ (Stay) និងមានទិន្នន័យ check_in
         if ($category === 'stay' && isset($item['check_in']) && isset($item['check_out'])) {
             $checkIn  = $item['check_in'];
             $checkOut = $item['check_out'];
 
-            // ២. ឆែកមើលប្រវត្តិកក់ក្នុង hotel_bookings ថាជាន់ថ្ងៃគ្នាដែរឬទេ
             $isBooked = DB::table('hotel_bookings')
-                ->where('room_id', $roomId)
-                ->where('status', '!=', 'cancelled')
+                ->whereIn('status', ['confirmed', 'pending'])
                 ->where(function ($query) use ($checkIn, $checkOut) {
                     $query->where('check_in', '<', $checkOut)
                         ->where('check_out', '>', $checkIn);
+                })
+                ->where(function ($query) use ($roomId) {
+                    $query->where('room_id', $roomId)
+                        ->orWhereExists(function ($sub) use ($roomId) {
+                            $sub->select(DB::raw(1))
+                                ->from('hotel_booking_details')
+                                ->whereColumn('hotel_booking_details.hotel_booking_id', 'hotel_bookings.id')
+                                ->where('hotel_booking_details.room_id', $roomId);
+                        });
                 })
                 ->exists();
 
             return !$isBooked;
         } elseif (isset($item['start_date']) && isset($item['end_date'])) {
-            // --- សម្រាប់សាលប្រជុំ (Meeting Room) ---
             $startDate = $item['start_date'];
             $endDate   = $item['end_date'];
             $startTime = $item['start_time'] ?? '00:00:00';
@@ -311,11 +417,9 @@ class CheckoutController extends Controller
     {
         $room = DB::table('rooms')->where('id', $id)->first();
 
-        // ចាប់យកថ្ងៃខែដែលភ្ញៀវជ្រើសរើសនៅលើទឹកដី (Format: Y-m-d)
         $checkIn  = $request->input('check_in', now()->format('Y-m-d'));
         $checkOut = $request->input('check_out', now()->addDay()->format('Y-m-d'));
 
-        // ឆែកមើលថាតើមានការកក់ជាន់គ្នារួចហើយឬនៅ
         $isBooked = DB::table('hotel_bookings')
             ->where('room_id', $id)
             ->where('status', '!=', 'cancelled')
@@ -330,33 +434,54 @@ class CheckoutController extends Controller
         return view('frontend.room_details', compact('room', 'isAvailable', 'checkIn', 'checkOut'));
     }
 
-    /**
-     * 🚀 អនុគមន៍កែសម្រួលថ្មី៖ ផ្ញើសារទៅ Telegram ដោយប្រើ file_get_contents (សុវត្ថិភាពខ្ពស់)
-     */
-    private function sendTelegramNotification($message)
+    // ផ្ញើសារ ឬរូបភាពបង្កាន់ដៃបង់ប្រាក់ទៅកាន់តេឡេក្រាម
+    private function sendTelegramNotification($message, $photoPath = null)
     {
-        $botToken = env('TELEGRAM_BOT_TOKEN');
-        $chatId   = env('TELEGRAM_CHAT_ID');
+        $botToken = config('services.telegram.bot_token');
+        $chatId   = config('services.telegram.chat_id');
 
         if (!$botToken || !$chatId) {
             return;
         }
 
-        $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+        if ($photoPath && file_exists($photoPath)) {
+            try {
+                $url = "https://api.telegram.org/bot{$botToken}/sendPhoto";
+                $postFields = [
+                    'chat_id'    => $chatId,
+                    'caption'    => $message,
+                    'parse_mode' => 'HTML',
+                    'photo'      => new \CURLFile(realpath($photoPath))
+                ];
 
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                $result = curl_exec($ch);
+                curl_close($ch);
+                return;
+            } catch (\Exception $e) {
+                \Log::error('Telegram SendPhoto Error: ' . $e->getMessage());
+            }
+        }
+
+        $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
         $data = [
             'chat_id'    => $chatId,
             'text'       => $message,
             'parse_mode' => 'HTML'
         ];
 
-        // បង្កើត Context ដើម្បីផ្ញើជាទម្រង់ POST និងបិទការឆែក SSL (ករណី Localhost ជួបបញ្ហា)
         $options = [
             'http' => [
                 'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST',
                 'content' => http_build_query($data),
-                'timeout' => 5, // រង់ចាំត្រឹម ៥ វិនាទី ការពារកុំឱ្យគាំងវេបសាយ
+                'timeout' => 5,
             ],
             'ssl' => [
                 'verify_peer'      => false,
@@ -365,8 +490,6 @@ class CheckoutController extends Controller
         ];
 
         $context = stream_context_create($options);
-
-        // ដំណើរការផ្ញើទៅកាន់ Telegram
         @file_get_contents($url, false, $context);
     }
 }

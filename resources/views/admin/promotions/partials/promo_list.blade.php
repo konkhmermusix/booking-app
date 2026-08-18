@@ -65,14 +65,14 @@
                         @endif
                     </td>
 
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <div class="flex justify-end gap-1">
-                            <button @click="currentPromo = {{ json_encode($promo) }}; showDetailModal = true" title="មើលលម្អិត" class="p-2 text-gray-400 hover:text-blue-500"><i class="fas fa-eye text-sm"></i></button>
-                            <button @click="currentPromo = {{ json_encode($promo) }}; showEditModal = true" title="កែប្រែ" class="p-2 text-gray-400 hover:text-amber-500"><i class="fas fa-edit text-sm"></i></button>
-                            <form action="{{ route('promotions.destroy', $promo->id) }}" method="POST" class="inline">
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                        <div class="flex justify-end items-center gap-1">
+                            <button type="button" @click="currentPromo = {{ json_encode($promo) }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+                            <button type="button" @click="currentPromo = {{ json_encode($promo) }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+                            <form action="{{ route('promotions.destroy', $promo->id) }}" method="POST" class="inline m-0">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="confirmDelete(this.form)" class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
+                                <button type="button" onclick="confirmDelete(this.form)" class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
                                     <i class="fas fa-trash text-sm"></i>
                                 </button>
                             </form>
@@ -119,13 +119,13 @@
                 <span class="w-2 h-2 block rounded-full bg-gray-400" title="មិនបង្ហាញ"></span>
                 @endif
             </div>
-            <div class="flex justify-end gap-1">
-                <button @click="currentPromo = {{ json_encode($promo) }}; showDetailModal = true" title="មើលលម្អិត" class="p-2 text-gray-400 hover:text-blue-500"><i class="fas fa-eye text-sm"></i></button>
-                <button @click="currentPromo = {{ json_encode($promo) }}; showEditModal = true" title="កែប្រែ" class="p-2 text-gray-400 hover:text-amber-500"><i class="fas fa-edit text-sm"></i></button>
-                <form action="{{ route('promotions.destroy', $promo->id) }}" method="POST" class="inline">
+            <div class="flex justify-end items-center gap-1">
+                <button type="button" @click="currentPromo = {{ json_encode($promo) }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+                <button type="button" @click="currentPromo = {{ json_encode($promo) }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+                <form action="{{ route('promotions.destroy', $promo->id) }}" method="POST" class="inline m-0">
                     @csrf
                     @method('DELETE')
-                    <button type="button" onclick="confirmDelete(this.form)" class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
+                    <button type="button" onclick="confirmDelete(this.form)" class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
                         <i class="fas fa-trash text-sm"></i>
                     </button>
                 </form>
@@ -172,14 +172,14 @@
             <span class="text-[10px] text-gray-400 font-medium truncate" title="ផុតកំណត់">
                 <i class="far fa-clock"></i> {{ \Carbon\Carbon::parse($promo->expiry_date)->format('d-m-Y') }}
             </span>
-            <div class="flex gap-0.5">
-                <button @click="currentPromo = {{ json_encode($promo) }}; showDetailModal = true" title="មើលលម្អិត" class="p-1.5 text-gray-400 hover:text-blue-500"><i class="fas fa-eye text-xs"></i></button>
-                <button @click="currentPromo = {{ json_encode($promo) }}; showEditModal = true" title="កែប្រែ" class="p-1.5 text-gray-400 hover:text-amber-500"><i class="fas fa-edit text-xs"></i></button>
-                <form action="{{ route('promotions.destroy', $promo->id) }}" method="POST" class="inline">
+            <div class="flex justify-end items-center gap-1">
+                <button type="button" @click="currentPromo = {{ json_encode($promo) }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+                <button type="button" @click="currentPromo = {{ json_encode($promo) }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+                <form action="{{ route('promotions.destroy', $promo->id) }}" method="POST" class="inline m-0">
                     @csrf
                     @method('DELETE')
-                    <button type="button" onclick="confirmDelete(this.form)" class="btn-delete p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
-                        <i class="fas fa-trash text-xs"></i>
+                    <button type="button" onclick="confirmDelete(this.form)" class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
+                        <i class="fas fa-trash text-sm"></i>
                     </button>
                 </form>
             </div>

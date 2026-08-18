@@ -27,13 +27,14 @@ class RoomTypeRequest extends FormRequest
         return [
             'hotel_id'    => 'required|exists:hotels,id',
             'name'        => 'required|string|max:255',
+            'category'    => 'nullable|string|in:stay,meeting',
             'max_guests'  => 'required|integer|min:1',
             'base_price'  => 'required|numeric|min:0',
             'description' => 'nullable|string',
             'facilities'  => 'nullable|array',
-            'facilities.*' => 'exists:facilities,id', // ពិនិត្យថា ID គ្រឿងបរិក្ខារមានពិតមែន
+            'facilities.*' => 'nullable|exists:facilities,id',
             'images'      => 'nullable|array',
-            'images.*'    => 'image|mimes:jpeg,png,jpg,webp|max:2048' // បន្ថែម webp និងបន្ថយទំហំត្រឹម 2MB (សមរម្យសម្រាប់ Web)
+            'images.*'    => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240'
         ];
     }
 }

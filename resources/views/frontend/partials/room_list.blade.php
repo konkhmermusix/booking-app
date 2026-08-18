@@ -23,8 +23,11 @@
             <div class="absolute bottom-4 left-4 z-20">
                 <div class="bg-blue-600/95 backdrop-blur-md text-white px-3 py-1.5 rounded-xl shadow-lg border border-white/20">
                     <span class="text-[10px] opacity-80 block leading-none">ចាប់ពី</span>
-                    <span class="text-lg font-black">${{ number_format($stay->base_price, 0) }}</span>
-                    <span class="text-[10px] opacity-80">/យប់</span>
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-lg font-black">${{ $stay->base_price == floor($stay->base_price) ? number_format($stay->base_price, 0) : number_format($stay->base_price, 2) }}</span>
+                        <span class="text-[10px] opacity-80">/យប់</span>
+                    </div>
+                    <span class="text-[10px] font-semibold block opacity-90 font-mono">({{ number_format($stay->base_price * $khrRate) }} ៛)</span>
                 </div>
             </div>
 
@@ -78,11 +81,23 @@
                 </p>
 
                 <div class="flex flex-wrap gap-4 items-center mb-4">
-                    @if($stay->available_rooms_count <= 5)
-                        <p class="text-[11px] text-green-600 dark:text-green-400 font-medium flex items-center">
-                        <i class="fas fa-calendar-check mr-1.5"></i> ទំនេរសម្រាប់កក់ {{ $stay->available_rooms_count }} បន្ទប់
-                        </p>
-                        @endif
+                    @if(isset($hasDateFilter) && !$hasDateFilter)
+                    <p class="text-[11px] text-blue-600 dark:text-blue-400 font-medium flex items-center">
+                        <i class="fas fa-info-circle mr-1.5"></i> សូមជ្រើសរើសថ្ងៃខែស្នាក់នៅដើម្បីពិនិត្យបន្ទប់ទំនេរ
+                    </p>
+                    @elseif(($stay->available_rooms_count ?? 0) > 3)
+                    <p class="text-[11px] text-green-600 dark:text-green-400 font-medium flex items-center">
+                        <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> 🟢 ទំនេរសម្រាប់កក់ {{ $stay->available_rooms_count }} បន្ទប់
+                    </p>
+                    @elseif(($stay->available_rooms_count ?? 0) > 0)
+                    <p class="text-[11px] text-amber-600 dark:text-amber-400 font-bold flex items-center">
+                        <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span> 🟢 នៅសល់ត្រឹមតែ {{ $stay->available_rooms_count }} បន្ទប់ប៉ុណ្ណោះ!
+                    </p>
+                    @else
+                    <p class="text-[11px] text-red-500 font-medium flex items-center">
+                        <span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1.5"></span> 🔴 ពេញ (កក់អស់ហើយសម្រាប់កាលបរិច្ឆេទនេះ)
+                    </p>
+                    @endif
                 </div>
 
                 <div class="flex flex-wrap gap-2 mb-3">
@@ -104,20 +119,23 @@
                     minCheckOut: '',
                     
                     init() {
-                        
                         let today = new Date();
                         let offset = today.getTimezoneOffset();
                         let localToday = new Date(today.getTime() - (offset * 60 * 1000));
                         this.minCheckIn = localToday.toISOString().split('T')[0];
+                        this.checkInDate = this.minCheckIn;
                         
                         let tomorrow = new Date();
                         tomorrow.setDate(tomorrow.getDate() + 1);
                         let localTomorrow = new Date(tomorrow.getTime() - (offset * 60 * 1000));
                         this.minCheckOut = localTomorrow.toISOString().split('T')[0];
+                        this.checkOutDate = this.minCheckOut;
                     },
                     
                     openHotelModal(id) {
                         this.selectedRoomTypeId = id;
+                        if (!this.checkInDate) this.checkInDate = this.minCheckIn;
+                        if (!this.checkOutDate) this.checkOutDate = this.minCheckOut;
                         this.isHotelModalOpen = true;
                     },
                     

@@ -5,7 +5,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
         <div class="lg:col-span-2 space-y-4">
-            <div class="relative h-[500px] w-full rounded-3xl overflow-hidden shadow-lg border dark:border-gray-800">
+            <div class="relative h-[500px] w-full rounded-2xl overflow-hidden shadow-lg border dark:border-gray-800">
                 <img :src="activeImage" class="w-full h-full object-cover transition-all duration-500">
             </div>
 
@@ -21,7 +21,7 @@
         </div>
 
         <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-gray-900 p-6 rounded-3xl border dark:border-gray-800 shadow-sm sticky top-24">
+            <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl border dark:border-gray-800 shadow-sm sticky top-24">
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <span class="text-3xl font-black text-blue-600">${{ number_format($room->roomType->base_price, 2) }}</span>

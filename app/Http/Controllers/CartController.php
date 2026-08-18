@@ -39,7 +39,7 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'បានលុបចេញពីកន្ត្រករួចរាល់!');
+        return redirect()->back()->with('success', 'បានលុបចេញពីកន្ត្រករួចរាល់');
     }
 
     public function getCartCount()
@@ -67,7 +67,7 @@ class CartController extends Controller
         $checkOut   = $request->input('check_out');
 
         $availableRoom = Room::where('room_type_id', $roomTypeId)
-            ->where('status', 'available')
+            ->where('status', '!=', 'maintenance')
             ->whereNotExists(function ($query) use ($checkIn, $checkOut) {
                 $query->select(DB::raw(1))
                     ->from('hotel_bookings')
@@ -75,12 +75,8 @@ class CartController extends Controller
                     ->whereColumn('rooms.id', 'hotel_booking_details.room_id')
                     ->whereIn('hotel_bookings.status', ['confirmed', 'pending'])
                     ->where(function ($q) use ($checkIn, $checkOut) {
-                        $q->whereBetween('hotel_bookings.check_in', [$checkIn, $checkOut])
-                            ->orWhereBetween('hotel_bookings.check_out', [$checkIn, $checkOut])
-                            ->orWhere(function ($q2) use ($checkIn, $checkOut) {
-                                $q2->where('hotel_bookings.check_in', '<=', $checkIn)
-                                    ->where('hotel_bookings.check_out', '>=', $checkOut);
-                            });
+                        $q->where('hotel_bookings.check_in', '<', $checkOut)
+                            ->where('hotel_bookings.check_out', '>', $checkIn);
                     });
             })
             ->first();
@@ -89,10 +85,10 @@ class CartController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'សូមទោស! បន្ទប់ប្រភេទនេះត្រូវបានគេកក់អស់ហើយ។'
+                    'message' => 'សូមទោស បន្ទប់ប្រភេទនេះត្រូវបានគេកក់អស់ហើយ។'
                 ], 422);
             }
-            return redirect()->back()->with('error', 'សូមទោស! បន្ទប់ប្រភេទនេះត្រូវបានគេកក់អស់ហើយ។');
+            return redirect()->back()->with('error', 'សូមទោស បន្ទប់ប្រភេទនេះត្រូវបានគេកក់អស់ហើយ។');
         }
 
         $roomType = RoomType::find($roomTypeId);
@@ -109,7 +105,7 @@ class CartController extends Controller
         $cartKey = 'hotel_' . $roomTypeId . '_' . $checkIn . '_' . $checkOut;
 
         $cart[$cartKey] = [
-            'id'           => $availableRoom->id, // 🎯 កែពី $roomType->id មកយក ID បន្ទប់ពិតប្រាកដវិញ (បាត់ Bug លោតបន្ទប់គ្រែមួយ)
+            'id'           => $availableRoom->id,
             'type'         => 'hotel',
             'room_type_id' => $roomTypeId,
             'room_id'      => $availableRoom->id,
@@ -119,25 +115,24 @@ class CartController extends Controller
             'check_in'     => $checkIn,
             'check_out'    => $checkOut,
             'total_nights' => $totalNights,
-            'total_price'  => $totalPrice
+            'total_price'  => $totalPrice,
+            'created_at'   => now()->timestamp
         ];
-
-        // 📝 សម្អាត៖ លុប $specialRequests ចេញពីទីនេះ
 
         session()->put('cart', $cart);
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'success' => true, // សម្រាប់ស៊ីគ្នាជាមួយ Logic JavaScript មុននេះ
-                'message' => 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់!',
-                'cartItems' => array_values($cart), // បោះទៅឱ្យ x-for ឡូបបង្ហាញភ្លាម
+                'success' => true,
+                'message' => 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់',
+                'cartItems' => array_values($cart),
                 'count' => count($cart),
                 'redirect_url' => route('cart.index')
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់!');
+        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់');
     }
 
     // សម្រាប់ថែម "សាលប្រជុំ" ចូលកន្ត្រក (គិតជាម៉ោង)
@@ -160,7 +155,7 @@ class CartController extends Controller
         $endTime    = $request->input('end_time');
 
         $availableRoom = Room::where('room_type_id', $roomTypeId)
-            ->where('status', 'available')
+            ->where('status', '!=', 'maintenance')
             ->whereNotExists(function ($query) use ($startDate, $endDate, $startTime, $endTime) {
                 $query->select(DB::raw(1))
                     ->from('meeting_bookings')
@@ -179,10 +174,10 @@ class CartController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'សូមទោស! សាលប្រជុំប្រភេទនេះត្រូវបានគេកក់អស់ហើយនៅក្នុងកំឡុងថ្ងៃ និងម៉ោងនេះ។'
+                    'message' => 'សូមទោស សាលប្រជុំប្រភេទនេះត្រូវបានគេកក់អស់ហើយនៅក្នុងកំឡុងថ្ងៃ និងម៉ោងនេះ។'
                 ], 422);
             }
-            return redirect()->back()->with('error', 'សូមទោស! សាលប្រជុំប្រភេទនេះត្រូវបានគេកក់អស់ហើយនៅក្នុងកំឡុងថ្ងៃ និងម៉ោងនេះ។');
+            return redirect()->back()->with('error', 'សូមទោស សាលប្រជុំប្រភេទនេះត្រូវបានគេកក់អស់ហើយនៅក្នុងកំឡុងថ្ងៃ និងម៉ោងនេះ។');
         }
 
         $roomType = RoomType::find($roomTypeId);
@@ -204,7 +199,7 @@ class CartController extends Controller
         $cartKey = 'meeting_' . $roomTypeId . '_' . $startDate . '_' . str_replace(':', '', $startTime);
 
         $cart[$cartKey] = [
-            'id'              => $availableRoom->id, // 🎯 កែពី $roomType->id មកយក ID បន្ទប់ពិតប្រាកដវិញ
+            'id'              => $availableRoom->id,
             'type'            => 'meeting',
             'room_type_id'    => $roomTypeId,
             'room_id'         => $availableRoom->id,
@@ -216,7 +211,8 @@ class CartController extends Controller
             'total_days'      => $totalDays,
             'total_hours'     => $totalHoursAllDays,
             'price'           => $pricePerHour,
-            'total_price'     => $totalPrice
+            'total_price'     => $totalPrice,
+            'created_at'      => now()->timestamp
         ];
 
         session()->put('cart', $cart);
@@ -224,11 +220,11 @@ class CartController extends Controller
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់!',
+                'message' => 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់',
                 'redirect_url' => route('cart.index')
             ]);
         }
-        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់!');
+        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់');
     }
 
     // កក់បន្ទប់ស្នាក់នៅតម្លៃប្រូម៉ូសិនចូលកន្ត្រក
@@ -247,7 +243,7 @@ class CartController extends Controller
         $checkOut   = $request->input('check_out');
 
         $availableRoom = Room::where('room_type_id', $roomTypeId)
-            ->where('status', 'available')
+            ->where('status', '!=', 'maintenance')
             ->whereNotExists(function ($query) use ($checkIn, $checkOut) {
                 $query->select(DB::raw(1))
                     ->from('hotel_bookings')
@@ -255,12 +251,8 @@ class CartController extends Controller
                     ->whereColumn('rooms.id', 'hotel_booking_details.room_id')
                     ->whereIn('hotel_bookings.status', ['confirmed', 'pending'])
                     ->where(function ($q) use ($checkIn, $checkOut) {
-                        $q->whereBetween('hotel_bookings.check_in', [$checkIn, $checkOut])
-                            ->orWhereBetween('hotel_bookings.check_out', [$checkIn, $checkOut])
-                            ->orWhere(function ($q2) use ($checkIn, $checkOut) {
-                                $q2->where('hotel_bookings.check_in', '<=', $checkIn)
-                                    ->where('hotel_bookings.check_out', '>=', $checkOut);
-                            });
+                        $q->where('hotel_bookings.check_in', '<', $checkOut)
+                            ->where('hotel_bookings.check_out', '>', $checkIn);
                     });
             })
             ->first();
@@ -268,7 +260,7 @@ class CartController extends Controller
         if (!$availableRoom) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'សូមទោស! បន្ទប់ប្រភេទនេះត្រូវបានគេកក់អស់ហើយ សម្រាប់កាលបរិច្ឆេទនេះ។'
+                'message' => 'សូមទោស បន្ទប់ប្រភេទនេះត្រូវបានគេកក់អស់ហើយ សម្រាប់កាលបរិច្ឆេទនេះ។'
             ], 422);
         }
 
@@ -285,7 +277,7 @@ class CartController extends Controller
         $cartKey = 'hotel_promo_' . $roomTypeId . '_' . $checkIn . '_' . $checkOut;
 
         $cart[$cartKey] = [
-            'id'           => $availableRoom->id, // 🎯 កែពី $roomType->id មកយក ID បន្ទប់ពិតប្រាកដវិញ
+            'id'           => $availableRoom->id,
             'type'         => 'hotel',
             'is_promo'     => true,
             'room_type_id' => $roomTypeId,
@@ -297,14 +289,24 @@ class CartController extends Controller
             'check_out'    => $checkOut,
             'total_nights' => $totalNights,
             'total_price'  => $totalPrice,
+            'created_at'   => now()->timestamp
         ];
 
-        // 📝 សម្អាត៖ លុប 'special_requests' ចេញពីទីនេះ
-
         session()->put('cart', $cart);
-        session()->flash('success', 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់!');
+        session()->flash('success', 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់');
 
-        return response()->json(['message' => 'Success']);
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់',
+                'cartItems' => array_values($cart),
+                'count' => count($cart),
+                'redirect_url' => route('cart.index')
+            ]);
+        }
+
+        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់');
     }
 
     // កក់សាលប្រជុំតម្លៃប្រូម៉ូសិនចូលកន្ត្រក
@@ -327,7 +329,7 @@ class CartController extends Controller
         $endTime    = $request->input('end_time');
 
         $availableRoom = Room::where('room_type_id', $roomTypeId)
-            ->where('status', 'available')
+            ->where('status', '!=', 'maintenance')
             ->whereNotExists(function ($query) use ($startDate, $endDate, $startTime, $endTime) {
                 $query->select(DB::raw(1))
                     ->from('meeting_bookings')
@@ -343,10 +345,14 @@ class CartController extends Controller
             ->first();
 
         if (!$availableRoom) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'សូមទោស! សាលប្រជុំប្រភេទនេះត្រូវបានគេកក់អស់ហើយនៅក្នុងកំឡុងថ្ងៃ និងម៉ោងនេះ។'
-            ], 422);
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'success' => false,
+                    'message' => 'សូមទោស សាលប្រជុំប្រភេទនេះត្រូវបានគេកក់អស់ហើយនៅក្នុងកំឡុងថ្ងៃ និងម៉ោងនេះ។'
+                ], 422);
+            }
+            return redirect()->back()->with('error', 'សូមទោស សាលប្រជុំប្រភេទនេះត្រូវបានគេកក់អស់ហើយនៅក្នុងកំឡុងថ្ងៃ និងម៉ោងនេះ។');
         }
 
         $roomType = RoomType::find($roomTypeId);
@@ -367,7 +373,7 @@ class CartController extends Controller
         $cartKey = 'meeting_promo_' . $roomTypeId . '_' . $startDate . '_' . str_replace(':', '', $startTime);
 
         $cart[$cartKey] = [
-            'id'              => $availableRoom->id, // 🎯 កែពី $roomType->id មកយក ID បន្ទប់ពិតប្រាកដវិញ
+            'id'              => $availableRoom->id,
             'type'            => 'meeting',
             'is_promo'        => true,
             'room_type_id'    => $roomTypeId,
@@ -381,13 +387,23 @@ class CartController extends Controller
             'total_hours'     => $totalHoursAllDays,
             'price'           => $promoPrice,
             'total_price'     => $totalPrice,
+            'created_at'      => now()->timestamp
         ];
 
-        // 📝 សម្អាត៖ លុប 'special_requests' ចេញពីទីនេះ
-
         session()->put('cart', $cart);
-        session()->flash('success', 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់!');
+        session()->flash('success', 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់');
 
-        return response()->json(['message' => 'Success']);
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'success' => true,
+                'message' => 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់',
+                'cartItems' => array_values($cart),
+                'count' => count($cart),
+                'redirect_url' => route('cart.index')
+            ]);
+        }
+
+        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់');
     }
 }

@@ -29,17 +29,24 @@ class RoomTypeController extends Controller
             return view('admin.room_types.partials.roomtype_list', compact('roomTypes'))->render();
         }
 
+        $totalRoomTypes = RoomType::count();
+        $stayTypesCount = RoomType::where(function($q) {
+            $q->where('category', 'stay')->orWhereNull('category')->orWhere('category', '');
+        })->count();
+        $meetingTypesCount = RoomType::where('category', 'meeting')->count();
+        $avgPrice = RoomType::avg('base_price') ?? 0;
+
         $hotels = Hotel::where('status', 1)->get();
         $facilities = Facility::where('is_active', 1)->get();
 
-        return view('admin.room_types.index', compact('roomTypes', 'hotels', 'facilities'));
+        return view('admin.room_types.index', compact('roomTypes', 'hotels', 'facilities', 'totalRoomTypes', 'stayTypesCount', 'meetingTypesCount', 'avgPrice'));
     }
 
     public function store(RoomTypeRequest $request)
     {
         try {
             $this->roomTypeService->storeRoomType($request->validated());
-            return redirect()->back()->with('success', 'បង្កើតប្រភេទបន្ទប់បានជោគជ័យ!');
+            return redirect()->back()->with('success', 'បង្កើតប្រភេទបន្ទប់បានជោគជ័យ');
         } catch (Exception $e) {
             Log::error("RoomType Store Error: " . $e->getMessage());
             return redirect()->back()->with('error', 'មានបញ្ហា: ' . $e->getMessage());
@@ -50,7 +57,7 @@ class RoomTypeController extends Controller
     {
         try {
             $this->roomTypeService->updateRoomType($roomType->id, $request->validated());
-            return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពជោគជ័យ!');
+            return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពជោគជ័យ');
         } catch (Exception $e) {
             Log::error("RoomType Update Error: " . $e->getMessage());
             return back()->with('error', 'មិនអាចកែសម្រួលបានទេ៖ ' . $e->getMessage());
@@ -63,10 +70,10 @@ class RoomTypeController extends Controller
             $result = $this->roomTypeService->deleteRoomType($roomType->id);
 
             if (!$result) {
-                return back()->with('error', 'មិនអាចលុបបានទេ!');
+                return back()->with('error', 'មិនអាចលុបបានទេ');
             }
 
-            return back()->with('success', 'លុបប្រភេទបន្ទប់រួចរាល់!');
+            return back()->with('success', 'លុបប្រភេទបន្ទប់រួចរាល់');
         } catch (Exception $e) {
             Log::error("RoomType Delete Error: " . $e->getMessage());
             return back()->with('error', 'មានកំហុស៖ ' . $e->getMessage());

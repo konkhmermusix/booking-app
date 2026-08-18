@@ -1,16 +1,12 @@
 <div x-show="showAddModal" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showAddModal = true" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showAddModal = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
 
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl relative border-none overflow-hidden transition-all"
             x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-600 dark:text-blue-400">
-                        <i class="fa-solid fa-hotel text-xl"></i>
-                    </div>
-
                     <div>
                         <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">បន្ថែមបន្ទប់ថ្មី</h3>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Create New Room Entry</p>
@@ -118,16 +114,13 @@
 
 <div x-show="showEditModal" class="fixed inset-0 z-100 overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showEditModal = true" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" @click="showEditModal = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"></div>
 
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl relative border-none overflow-hidden transition-all"
             x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-amber-50 dark:bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-600 dark:text-amber-400">
-                        <i class="fa-solid fa-pen-to-square text-xl"></i>
-                    </div>
                     <div>
                         <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">កែសម្រួលបន្ទប់</h3>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Update Room Details</p>

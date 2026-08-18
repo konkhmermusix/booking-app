@@ -1,6 +1,6 @@
 <div x-show="showAddModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showAddModal = true"></div>
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showAddModal = false"></div>
 
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative dark:border-gray-800 overflow-hidden">
             <div class="px-4 py-3 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
@@ -52,7 +52,7 @@
 
 <div x-show="showEditModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showEditModal = true"></div>
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showEditModal = false"></div>
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg relative dark:border-gray-800 overflow-hidden">
             <div class="px-4 py-3 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
                 <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">កែប្រែ៖ <span x-text="currentFacility.name" class="text-blue-500"></span></h3>
@@ -103,7 +103,7 @@
 
 <div x-show="showDetailModal" class="fixed inset-0 z-[60] overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showDetailModal = true"></div>
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="showDetailModal = false"></div>
         <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-sm relative border dark:border-gray-800 overflow-hidden">
             <div class="p-8 text-center">
                 <div class="w-24 h-24 bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center rounded-3xl text-blue-600 dark:text-blue-400 text-4xl mx-auto mb-6 shadow-inner border dark:border-blue-800/50">

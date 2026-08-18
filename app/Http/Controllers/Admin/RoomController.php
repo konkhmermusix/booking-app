@@ -44,7 +44,7 @@ class RoomController extends Controller
             // ហៅទៅកាន់ Service ដើម្បី Handle ការរក្សាទុក
             $this->roomService->storeRoom($request->validated());
 
-            return back()->with('success', 'បន្ថែមបន្ទប់ថ្មីបានជោគជ័យ!');
+            return back()->with('success', 'បន្ថែមបន្ទប់ថ្មីបានជោគជ័យ');
         } catch (\Exception $e) {
             Log::error("Room Store Error: " . $e->getMessage());
             return back()->with('error', 'មានបញ្ហាបច្ចេកទេស មិនអាចបង្កើតបន្ទប់បានទេ។');
@@ -56,7 +56,7 @@ class RoomController extends Controller
         try {
             $this->roomService->updateRoom($id, $request->validated());
 
-            return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពបន្ទប់ជោគជ័យ!');
+            return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពបន្ទប់ជោគជ័យ');
         } catch (\Exception $e) {
             Log::error("Room Update Error: " . $e->getMessage());
             return back()->with('error', 'មិនអាចធ្វើបច្ចុប្បន្នភាពបានទេ។');
@@ -73,7 +73,7 @@ class RoomController extends Controller
                 return back()->with('error', 'មិនអាចលុបបន្ទប់ដែលមានភ្ញៀវកំពុងស្នាក់នៅបានទេ។');
             }
 
-            return back()->with('success', 'លុបបន្ទប់បានជោគជ័យ!');
+            return back()->with('success', 'លុបបន្ទប់បានជោគជ័យ');
         } catch (\Exception $e) {
             Log::error("Room Delete Error: " . $e->getMessage());
             return back()->with('error', 'មិនអាចលុបបានទេ ព្រោះវាអាចពាក់ព័ន្ធនឹងទិន្នន័យផ្សេងទៀត។');

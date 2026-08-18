@@ -69,15 +69,15 @@
                     </td>
                     <td class="px-4 py-4 text-sm dark:text-gray-300">{{ $user->created_at ? $user->created_at->format('d-m-Y H:i:s') : 'មិនមាន' }}</td>
                     <td class="px-4 py-4 text-sm dark:text-gray-300">{{ $user->updated_at ? $user->updated_at->format('d-m-Y H:i:s') : 'មិនមាន' }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right">
-                        <div class="flex justify-end gap-1">
-                            <button @click="currentUser = {{ json_encode($user) }}; showDetailModal = true" ​​ title="មើលលម្អិត" class="p-2 text-gray-400 hover:text-blue-500"><i class="fas fa-eye text-sm"></i></button>
-                            <button @click="currentUser = {{ json_encode($user) }}; showEditModal = true" title="កែប្រែ" class="p-2 text-gray-400 hover:text-amber-500"><i class="fas fa-edit text-sm"></i></button>
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                        <div class="flex justify-end items-center gap-1">
+                            <button type="button" @click="currentUser = {{ json_encode($user) }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+                            <button type="button" @click="currentUser = {{ json_encode($user) }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline m-0">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" onclick="confirmDelete(this.form)"
-                                    class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors"
+                                    class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                                     title="លុប">
                                     <i class="fas fa-trash text-sm"></i>
                                 </button>
@@ -116,14 +116,14 @@
                 <span class="text-xs text-gray-400">{{ $user->email }} - {{ $user->phone ?? 'គ្មានលេខទូរស័ព្ទ' }}</span>
             </div>
         </div>
-        <div class="flex justify-end gap-1">
-            <button @click="currentUser = {{ json_encode($user) }}; showDetailModal = true" ​​ title="មើលលម្អិត" class="p-2 text-gray-400 hover:text-blue-500"><i class="fas fa-eye text-sm"></i></button>
-            <button @click="currentUser = {{ json_encode($user) }}; showEditModal = true" title="កែប្រែ" class="p-2 text-gray-400 hover:text-amber-500"><i class="fas fa-edit text-sm"></i></button>
-            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+        <div class="flex justify-end items-center gap-1">
+            <button type="button" @click="currentUser = {{ json_encode($user) }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+            <button type="button" @click="currentUser = {{ json_encode($user) }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline m-0">
                 @csrf
                 @method('DELETE')
                 <button type="button" onclick="confirmDelete(this.form)"
-                    class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                     title="លុប">
                     <i class="fas fa-trash text-sm"></i>
                 </button>
@@ -153,14 +153,14 @@
             <span class="text-xs text-gray-400">{{ $user->email }}</span>
         </div>
 
-        <div class="flex gap-2 mt-auto">
-            <button @click="currentUser = {{ json_encode($user) }}; showDetailModal = true" ​​ title="មើលលម្អិត" class="p-2 text-gray-400 hover:text-blue-500"><i class="fas fa-eye text-sm"></i></button>
-            <button @click="currentUser = {{ json_encode($user) }}; showEditModal = true" title="កែប្រែ" class="p-2 text-gray-400 hover:text-amber-500"><i class="fas fa-edit text-sm"></i></button>
-            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline">
+        <div class="flex justify-end items-center gap-1 mt-auto">
+            <button type="button" @click="currentUser = {{ json_encode($user) }}; showDetailModal = true" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត"><i class="fas fa-eye text-sm"></i></button>
+            <button type="button" @click="currentUser = {{ json_encode($user) }}; showEditModal = true" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ"><i class="fas fa-edit text-sm"></i></button>
+            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline m-0">
                 @csrf
                 @method('DELETE')
                 <button type="button" onclick="confirmDelete(this.form)"
-                    class="btn-delete p-2 text-gray-400 hover:text-red-500 transition-colors"
+                    class="p-2 text-gray-400 hover:text-red-500 transition-colors"
                     title="លុប">
                     <i class="fas fa-trash text-sm"></i>
                 </button>

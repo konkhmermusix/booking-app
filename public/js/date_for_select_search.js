@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const checkInInput = document.getElementById("check_in");
     const checkOutInput = document.getElementById("check_out");
+    if (!checkInInput || !checkOutInput) return;
 
     // ១. កំណត់ឱ្យថ្ងៃចូលស្នាក់នៅ រើសបានចាប់ពី "ថ្ងៃនេះ" ឡើងទៅ
     const today = new Date().toISOString().split("T")[0];

@@ -43,7 +43,7 @@ class PromotionController extends Controller
 
             $this->service->storePromotion($data);
 
-            return back()->with('success', 'បង្កើតការបញ្ចុះតម្លៃបានជោគជ័យ!');
+            return back()->with('success', 'បង្កើតការបញ្ចុះតម្លៃបានជោគជ័យ');
         } catch (\Exception $e) {
             return back()->with([
                 'status' => 'error',
@@ -55,12 +55,12 @@ class PromotionController extends Controller
     public function update(PromotionRequest $request, int $id): RedirectResponse
     {
         $this->service->updatePromotion($id, $request->validated());
-        return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពបានជោគជ័យ!');
+        return back()->with('success', 'ធ្វើបច្ចុប្បន្នភាពបានជោគជ័យ');
     }
 
     public function destroy(int $id): RedirectResponse
     {
         $this->service->deletePromotion($id);
-        return back()->with('success', 'លុបការបញ្ចុះតម្លៃជោគជ័យ!');
+        return back()->with('success', 'លុបការបញ្ចុះតម្លៃជោគជ័យ');
     }
 }

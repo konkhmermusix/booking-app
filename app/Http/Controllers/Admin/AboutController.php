@@ -34,7 +34,7 @@ class AboutController extends Controller
             'key' => 'required',
             'title_kh' => 'required',
             'content_kh' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
             'status' => 'required|boolean'
         ]);
 
@@ -65,7 +65,7 @@ class AboutController extends Controller
         $content = AboutContent::findOrFail($id);
         if ($content->image) Storage::disk('public')->delete($content->image);
         $content->delete();
-        return back()->with('success', 'លុបមាតិកាបានជោគជ័យ!');
+        return back()->with('success', 'លុបមាតិកាបានជោគជ័យ');
     }
 
     // --- Hotel History Section ---

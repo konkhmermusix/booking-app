@@ -1,18 +1,23 @@
 // ស្ដាប់ការបាញ់សារមកវិញ
-Echo.private(`chat.${conversationId}`).listen("MessageSent", (e) => {
-    console.log("សារថ្មី:", e.message);
+if (typeof Echo !== 'undefined' && typeof conversationId !== 'undefined') {
+    Echo.private(`chat.${conversationId}`).listen("MessageSent", (e) => {
+        console.log("សារថ្មី:", e.message);
 
-    // ហៅ function ដើម្បីបង្ហាញសារលើ Screen
-    appendMessageToUI(e.message);
+        // ហៅ function ដើម្បីបង្ហាញសារលើ Screen
+        appendMessageToUI(e.message);
 
-    // Scroll ទៅក្រោមគេបង្អស់
-    const chatWindow = document.getElementById("chat-messages");
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-});
+        // Scroll ទៅក្រោមគេបង្អស់
+        const chatWindow = document.getElementById("chat-messages");
+        if (chatWindow) {
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+    });
+}
 
 function appendMessageToUI(msg) {
     const chatContainer = document.getElementById("chat-messages");
-    const isMe = msg.sender_id === currentUserId; // ឆែកមើលថាជារបស់យើង ឬគេ
+    if (!chatContainer) return;
+    const isMe = msg.sender_id === (typeof currentUserId !== 'undefined' ? currentUserId : null); // ឆែកមើលថាជារបស់យើង ឬគេ
 
     const html = `
         <div class="flex ${isMe ? "justify-end" : "justify-start"} mb-3">

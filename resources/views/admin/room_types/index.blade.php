@@ -1,11 +1,11 @@
 @extends('layouts.admin')
-@section('title', 'ប្រភេទបន្ទប់')
+@section('title', 'គ្រប់គ្រងប្រភេទបន្ទប់')
 
 @section('content')
 <div class="p-2 sm:p-2"
     x-data="{
         viewMode: localStorage.getItem('roomTypeView') || 'grid',
-        showAddModal: false,
+        showAddModal: {{ $errors->any() ? 'true' : 'false' }},
         showEditModal: false,
         showDetailModal: false,
 
@@ -17,6 +17,7 @@
             id: null,
             hotel_id: '',
             name: '',
+            category: 'stay',
             base_price: 0,
             max_guests: 0,
             description: '',
@@ -26,6 +27,7 @@
 
         search: '{{ request('search') }}',
         hotel_id: '{{ request('hotel_id') }}',
+        category: '{{ request('category') }}',
         loading: false,
 
         init() {
@@ -42,9 +44,11 @@
         openEditModal(roomType) {
             this.currentRoomType = JSON.parse(JSON.stringify(roomType));
             this.previews = [];
-            this.selectedFacilities = roomType.facilities.map(f => f.id);
+            this.selectedFacilities = roomType.facilities ? roomType.facilities.map(f => f.id) : [];
             this.showEditModal = true;
-            
+            if (window.editEditorInstance) {
+                window.editEditorInstance.setData(this.currentRoomType.description || '');
+            }
         },
 
         handleFileSelect(event) {
@@ -76,13 +80,20 @@
             if(input) input.value = '';
         },
 
+        resetFilters() {
+            this.search = '';
+            this.hotel_id = '';
+            this.category = '';
+            this.fetchRoomTypes();
+        },
+
         async updateRoomType() {
             try {
                 let formData = new FormData();
                 formData.append('_method', 'PUT');
                 formData.append('hotel_id', this.currentRoomType.hotel_id);
                 formData.append('name', this.currentRoomType.name);
-                formData.append('category', this.currentRoomType.name);
+                formData.append('category', this.currentRoomType.category || 'stay');
                 formData.append('base_price', this.currentRoomType.base_price);
                 formData.append('max_guests', this.currentRoomType.max_guests);
                 formData.append('description', this.currentRoomType.description);
@@ -135,7 +146,8 @@
                 const response = await axios.get(fetchUrl, {
                     params: {
                         search: this.search,
-                        hotel_id: this.hotel_id
+                        hotel_id: this.hotel_id,
+                        category: this.category
                     }
                 });
                 document.getElementById('room-types-container').innerHTML = response.data;
@@ -147,19 +159,102 @@
         }
      }">
 
+    @if(session('success'))
+    <div class="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-bold flex items-center gap-3 shadow-sm">
+        <i class="fas fa-check-circle text-lg"></i>
+        <span>{{ session('success') }}</span>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="mb-4 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-bold flex items-center gap-3 shadow-sm">
+        <i class="fas fa-exclamation-triangle text-lg"></i>
+        <span>{{ session('error') }}</span>
+    </div>
+    @endif
+
+    @if($errors->any())
+    <div class="mb-4 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-bold shadow-sm">
+        <div class="flex items-center gap-2 mb-2 font-black text-rose-600 dark:text-rose-400">
+            <i class="fas fa-exclamation-circle text-lg"></i>
+            <span>មិនអាចរក្សាទុកបានទេ! សូមពិនិត្យមើលបញ្ហាខាងក្រោម៖</span>
+        </div>
+        <ul class="list-disc list-inside space-y-1 text-xs font-semibold text-rose-500">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
+    <!-- Top KPI Statistics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between border-none">
+            <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">ប្រភេទសរុប</p>
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white mt-1">{{ number_format($totalRoomTypes ?? 0) }}</h3>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Total Categories</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center text-xl shadow-inner">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between border-none">
+            <div>
+                <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">ប្រភេទស្នាក់នៅ (Stay)</p>
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white mt-1">{{ number_format($stayTypesCount ?? 0) }}</h3>
+                <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest mt-1">Room Categories</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center text-xl shadow-inner">
+                <i class="fa-solid fa-bed"></i>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between border-none">
+            <div>
+                <p class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">ប្រភេទប្រជុំ (Meeting)</p>
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white mt-1">{{ number_format($meetingTypesCount ?? 0) }}</h3>
+                <p class="text-[10px] text-purple-500 font-bold uppercase tracking-widest mt-1">Meeting Halls</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 text-purple-500 flex items-center justify-center text-xl shadow-inner">
+                <i class="fa-solid fa-handshake"></i>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between border-none">
+            <div>
+                <p class="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">តម្លៃមធ្យម</p>
+                <h3 class="text-2xl font-black text-gray-800 dark:text-white mt-1">
+                    ${{ number_format($avgPrice ?? 0, 2) }}
+                    <span class="text-xs font-bold text-gray-400 block font-mono">({{ number_format(($avgPrice ?? 0) * $khrRate) }} ៛)</span>
+                </h3>
+                <p class="text-[10px] text-amber-500 font-bold uppercase tracking-widest mt-1">Average Base Price</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 flex items-center justify-center text-xl shadow-inner">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Action & Control Bar -->
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6">
         <div>
-            <h2 class="text-lg font-bold dark:text-white">គ្រប់គ្រងប្រភេទបន្ទប់</h2>
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Room Category Management</p>
+            <h2 class="text-lg font-bold dark:text-white flex items-center gap-2">
+                គ្រប់គ្រងប្រភេទបន្ទប់
+            </h2>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Room & Hall Category Management</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <!-- Search Bar -->
             <div class="relative w-full sm:w-56">
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]"></i>
-                <input type="text" x-model="search" @input.debounce.500ms="fetchRoomTypes()" placeholder="ស្វែងរកឈ្មោះប្រភេទ..."
+                <input type="text" x-model="search" @input.debounce.400ms="fetchRoomTypes()" placeholder="ស្វែងរកឈ្មោះប្រភេទ..."
                     class="w-full pl-8 pr-4 h-10 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm font-medium">
             </div>
 
+            <!-- Hotel Filter -->
             <div class="w-full sm:w-40">
                 <div class="relative group">
                     <select x-model="hotel_id" @change="fetchRoomTypes()"
@@ -173,13 +268,36 @@
                 </div>
             </div>
 
-            <div class="flex bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl h-10 items-center">
-                <button @click="viewMode = 'table'; localStorage.setItem('roomTypeView', 'table')" :class="viewMode === 'table' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]"><i class="fas fa-table-list"></i></button>
-                <button @click="viewMode = 'list'; localStorage.setItem('roomTypeView', 'list')" :class="viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]"><i class="fas fa-list-ul"></i></button>
-                <button @click="viewMode = 'grid'; localStorage.setItem('roomTypeView', 'grid')" :class="viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]"><i class="fas fa-th-large"></i></button>
+            <!-- Category Filter -->
+            <div class="w-full sm:w-36">
+                <div class="relative group">
+                    <select x-model="category" @change="fetchRoomTypes()"
+                        class="w-full h-10 px-3 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none text-sm font-medium relative z-0">
+                        <option value="">គ្រប់ប្រភេទ</option>
+                        <option value="stay">បន្ទប់ស្នាក់នៅ</option>
+                        <option value="meeting">សាលប្រជុំ</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                </div>
             </div>
 
-            <button @click="showAddModal = true; previews = [];"
+            <!-- Reset Filters -->
+            <button x-show="search || hotel_id || category" @click="resetFilters()"
+                title="សម្អាតតម្រង"
+                class="h-10 px-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span class="hidden sm:inline">សម្អាត</span>
+            </button>
+
+            <!-- View Switcher -->
+            <div class="flex bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl h-10 items-center">
+                <button @click="viewMode = 'table'; localStorage.setItem('roomTypeView', 'table')" :class="viewMode === 'table' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]" title="មើលជាតារាង"><i class="fas fa-table-list"></i></button>
+                <button @click="viewMode = 'list'; localStorage.setItem('roomTypeView', 'list')" :class="viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]" title="មើលជាបញ្ជី"><i class="fas fa-list-ul"></i></button>
+                <button @click="viewMode = 'grid'; localStorage.setItem('roomTypeView', 'grid')" :class="viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600' : 'text-gray-400'" class="w-8 h-full rounded-lg transition-all flex items-center justify-center text-[10px]" title="មើលជាក្រឡាចត្រង្គ"><i class="fas fa-th-large"></i></button>
+            </div>
+
+            <!-- Add Room Type Button -->
+            <button @click="showAddModal = true; previews = []; if(window.addEditorInstance) window.addEditorInstance.setData('');"
                 class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md text-sm font-bold flex items-center gap-2 transition-all active:scale-95">
                 <i class="fas fa-plus-circle"></i>
                 បន្ថែមប្រភេទបន្ទប់
@@ -187,14 +305,17 @@
         </div>
     </div>
 
+    <!-- Loading State -->
     <div x-show="loading" x-cloak class="mb-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-4 py-3 rounded-xl text-sm animate-pulse text-center">
         កំពុងដំណើរការ...
     </div>
 
+    <!-- Main Room Types Container -->
     <div id="room-types-container" :class="loading ? 'opacity-40' : ''" class="transition-opacity duration-300">
         @include('admin.room_types.partials.roomtype_list')
     </div>
 
+    <!-- Modals -->
     @include('admin.room_types.modals')
 </div>
 
@@ -204,7 +325,9 @@
         if (link) {
             e.preventDefault();
             const rootElement = document.querySelector('[x-data]');
-            if (rootElement && rootElement.__x) {
+            if (rootElement && typeof Alpine !== 'undefined' && Alpine.$data) {
+                Alpine.$data(rootElement).fetchRoomTypes(link.href);
+            } else if (rootElement && rootElement.__x) {
                 rootElement.__x.$data.fetchRoomTypes(link.href);
             }
         }
@@ -213,83 +336,69 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // កំណត់ទម្រង់ Toolbar ឱ្យកាន់តែសម្បូរបែប និងមានសណ្តាប់ធ្នាប់
-        const checkEditorToolbar = {
-            items: [
-                'heading', '|',
-                'bold', 'italic', 'underline', 'strikethrough', '|', // បន្ថែម strikethrough (ឆូតចំកណ្តាល)
-                'bulletedList', 'numberedList', 'outdent', 'indent', '|', // បន្ថែម outdent និង indent សម្រាប់មុខងារ Tab
-                'insertTable', 'blockQuote', '|', // បន្ថែម blockQuote (សម្រង់សម្តី)
-                'undo', 'redo'
-            ]
-        };
+        const requestedToolbar = [
+            'heading', '|',
+            'bold', 'italic', 'underline', 'strikethrough', '|',
+            'fontColor', 'fontBackgroundColor', '|',
+            'alignment', '|',
+            'bulletedList', 'numberedList', '|',
+            'insertTable', 'blockQuote', 'horizontalLine', '|',
+            'link', 'imageUpload', '|',
+            'undo', 'redo'
+        ];
 
-        // មុខងារទូទៅសម្រាប់ដោះស្រាយបញ្ហា Tab Key និងការដកឃ្លា
+        let checkEditorToolbar = requestedToolbar;
+        if (typeof ClassicEditor !== 'undefined' && ClassicEditor.defaultConfig && ClassicEditor.defaultConfig.toolbar && Array.isArray(ClassicEditor.defaultConfig.toolbar.items)) {
+            const availableItems = ClassicEditor.defaultConfig.toolbar.items;
+            checkEditorToolbar = requestedToolbar.filter(item => item === '|' || availableItems.includes(item));
+        }
+
         function configureEditorFeatures(editor, textareaElement) {
-            // ១. មុខងារ Sync ទិន្នន័យទៅកាន់ Textarea ភ្លាមៗនៅពេលវាយអត្ថបទ (ដោះស្រាយបញ្ហាជាមួយ Alpine.js / Form)
             editor.model.document.on('change:data', () => {
                 textareaElement.value = editor.getData();
-                // ប្រសិនបើប្រើជាមួយ Alpine.js (ឧទាហរណ៍ x-model="description") ត្រូវដាស់វាឱ្យដឹងខ្លួន
                 textareaElement.dispatchEvent(new Event('input'));
             });
 
-            // ២. មុខងារចាប់ព្រឹត្តិការណ៍ចុច Tab Key នៅលើ Keyboard
             editor.editing.view.document.on('keydown', (evt, data) => {
-                // បើសិនជាចុចប៊ូតុង Tab
                 if (data.keyCode === 9) {
-                    // ប្រសិនបើចុច Shift + Tab ឱ្យវាថយក្រោយ (Outdent) បើមិនចាក់ទេឱ្យវាដកឃ្លាចូល (Indent)
                     const commandName = data.shiftKey ? 'outdent' : 'indent';
                     const command = editor.commands.get(commandName);
-
                     if (command && command.isEnabled) {
                         editor.execute(commandName);
-                        data.preventDefault(); // ការពារកុំឱ្យវាលោត Focus ចេញទៅ Element ផ្សេង
+                        data.preventDefault();
                         evt.stop();
                     }
                 }
             });
         }
 
-        // ==========================================
-        // Initialize CKEditor សម្រាប់ Add Modal
-        // ==========================================
         const addTextarea = document.querySelector('#add_editor');
-        if (addTextarea) {
+        if (addTextarea && typeof ClassicEditor !== 'undefined') {
             ClassicEditor
                 .create(addTextarea, {
                     toolbar: checkEditorToolbar,
-                    placeholder: 'សូមបញ្ចូលការពិពណ៌នានៅទីនេះ...' // បន្ថែម Placeholder មើលទៅមានវិជ្ជាជីវៈ
+                    placeholder: 'សូមបញ្ចូលការពិពណ៌នានៅទីនេះ...'
                 })
                 .then(editor => {
-                    window.addEditorInstance = editor; // រក្សាទុក Instance ក្រែងលោត្រូវប្រើលុបទិន្នន័យចោល (Clear Form)
+                    window.addEditorInstance = editor;
                     configureEditorFeatures(editor, addTextarea);
                 })
-                .catch(error => {
-                    console.error('Add Editor Error:', error);
-                });
+                .catch(error => console.error('Add Editor Error:', error));
         }
 
-        // ==========================================
-        // Initialize CKEditor សម្រាប់ Edit Modal
-        // ==========================================
         const editTextarea = document.querySelector('#edit_editor');
-        if (editTextarea) {
+        if (editTextarea && typeof ClassicEditor !== 'undefined') {
             ClassicEditor
                 .create(editTextarea, {
                     toolbar: checkEditorToolbar,
                     placeholder: 'សូមកែប្រែការពិពណ៌នានៅទីនេះ...'
                 })
                 .then(editor => {
-                    // រក្សាទុក Instance ក្នុង Window Object ដើម្បីងាយស្រួលហៅរុញទិន្នន័យពី Alpine.js (ដូចកូដចាស់របស់អ្នក)
                     window.editEditorInstance = editor;
                     configureEditorFeatures(editor, editTextarea);
                 })
-                .catch(error => {
-                    console.error('Edit Editor Error:', error);
-                });
+                .catch(error => console.error('Edit Editor Error:', error));
         }
     });
 </script>
-
-
 @endsection
