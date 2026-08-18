@@ -8,17 +8,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // This makes the column nullable
-            $table->string('facebook_id')->nullable()->change();
-        });
+        if (Schema::hasColumn('users', 'facebook_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('facebook_id')->nullable()->change();
+            });
+        } else {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('facebook_id')->nullable();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // To roll back, it would go back to being non-nullable
-            $table->string('facebook_id')->nullable(false)->change();
-        });
+        if (Schema::hasColumn('users', 'facebook_id')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('facebook_id');
+            });
+        }
     }
 };
