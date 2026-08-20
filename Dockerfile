@@ -24,7 +24,7 @@ WORKDIR /var/www
 COPY . /var/www
 
 # Install dependencies and build assets
-RUN composer install --no-dev --optimize-autoloader \
+RUN composer install --no-dev --optimize-autoloader --prefer-dist \
     && npm install \
     && npm run build
 
