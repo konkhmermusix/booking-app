@@ -326,71 +326,47 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const checkEditorToolbar = {
+    function initPostCKEditors() {
+        const CKEditor = window.ClassicEditor;
+        if (!CKEditor) return;
+
+        const toolbar = {
             items: [
                 'heading', '|',
-                'bold', 'italic', 'underline', 'strikethrough', '|',
-                'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-                'insertTable', 'blockQuote', '|',
+                'bold', 'italic', 'underline', '|',
+                'bulletedList', 'numberedList', '|',
+                'blockQuote', '|',
                 'undo', 'redo'
             ]
         };
 
-        function configureEditorFeatures(editor, textareaElement) {
+        function syncEditor(editor, textarea) {
             editor.model.document.on('change:data', () => {
                 const data = editor.getData();
-                textareaElement.value = data;
-
-                textareaElement.dispatchEvent(new Event('input', {
-                    bubbles: true
-                }));
-
-                const event = new CustomEvent('editor-change', {
-                    detail: {
-                        content: data
-                    },
-                    bubbles: true
-                });
-                textareaElement.dispatchEvent(event);
-            });
-
-            editor.editing.view.document.on('keydown', (evt, data) => {
-                if (data.keyCode === 9) {
-                    const commandName = data.shiftKey ? 'outdent' : 'indent';
-                    const command = editor.commands.get(commandName);
-                    if (command && command.isEnabled) {
-                        editor.execute(commandName);
-                        data.preventDefault();
-                        evt.stop();
-                    }
-                }
+                textarea.value = data;
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                textarea.dispatchEvent(new CustomEvent('editor-change', { detail: { content: data }, bubbles: true }));
             });
         }
 
         const addTextarea = document.querySelector('#add_editor');
-        if (addTextarea) {
-            ClassicEditor.create(addTextarea, {
-                    toolbar: checkEditorToolbar,
-                    placeholder: 'សូមបញ្ចូលខ្លឹមសារព័ត៌មានលម្អិតនៅទីនេះ...'
-                })
-                .then(editor => {
-                    window.addEditorInstance = editor;
-                    configureEditorFeatures(editor, addTextarea);
-                }).catch(err => console.error(err));
+        if (addTextarea && !addTextarea.dataset.ckLoaded) {
+            addTextarea.dataset.ckLoaded = '1';
+            CKEditor.create(addTextarea, { toolbar, placeholder: 'សូមបញ្ចូលខ្លឹមសារព័ត៌មានលម្អិតនៅទីនេះ...' })
+                .then(editor => { window.addEditorInstance = editor; syncEditor(editor, addTextarea); })
+                .catch(err => console.error(err));
         }
 
         const editTextarea = document.querySelector('#edit_editor');
-        if (editTextarea) {
-            ClassicEditor.create(editTextarea, {
-                    toolbar: checkEditorToolbar,
-                    placeholder: 'សូមកែប្រែខ្លឹមសារព័ត៌មានលម្អិតនៅទីនេះ...'
-                })
-                .then(editor => {
-                    window.editEditorInstance = editor;
-                    configureEditorFeatures(editor, editTextarea);
-                }).catch(err => console.error(err));
+        if (editTextarea && !editTextarea.dataset.ckLoaded) {
+            editTextarea.dataset.ckLoaded = '1';
+            CKEditor.create(editTextarea, { toolbar, placeholder: 'សូមកែប្រែខ្លឹមសារព័ត៌មានលម្អិតនៅទីនេះ...' })
+                .then(editor => { window.editEditorInstance = editor; syncEditor(editor, editTextarea); })
+                .catch(err => console.error(err));
         }
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', initPostCKEditors);
+    document.addEventListener('ckeditor-ready', initPostCKEditors);
 </script>
 @endsection

@@ -185,63 +185,45 @@
 </script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const checkEditorToolbar = {
+    function initHotelCKEditors() {
+        const CKEditor = window.ClassicEditor;
+        if (!CKEditor) return;
+
+        const toolbar = {
             items: [
                 'heading', '|',
-                'bold', 'italic', 'underline', 'strikethrough', '|',
-                'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-                'insertTable', 'blockQuote', '|',
+                'bold', 'italic', 'underline', '|',
+                'bulletedList', 'numberedList', '|',
+                'blockQuote', '|',
                 'undo', 'redo'
             ]
         };
 
-        function configureEditorFeatures(editor, textareaElement) {
+        function syncEditor(editor, textarea) {
             editor.model.document.on('change:data', () => {
-                textareaElement.value = editor.getData();
-                textareaElement.dispatchEvent(new Event('input'));
-            });
-
-            editor.editing.view.document.on('keydown', (evt, data) => {
-                if (data.keyCode === 9) {
-                    const commandName = data.shiftKey ? 'outdent' : 'indent';
-                    const command = editor.commands.get(commandName);
-                    if (command && command.isEnabled) {
-                        editor.execute(commandName);
-                        data.preventDefault();
-                        evt.stop();
-                    }
-                }
+                textarea.value = editor.getData();
+                textarea.dispatchEvent(new Event('input'));
             });
         }
 
         const addTextarea = document.querySelector('#add_hotel_editor');
-        if (addTextarea && typeof ClassicEditor !== 'undefined') {
-            ClassicEditor
-                .create(addTextarea, {
-                    toolbar: checkEditorToolbar,
-                    placeholder: 'សូមបញ្ចូលព័ត៌មានលម្អិតពីសណ្ឋាគារនៅទីនេះ...'
-                })
-                .then(editor => {
-                    window.addEditorInstance = editor;
-                    configureEditorFeatures(editor, addTextarea);
-                })
+        if (addTextarea && !addTextarea.dataset.ckLoaded) {
+            addTextarea.dataset.ckLoaded = '1';
+            CKEditor.create(addTextarea, { toolbar, placeholder: 'សូមបញ្ចូលព័ត៌មានលម្អិតពីសណ្ឋាគារនៅទីនេះ...' })
+                .then(editor => { window.addEditorInstance = editor; syncEditor(editor, addTextarea); })
                 .catch(error => console.error('Add Hotel Editor Error:', error));
         }
 
         const editTextarea = document.querySelector('#edit_hotel_editor');
-        if (editTextarea && typeof ClassicEditor !== 'undefined') {
-            ClassicEditor
-                .create(editTextarea, {
-                    toolbar: checkEditorToolbar,
-                    placeholder: 'សូមកែប្រែព័ត៌មានលម្អិតសណ្ឋាគារ...'
-                })
-                .then(editor => {
-                    window.editEditorInstance = editor;
-                    configureEditorFeatures(editor, editTextarea);
-                })
+        if (editTextarea && !editTextarea.dataset.ckLoaded) {
+            editTextarea.dataset.ckLoaded = '1';
+            CKEditor.create(editTextarea, { toolbar, placeholder: 'សូមកែប្រែព័ត៌មានលម្អិតសណ្ឋាគារ...' })
+                .then(editor => { window.editEditorInstance = editor; syncEditor(editor, editTextarea); })
                 .catch(error => console.error('Edit Hotel Editor Error:', error));
         }
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', initHotelCKEditors);
+    document.addEventListener('ckeditor-ready', initHotelCKEditors);
 </script>
 @endsection
