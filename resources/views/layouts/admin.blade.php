@@ -1142,6 +1142,19 @@ $dynSiteName = $contactSettings['site_name'];
         }
     </script>
     @stack('scripts')
+    {{-- CKEditor CDN Fallback: load only if Vite bundle did not expose ClassicEditor --}}
+    <script>
+        if (typeof window.ClassicEditor === 'undefined') {
+            var ckScript = document.createElement('script');
+            ckScript.src = 'https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js';
+            ckScript.onload = function() {
+                window.ClassicEditor = ClassicEditor;
+                // Re-dispatch DOMContentLoaded equivalent for CKEditor pages
+                document.dispatchEvent(new Event('ckeditor-ready'));
+            };
+            document.head.appendChild(ckScript);
+        }
+    </script>
 </body>
 
 </html>

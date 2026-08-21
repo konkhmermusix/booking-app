@@ -159,19 +159,7 @@
         }
      }">
 
-    @if(session('success'))
-    <div class="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-bold flex items-center gap-3 shadow-sm">
-        <i class="fas fa-check-circle text-lg"></i>
-        <span>{{ session('success') }}</span>
-    </div>
-    @endif
 
-    @if(session('error'))
-    <div class="mb-4 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-bold flex items-center gap-3 shadow-sm">
-        <i class="fas fa-exclamation-triangle text-lg"></i>
-        <span>{{ session('error') }}</span>
-    </div>
-    @endif
 
     @if($errors->any())
     <div class="mb-4 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-bold shadow-sm">
@@ -335,70 +323,47 @@
 </script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const requestedToolbar = [
+    function initRoomTypeCKEditors() {
+        const CKEditor = window.ClassicEditor;
+        if (!CKEditor) return;
+
+        const toolbar = [
             'heading', '|',
-            'bold', 'italic', 'underline', 'strikethrough', '|',
-            'fontColor', 'fontBackgroundColor', '|',
+            'bold', 'italic', 'underline', '|',
             'alignment', '|',
             'bulletedList', 'numberedList', '|',
-            'insertTable', 'blockQuote', 'horizontalLine', '|',
-            'link', 'imageUpload', '|',
+            'blockQuote', 'horizontalLine', '|',
+            'link', '|',
             'undo', 'redo'
         ];
 
-        let checkEditorToolbar = requestedToolbar;
-        if (typeof ClassicEditor !== 'undefined' && ClassicEditor.defaultConfig && ClassicEditor.defaultConfig.toolbar && Array.isArray(ClassicEditor.defaultConfig.toolbar.items)) {
-            const availableItems = ClassicEditor.defaultConfig.toolbar.items;
-            checkEditorToolbar = requestedToolbar.filter(item => item === '|' || availableItems.includes(item));
-        }
-
-        function configureEditorFeatures(editor, textareaElement) {
+        function syncEditor(editor, textarea) {
             editor.model.document.on('change:data', () => {
-                textareaElement.value = editor.getData();
-                textareaElement.dispatchEvent(new Event('input'));
-            });
-
-            editor.editing.view.document.on('keydown', (evt, data) => {
-                if (data.keyCode === 9) {
-                    const commandName = data.shiftKey ? 'outdent' : 'indent';
-                    const command = editor.commands.get(commandName);
-                    if (command && command.isEnabled) {
-                        editor.execute(commandName);
-                        data.preventDefault();
-                        evt.stop();
-                    }
-                }
+                textarea.value = editor.getData();
+                textarea.dispatchEvent(new Event('input'));
             });
         }
 
         const addTextarea = document.querySelector('#add_editor');
-        if (addTextarea && typeof ClassicEditor !== 'undefined') {
-            ClassicEditor
-                .create(addTextarea, {
-                    toolbar: checkEditorToolbar,
-                    placeholder: 'សូមបញ្ចូលការពិពណ៌នានៅទីនេះ...'
-                })
-                .then(editor => {
-                    window.addEditorInstance = editor;
-                    configureEditorFeatures(editor, addTextarea);
-                })
-                .catch(error => console.error('Add Editor Error:', error));
+        if (addTextarea && !addTextarea.dataset.ckLoaded) {
+            addTextarea.dataset.ckLoaded = '1';
+            CKEditor.create(addTextarea, { toolbar, placeholder: 'សូមបញ្ចូលការពិពណ៌នានៅទីនេះ...' })
+                .then(editor => { window.addEditorInstance = editor; syncEditor(editor, addTextarea); })
+                .catch(e => console.error('Add Editor Error:', e));
         }
 
         const editTextarea = document.querySelector('#edit_editor');
-        if (editTextarea && typeof ClassicEditor !== 'undefined') {
-            ClassicEditor
-                .create(editTextarea, {
-                    toolbar: checkEditorToolbar,
-                    placeholder: 'សូមកែប្រែការពិពណ៌នានៅទីនេះ...'
-                })
-                .then(editor => {
-                    window.editEditorInstance = editor;
-                    configureEditorFeatures(editor, editTextarea);
-                })
-                .catch(error => console.error('Edit Editor Error:', error));
+        if (editTextarea && !editTextarea.dataset.ckLoaded) {
+            editTextarea.dataset.ckLoaded = '1';
+            CKEditor.create(editTextarea, { toolbar, placeholder: 'សូមកែប្រែការពិពណ៌នានៅទីនេះ...' })
+                .then(editor => { window.editEditorInstance = editor; syncEditor(editor, editTextarea); })
+                .catch(e => console.error('Edit Editor Error:', e));
         }
-    });
+    }
+
+    // Run after DOM ready (covers Vite bundle case)
+    document.addEventListener('DOMContentLoaded', initRoomTypeCKEditors);
+    // Also run after CDN fallback loads
+    document.addEventListener('ckeditor-ready', initRoomTypeCKEditors);
 </script>
 @endsection
