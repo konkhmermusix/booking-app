@@ -26,7 +26,7 @@ class PostController extends Controller
 
         $posts = $query->paginate(10);
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->wantsJson() || $request->has('_ajax')) {
             return view('admin.posts.partials.post_list', compact('posts'))->render();
         }
 

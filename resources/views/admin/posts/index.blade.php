@@ -207,7 +207,11 @@
                 const response = await axios.get(fetchUrl, {
                     params: {
                         search: this.search,
-                        status: this.status
+                        status: this.status,
+                        _ajax: 1
+                    },
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
                 document.getElementById('posts-container').innerHTML = response.data;
