@@ -36,13 +36,6 @@ $dynSiteName = $contactSettings['site_name'];
     <script src="https://cdn.jsdelivr.net/npm/spotlight.js@0.7.8/dist/spotlight.bundle.js"></script>
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-    <script>
-        // Ensure ClassicEditor is available globally (CDN fallback)
-        if (typeof window.ClassicEditor === 'undefined' && typeof ClassicEditor !== 'undefined') {
-            window.ClassicEditor = ClassicEditor;
-        }
-    </script>
     <style>
         [x-cloak] {
             display: none !important;
