@@ -29,6 +29,7 @@ $dynSiteName = $contactSettings['site_name'];
 
     <title>@yield('title') | {{ $dynSiteName }}</title>
 
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1142,19 +1143,6 @@ $dynSiteName = $contactSettings['site_name'];
         }
     </script>
     @stack('scripts')
-    {{-- CKEditor CDN Fallback: load only if Vite bundle did not expose ClassicEditor --}}
-    <script>
-        if (typeof window.ClassicEditor === 'undefined') {
-            var ckScript = document.createElement('script');
-            ckScript.src = 'https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js';
-            ckScript.onload = function() {
-                window.ClassicEditor = ClassicEditor;
-                // Re-dispatch DOMContentLoaded equivalent for CKEditor pages
-                document.dispatchEvent(new Event('ckeditor-ready'));
-            };
-            document.head.appendChild(ckScript);
-        }
-    </script>
 </body>
 
 </html>
