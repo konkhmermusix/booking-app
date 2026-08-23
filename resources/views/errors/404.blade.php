@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'រកមិនឃើញទំព័រ (404 Not Found)')
+@section('title', 'រកមិនឃើញទំព័រ ៤០៤')
 
 @section('content')
 <div class="min-h-[75vh] flex items-center justify-center py-16 bg-gray-50 dark:bg-[#0b1120] transition-colors">

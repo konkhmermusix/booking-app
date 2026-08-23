@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'កំហុសប្រព័ន្ធម៉ាស៊ីនបម្រើ (500 Server Error)')
+@section('title', 'កំហុសប្រព័ន្ធម៉ាស៊ីនបម្រើ ៥០០')
 
 @section('content')
 <div class="min-h-[75vh] flex items-center justify-center py-16 bg-gray-50 dark:bg-[#0b1120] transition-colors">
@@ -21,7 +21,7 @@
                 សុំទោស! មានបញ្ហាបច្ចេកទេសបណ្តោះអាសន្ន
             </h2>
             <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
-                ម៉ាស៊ីនបម្រើ (Server) កំពុងជួបប្រទះបញ្ហាបច្ចេកទេសបណ្តោះអាសន្ន។ ក្រុមការងារបច្ចេកវិទ្យារបស់យើងត្រូវបានជូនដំណឹង និងកំពុងដោះស្រាយយ៉ាងសកម្ម។
+                ម៉ាស៊ីនបម្រើកំពុងជួបប្រទះបញ្ហាបច្ចេកទេសបណ្តោះអាសន្ន។ ក្រុមការងារបច្ចេកវិទ្យារបស់យើងត្រូវបានជូនដំណឹង និងកំពុងដោះស្រាយយ៉ាងសកម្ម។
             </p>
         </div>
 
@@ -29,7 +29,7 @@
         <div class="pt-4 flex flex-wrap items-center justify-center gap-3">
             <button onclick="window.location.reload()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-lg shadow-blue-500/25 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-rotate-right"></i>
-                <span>ព្យាយាមទាញឡើងវិញ (Reload)</span>
+                <span>ព្យាយាមទាញឡើងវិញ</span>
             </button>
             <a href="{{ url('/') }}" class="px-6 py-3 rounded-2xl bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold border border-gray-200 dark:border-gray-700 transition shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-house"></i>

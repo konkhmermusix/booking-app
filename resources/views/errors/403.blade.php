@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'គ្មានសិទ្ធិចូលប្រើប្រាស់ (403 Forbidden)')
+@section('title', 'គ្មានសិទ្ធិចូលប្រើប្រាស់ ៤០៣')
 
 @section('content')
 <div class="min-h-[75vh] flex items-center justify-center py-16 bg-gray-50 dark:bg-[#0b1120] transition-colors">
@@ -21,7 +21,7 @@
                 លោកអ្នកគ្មានសិទ្ធិចូលប្រើប្រាស់ផ្នែកនេះទេ
             </h2>
             <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
-                ទំព័រនេះត្រូវបានការពារដោយប្រព័ន្ធសុវត្ថិភាព។ លោកអ្នកតម្រូវឱ្យមានសិទ្ធិជា Admin ឬ Staff ដើម្បីចូលប្រើប្រាស់។
+                ទំព័រនេះត្រូវបានការពារដោយប្រព័ន្ធសុវត្ថិភាព។ លោកអ្នកតម្រូវឱ្យមានសិទ្ធិជាអ្នកគ្រប់គ្រងឬបុគ្គលិកដើម្បីចូលប្រើប្រាស់។
             </p>
         </div>
 

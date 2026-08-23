@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'ផុតកំណត់សេសសិន (419 Page Expired)')
+@section('title', 'ផុតកំណត់សេសសិន ៤១៩')
 
 @section('content')
 <div class="min-h-[75vh] flex items-center justify-center py-16 bg-gray-50 dark:bg-[#0b1120] transition-colors">
@@ -18,7 +18,7 @@
         {{-- TEXT CONTENT --}}
         <div class="space-y-3">
             <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white">
-                ទំព័រនេះបានផុតកំណត់សេសសិន (Page Expired)
+                ទំព័រនេះបានផុតកំណត់សេសសិន
             </h2>
             <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
                 ដោយសារលោកអ្នកទុកទំព័រនេះចោលយូរពេក សេសសិនសុវត្ថិភាពត្រូវបានផុតកំណត់។ សូមចុចប៊ូតុងខាងក្រោមដើម្បីទាញទំព័រឡើងវិញ។
@@ -29,7 +29,7 @@
         <div class="pt-4 flex flex-wrap items-center justify-center gap-3">
             <button onclick="window.location.reload()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-lg shadow-blue-500/25 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-rotate-right"></i>
-                <span>ទាញទំព័រឡើងវិញ (Reload Page)</span>
+                <span>ទាញទំព័រឡើងវិញ</span>
             </button>
             <a href="{{ url('/') }}" class="px-6 py-3 rounded-2xl bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold border border-gray-200 dark:border-gray-700 transition shadow-xs flex items-center gap-2">
                 <i class="fa-solid fa-house"></i>

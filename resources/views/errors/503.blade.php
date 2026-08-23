@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'កំពុងថែទាំប្រព័ន្ធ (503 Maintenance Mode)')
+@section('title', 'កំពុងថែទាំប្រព័ន្ធ ៥០៣')
 
 @section('content')
 <div class="min-h-[75vh] flex items-center justify-center py-16 bg-gray-50 dark:bg-[#0b1120] transition-colors">
@@ -29,7 +29,7 @@
         <div class="pt-4 flex flex-wrap items-center justify-center gap-3">
             <button onclick="window.location.reload()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-lg shadow-blue-500/25 transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                 <i class="fa-solid fa-rotate-right"></i>
-                <span>ពិនិត្យឡើងវិញ (Refresh)</span>
+                <span>ពិនិត្យឡើងវិញ</span>
             </button>
         </div>
 
