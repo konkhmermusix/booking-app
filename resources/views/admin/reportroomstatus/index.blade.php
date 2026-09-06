@@ -112,11 +112,7 @@
                 </button>
             </div>
 
-            {{-- Print & Export Action Buttons --}}
-            <button onclick="window.print()" class="h-10 px-3.5 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm active:scale-95 cursor-pointer shrink-0">
-                <i class="fas fa-print text-blue-500"></i> បោះពុម្ព
-            </button>
-
+            {{-- Export Action Buttons --}}
             <a :href="'{{ route('reportroomstatus.export-excel') }}?search=' + search + '&floor=' + floor + '&status=' + status" class="h-10 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-95 shadow-sm shrink-0">
                 <i class="fas fa-file-excel"></i> Excel
             </a>
