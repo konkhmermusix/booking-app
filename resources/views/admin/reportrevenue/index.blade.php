@@ -21,6 +21,8 @@
     }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <div id="reportsrevenue-page" class="p-2 sm:p-2 space-y-6" x-data="{ 
         currency: 'USD', 
         exchangeRate: {{ $khrRate }}, 
@@ -42,10 +44,19 @@
         },
 
         initCharts() {
-            setTimeout(() => {
+            let attempts = 0;
+            const run = () => {
+                if (typeof Chart === 'undefined') {
+                    if (attempts < 35) {
+                        attempts++;
+                        setTimeout(run, 100);
+                    }
+                    return;
+                }
+
                 // 1. Monthly Revenue Line Chart
                 const revEl = document.getElementById('revenueLineChart');
-                if (revEl && typeof Chart !== 'undefined') {
+                if (revEl) {
                     const rawData = revEl.dataset.chart ? JSON.parse(revEl.dataset.chart) : {!! json_encode(array_values($chartData)) !!};
                     const revCtx = revEl.getContext('2d');
                     if (window.myRevenueChart) { window.myRevenueChart.destroy(); }
@@ -57,16 +68,21 @@
                                 label: 'ចំណូលសរុប ($)',
                                 data: rawData,
                                 borderColor: '#10b981',
-                                backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.12)',
                                 borderWidth: 3,
                                 fill: true,
-                                tension: 0.3,
-                                pointBackgroundColor: '#10b981'
+                                tension: 0.35,
+                                pointBackgroundColor: '#10b981',
+                                pointRadius: 4,
+                                pointHoverRadius: 6
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: true, position: 'top' }
+                            },
                             scales: {
                                 y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
                                 x: { grid: { display: false } }
@@ -77,7 +93,7 @@
 
                 // 2. Payment Methods Doughnut Chart
                 const payEl = document.getElementById('paymentMethodChart');
-                if (payEl && typeof Chart !== 'undefined') {
+                if (payEl) {
                     const rawLabels = payEl.dataset.labels ? JSON.parse(payEl.dataset.labels) : {!! json_encode($paymentMethods->pluck('method')->map(fn($m) => strtoupper($m ?: 'CASH'))) !!};
                     const rawValues = payEl.dataset.values ? JSON.parse(payEl.dataset.values) : {!! json_encode($paymentMethods->pluck('total')) !!};
                     const payCtx = payEl.getContext('2d');
@@ -88,8 +104,9 @@
                             labels: rawLabels,
                             datasets: [{
                                 data: rawValues,
-                                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899'],
-                                borderWidth: 0
+                                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
+                                borderWidth: 2,
+                                borderColor: '#ffffff'
                             }]
                         },
                         options: {
@@ -99,7 +116,8 @@
                         }
                     });
                 }
-            }, 150);
+            };
+            run();
         }
     }" x-init="initCharts()">
 

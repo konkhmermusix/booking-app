@@ -7,7 +7,7 @@
                     <th class="px-4 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">តួនាទី</th>
                     <th class="px-4 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ចូលដោយ</th>
                     <th class="px-4 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ស្ថានភាព</th>
-                    <th class="px-4 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">IP Address & ឧបករណ៍ (Security)</th>
+                    <th class="px-4 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">IP Address & ឧបករណ៍</th>
                     <th class="px-4 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">ពេលចូលប្រើប្រាស់</th>
                     <th class="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-right">សកម្មភាព</th>
                 </tr>

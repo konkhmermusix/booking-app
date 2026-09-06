@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\HotelBooking; // 1. ត្រូវ Import Model នេះចូលសិន
+use App\Models\HotelBooking;
+use App\Models\ContactSetting;
 
 class ReportRevenueController extends Controller
 {
@@ -100,7 +101,7 @@ class ReportRevenueController extends Controller
             ->groupBy('status')
             ->get();
 
-        $khrRate = 4100;
+        $khrRate = ContactSetting::getExchangeRate(4100);
 
         if ($request->ajax()) {
             return view('admin.reportrevenue.partials.report_content', compact(

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\ContactSetting;
 
 class ReportPaymentController extends Controller
 {
@@ -70,7 +71,7 @@ class ReportPaymentController extends Controller
         $perPage = $request->input('per_page', 10);
         $payments = $query->orderBy('payments.created_at', 'desc')->paginate($perPage)->appends($request->query());
 
-        $khrRate = 4100;
+        $khrRate = ContactSetting::getExchangeRate(4100);
 
         if ($request->ajax()) {
             return view('admin.reportpayments.partials.report_content', compact(
