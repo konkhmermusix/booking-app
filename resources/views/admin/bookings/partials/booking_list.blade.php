@@ -99,6 +99,9 @@ if (!function_exists('formatKhmerTimeCombined')) {
                 @endif
 
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-0 group-hover/img:opacity-100 transition-opacity">
+                    <a href="{{ route('receipt', $booking->booking_code) }}" target="_blank" class="w-9 h-9 bg-white text-emerald-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="មើលបង្កាន់ដៃ Website (Receipt)">
+                        <i class="fas fa-file-receipt"></i>
+                    </a>
                     @if($isMeeting)
                     <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="w-9 h-9 bg-white text-purple-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                         <i class="fas fa-print"></i>
@@ -310,6 +313,9 @@ if (!function_exists('formatKhmerTimeCombined')) {
             </div>
 
             <div class="flex items-center gap-1">
+                <a href="{{ route('receipt', $booking->booking_code) }}" target="_blank" class="p-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white dark:bg-emerald-950/30 dark:text-emerald-400 rounded-xl transition-all cursor-pointer" title="មើលបង្កាន់ដៃ Website (Receipt)">
+                    <i class="fas fa-file-receipt text-xs"></i>
+                </a>
                 @if($isMeeting)
                 <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2.5 bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white dark:bg-purple-950/30 dark:text-purple-400 rounded-xl transition-all cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                     <i class="fas fa-print text-xs"></i>
@@ -514,6 +520,9 @@ if (!function_exists('formatKhmerTimeCombined')) {
                     {{-- ACTIONS --}}
                     <td class="px-4 py-3.5 whitespace-nowrap text-right text-xs font-medium">
                         <div class="flex justify-end items-center gap-1.5 whitespace-nowrap">
+                            <a href="{{ route('receipt', $booking->booking_code) }}" target="_blank" class="p-2 text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 transition-colors cursor-pointer" title="មើលបង្កាន់ដៃ Website (Receipt)">
+                                <i class="fas fa-file-receipt text-sm"></i>
+                            </a>
                             @if($isMeeting)
                             <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
                                 <i class="fas fa-print text-sm"></i>
