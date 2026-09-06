@@ -37,7 +37,7 @@
     
     <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/40">
         <h3 class="font-bold text-gray-800 dark:text-white flex items-center gap-2 text-sm">
-            <i class="fas fa-table text-blue-500"></i> លទ្ធផលទិន្នន័យតារាង ({{ $records->total() }} ជួរ)
+            លទ្ធផលទិន្នន័យតារាង ({{ $records->total() }} ជួរ)
         </h3>
         <span class="text-xs text-gray-400">ទំព័រ {{ $records->currentPage() }} នៃ {{ $records->lastPage() }}</span>
     </div>

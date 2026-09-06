@@ -4,21 +4,14 @@
 @section('content')
 <div class="p-4 sm:p-6 space-y-6" x-data="reportCreateManager()">
 
-    {{-- Header Banner --}}
-    <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
-            <i class="fas fa-file-invoice-dollar text-[180px]"></i>
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6">
+        <div>
+            <h2 class="text-lg font-bold dark:text-white">ប្រព័ន្ធបង្កើតរបាយការណ៍ស្វ័យប្រវត្ត</h2>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">ជ្រើសរើសតារាងទិន្នន័យ កាលបរិច្ឆេទ (ថ្ងៃ, សប្ដាហ៍, ខែ, ឆ្នាំ) និងទាញយកជា Excel/PDF ឬ Print</p>
         </div>
-        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">
-                    <i class="fas fa-chart-pie"></i> ប្រព័ន្ធបង្កើតរបាយការណ៍ស្វ័យប្រវត្ត
-                </div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">បង្កើតរបាយការណ៍តាមតារាងទិន្នន័យ</h1>
-                <p class="text-blue-100 text-sm mt-1">ជ្រើសរើសតារាងទិន្នន័យ កាលបរិច្ឆេទ (ថ្ងៃ, សប្ដាហ៍, ខែ, ឆ្នាំ) និងទាញយកជា Excel/PDF ឬ Print</p>
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-2">
+
+        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+             <div class="flex flex-wrap items-center gap-2">
                 <a :href="exportExcelUrl" target="_blank"
                    class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center gap-2 active:scale-95">
                     <i class="fas fa-file-excel text-base"></i> ទាញយក Excel
@@ -28,14 +21,14 @@
                     <i class="fas fa-file-pdf text-base"></i> ទាញយក PDF
                 </a>
                 <button onclick="window.print()" 
-                        class="px-4 py-2.5 bg-white/20 hover:bg-white/30 text-white text-xs font-bold rounded-xl backdrop-blur-md transition-all flex items-center gap-2">
+                        class="px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold rounded-xl backdrop-blur-md transition-all flex items-center gap-2">
                     <i class="fas fa-print"></i> បោះពុម្ព
                 </button>
             </div>
+
         </div>
     </div>
 
-    {{-- Filter Form Panel --}}
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-800">
         <form @submit.prevent="fetchReport()" class="space-y-4" id="reportFilterForm">
             
@@ -46,21 +39,24 @@
                     <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
                         <i class="fas fa-database text-blue-500 mr-1"></i> ជ្រើសរើសតារាងទិន្នន័យ
                     </label>
-                    <select x-model="tableType" @change="fetchReport()"
-                            class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold transition-all cursor-pointer">
-                        <option value="room_bookings">🏨 ការកក់បន្ទប់សណ្ឋាគារ</option>
-                        <option value="meeting_bookings">🏛️ ការកក់សាលប្រជុំ</option>
-                        <option value="payments">💳 ប្រតិបត្តិការបង់ប្រាក់</option>
-                        <option value="customers">👥 អ្នកប្រើប្រាស់ និងអតិថិជន</option>
-                        <option value="rooms">🔑 ស្ថានភាពបន្ទប់</option>
-                        <option value="promotions">🏷️ កម្មវិធីបញ្ចុះតម្លៃ</option>
-                        <option value="reviews">⭐ ការវាយតម្លៃភ្ញៀវ</option>
-                        <option value="contacts">📩 សារទំនាក់ទំនង</option>
-                        <option value="tours">🗺️ កញ្ចប់ទស្សនកិច្ច</option>
-                        <option value="posts">📰 ព័ត៌មាននិងអត្ថបទ</option>
-                        <option value="facilities">🏊‍♂️ បរិក្ខារ</option>
-                        <option value="room_types">🛋️ ប្រភេទបន្ទប់</option>
-                    </select>
+                    <div class="relative group">
+                        <select x-model="tableType" @change="fetchReport()"
+                                class="w-full h-11 px-3 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none text-sm font-medium relative z-0 cursor-pointer">
+                            <option value="room_bookings">ការកក់បន្ទប់សណ្ឋាគារ</option>
+                            <option value="meeting_bookings">ការកក់សាលប្រជុំ</option>
+                            <option value="payments">ប្រតិបត្តិការបង់ប្រាក់</option>
+                            <option value="customers">អ្នកប្រើប្រាស់ និងអតិថិជន</option>
+                            <option value="rooms">ស្ថានភាពបន្ទប់</option>
+                            <option value="promotions">កម្មវិធីបញ្ចុះតម្លៃ</option>
+                            <option value="reviews">ការវាយតម្លៃភ្ញៀវ</option>
+                            <option value="contacts">សារទំនាក់ទំនង</option>
+                            <option value="tours">កញ្ចប់ទស្សនកិច្ច</option>
+                            <option value="posts">ព័ត៌មាននិងអត្ថបទ</option>
+                            <option value="facilities">បរិក្ខារ</option>
+                            <option value="room_types">ប្រភេទបន្ទប់</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                    </div>
                 </div>
 
                 {{-- 2. Period / Time Range Selector --}}
@@ -68,17 +64,20 @@
                     <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
                         <i class="fas fa-calendar-alt text-indigo-500 mr-1"></i> កាលបរិច្ឆេទ / រយៈពេល
                     </label>
-                    <select x-model="period" @change="fetchReport()"
-                            class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold transition-all cursor-pointer">
-                        <option value="today">📅 ថ្ងៃនេះ</option>
-                        <option value="yesterday">⏪ ម្សិលមិញ</option>
-                        <option value="this_week">📊 សប្ដាហ៍នេះ</option>
-                        <option value="last_7_days">🗓️ ៧ ថ្ងៃចុងក្រោយ</option>
-                        <option value="this_month">📈 ខែនេះ</option>
-                        <option value="last_month">📉 ខែមុន</option>
-                        <option value="this_year">📆 ឆ្នាំនេះ</option>
-                        <option value="custom">⚙️ កំណត់ថ្ងៃដោយខ្លួនឯង</option>
-                    </select>
+                    <div class="relative group">
+                        <select x-model="period" @change="fetchReport()"
+                                class="w-full h-11 px-3 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none text-sm font-medium relative z-0 cursor-pointer">
+                            <option value="today">ថ្ងៃនេះ</option>
+                            <option value="yesterday">ម្សិលមិញ</option>
+                            <option value="this_week">សប្ដាហ៍នេះ</option>
+                            <option value="last_7_days">៧ ថ្ងៃចុងក្រោយ</option>
+                            <option value="this_month">ខែនេះ</option>
+                            <option value="last_month">ខែមុន</option>
+                            <option value="this_year">ឆ្នាំនេះ</option>
+                            <option value="custom">កំណត់ថ្ងៃដោយខ្លួនឯង</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                    </div>
                 </div>
 
                 {{-- 3. Status Filter --}}
@@ -86,39 +85,42 @@
                     <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
                         <i class="fas fa-filter text-purple-500 mr-1"></i> ស្ថានភាព
                     </label>
-                    <select x-model="status" @change="fetchReport()"
-                            class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold transition-all cursor-pointer">
-                        <option value="all">ទាំងអស់</option>
-                        <template x-if="tableType === 'customers'">
-                            <g>
-                                <option value="customer">អតិថិជន</option>
-                                <option value="admin">អ្នកគ្រប់គ្រង</option>
-                                <option value="staff">បុគ្គលិក</option>
-                            </g>
-                        </template>
-                        <template x-if="tableType === 'rooms'">
-                            <g>
-                                <option value="available">ទំនេរ</option>
-                                <option value="booked">បានកក់</option>
-                                <option value="maintenance">ជួសជុល</option>
-                            </g>
-                        </template>
-                        <template x-if="tableType === 'payments'">
-                            <g>
-                                <option value="paid">បានបង់</option>
-                                <option value="pending">រង់ចាំ</option>
-                                <option value="failed">បរាជ័យ</option>
-                            </g>
-                        </template>
-                        <template x-if="['room_bookings', 'meeting_bookings'].includes(tableType)">
-                            <g>
-                                <option value="pending">រង់ចាំពិនិត្យ</option>
-                                <option value="confirmed">បានបញ្ជាក់</option>
-                                <option value="completed">បានបញ្ចប់</option>
-                                <option value="cancelled">បានបោះបង់</option>
-                            </g>
-                        </template>
-                    </select>
+                    <div class="relative group">
+                        <select x-model="status" @change="fetchReport()"
+                                class="w-full h-11 px-3 rounded-xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all appearance-none text-sm font-medium relative z-0 cursor-pointer">
+                            <option value="all">ទាំងអស់</option>
+                            <template x-if="tableType === 'customers'">
+                                <g>
+                                    <option value="customer">អតិថិជន</option>
+                                    <option value="admin">អ្នកគ្រប់គ្រង</option>
+                                    <option value="staff">បុគ្គលិក</option>
+                                </g>
+                            </template>
+                            <template x-if="tableType === 'rooms'">
+                                <g>
+                                    <option value="available">ទំនេរ</option>
+                                    <option value="booked">បានកក់</option>
+                                    <option value="maintenance">ជួសជុល</option>
+                                </g>
+                            </template>
+                            <template x-if="tableType === 'payments'">
+                                <g>
+                                    <option value="paid">បានបង់</option>
+                                    <option value="pending">រង់ចាំ</option>
+                                    <option value="failed">បរាជ័យ</option>
+                                </g>
+                            </template>
+                            <template x-if="['room_bookings', 'meeting_bookings'].includes(tableType)">
+                                <g>
+                                    <option value="pending">រង់ចាំពិនិត្យ</option>
+                                    <option value="confirmed">បានបញ្ជាក់</option>
+                                    <option value="completed">បានបញ្ចប់</option>
+                                    <option value="cancelled">បានបោះបង់</option>
+                                </g>
+                            </template>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none transition-transform group-focus-within:rotate-180"></i>
+                    </div>
                 </div>
 
                 {{-- 4. Search Filter --}}

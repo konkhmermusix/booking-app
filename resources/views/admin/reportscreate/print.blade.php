@@ -30,10 +30,10 @@
     {{-- Control Toolbar --}}
     <div class="max-w-5xl mx-auto mb-6 flex justify-between items-center no-print">
         <button onclick="window.history.back()" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-xl text-xs font-bold transition-all">
-            ⬅️ ត្រឡប់ក្រោយ
+            ត្រឡប់ក្រោយ
         </button>
         <button onclick="window.print()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg transition-all">
-            🖨️ បោះពុម្ពរបាយការណ៍
+            បោះពុម្ពរបាយការណ៍
         </button>
     </div>
 
@@ -183,7 +183,7 @@
                 <p class="border-t border-gray-300 pt-1">ហត្ថលេខា & ឈ្មោះ</p>
             </div>
             <div class="text-center">
-                <p class="font-bold mb-10">អ្នកត្រួតពិនិត្យ (Admin)</p>
+                <p class="font-bold mb-10">អ្នកត្រួតពិនិត្យ</p>
                 <p class="border-t border-gray-300 pt-1">ហត្ថលេខា & ឈ្មោះ</p>
             </div>
         </div>

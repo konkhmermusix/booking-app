@@ -472,12 +472,12 @@ $dynSiteName = $contactSettings['site_name'];
                 @mouseenter="if(!sidebarOpen) { topPos = $el.getBoundingClientRect().top; hover = true; }"
                 @mouseleave="if(!sidebarOpen) { hover = false; }"
                 x-data="{ 
-                    open: {{ request()->routeIs('reportsrevenue.*', 'reportrooms.*', 'reportmeetings.*', 'reportpayments.*', 'reportcustomers.*', 'reportroomstatus.*') ? 'true' : 'false' }},
+                    open: {{ request()->routeIs('reportsrevenue.*', 'reportrooms.*', 'reportmeetings.*', 'reportpayments.*', 'reportcustomers.*', 'reportroomstatus.*', 'reportscreate.*') ? 'true' : 'false' }},
                     hover: false,
                     topPos: 0
                 }">
                 <button @click="if(sidebarOpen) open = !open"
-                    class="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all {{ request()->routeIs('reportsrevenue.*', 'reportrooms.*', 'reportmeetings.*', 'reportpayments.*', 'reportcustomers.*', 'reportroomstatus.*') ? 'bg-white/10 text-white' : '' }}"
+                    class="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all {{ request()->routeIs('reportsrevenue.*', 'reportrooms.*', 'reportmeetings.*', 'reportpayments.*', 'reportcustomers.*', 'reportroomstatus.*', 'reportscreate.*') ? 'bg-white/10 text-white' : '' }}"
                     :class="sidebarOpen ? 'justify-start' : 'justify-center'">
                     <i class="fas fa-chart-line w-6 text-center text-lg"></i>
                     <span x-show="sidebarOpen" class="flex-1 text-left font-medium">គ្រប់គ្រងរបាយការណ៍</span>
