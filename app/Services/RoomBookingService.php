@@ -61,6 +61,8 @@ class RoomBookingService
                 'payment_method'   => $data['payment_method'],
                 'special_requests' => $finalRequests,
                 'status'           => 'confirmed',
+                'confirmed_by_name'   => auth()->user()->name ?? 'Admin',
+                'confirmed_by_user_id' => auth()->id(),
             ]);
 
             foreach ($roomIds as $rId) {

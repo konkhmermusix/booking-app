@@ -22,7 +22,8 @@
     $displayCode = $primaryCode ?? ($booking->booking_code ?? 'P&T-RECEIPT');
     $items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : collect();
     $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
-    $receiverName = $booking->receiver_name 
+    $receiverName = $booking->confirmed_by_name 
+        ?? $booking->receiver_name 
         ?? \App\Models\ContactSetting::where('key', 'bank_account_name')->where('status', 1)->value('value') 
         ?? \App\Models\User::where('role', 'admin')->value('name') 
         ?? 'អ្នកគ្រប់គ្រង ភីអេនធី ផាលេស';

@@ -114,6 +114,11 @@
         $payStatus = $booking->payment ? $booking->payment->status : 'paid';
         $payMethod = $booking->payment_method ?: ($booking->payment ? $booking->payment->method : 'cash');
         $transactionId = $booking->payment ? $booking->payment->transaction_id : null;
+        $receiverName = $booking->confirmed_by_name 
+            ?? $booking->receiver_name 
+            ?? \App\Models\ContactSetting::where('key', 'bank_account_name')->where('status', 1)->value('value') 
+            ?? \App\Models\User::where('role', 'admin')->value('name') 
+            ?? 'សណ្ឋាគារ ភីអេនធី ផាលេស';
     @endphp
 
     <!-- ACTION BAR (HIDDEN WHEN PRINTING) -->
@@ -350,7 +355,8 @@
             <div class="space-y-12">
                 <p class="font-bold text-gray-700 uppercase">អ្នកទទួលប្រាក់ / បុគ្គលិក</p>
                 <div class="border-b border-gray-300 w-48 mx-auto"></div>
-                <p class="text-[11px] text-gray-400 font-medium">សណ្ឋាគារ ភីអេនធី ផាលេស</p>
+                <p class="text-[11px] text-blue-600 font-black uppercase">{{ $receiverName }}</p>
+                <p class="text-[10px] text-gray-400 font-medium">សណ្ឋាគារ ភីអេនធី ផាលេស</p>
             </div>
         </div>
 

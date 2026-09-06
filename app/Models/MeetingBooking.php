@@ -28,6 +28,8 @@ class MeetingBooking extends Model
         'setup_style',
         'special_requests',
         'status',
+        'confirmed_by_name',
+        'confirmed_by_user_id',
     ];
 
     protected $casts = [
@@ -42,6 +44,11 @@ class MeetingBooking extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function confirmedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'confirmed_by_user_id');
     }
 
 

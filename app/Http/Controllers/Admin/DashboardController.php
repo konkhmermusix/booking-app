@@ -283,7 +283,11 @@ class DashboardController extends Controller
     {
         $booking = HotelBooking::with('payment')->findOrFail($id);
 
-        $booking->update(['status' => 'confirmed']);
+        $booking->update([
+            'status' => 'confirmed',
+            'confirmed_by_name' => auth()->user()->name ?? 'Admin',
+            'confirmed_by_user_id' => auth()->id(),
+        ]);
 
         DB::table('rooms')->where('id', $booking->room_id)->update(['status' => 'booked']);
 

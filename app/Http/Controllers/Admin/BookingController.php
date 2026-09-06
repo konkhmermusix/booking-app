@@ -182,6 +182,8 @@ class BookingController extends Controller
                         'total_hours'      => $request->total_hours,
                         'total_price'      => $request->total_price,
                         'status'           => 'confirmed',
+                        'confirmed_by_name'   => auth()->user()->name ?? 'Admin',
+                        'confirmed_by_user_id' => auth()->id(),
                         'payment_method'   => $request->payment_method ?? 'cash',
                         'attendees_count'  => $request->attendees_count,
                         'setup_style'      => $request->setup_style,
@@ -243,6 +245,8 @@ class BookingController extends Controller
                         'check_out_time'   => '12:00:00',
                         'total_price'      => $request->total_price,
                         'status'           => 'confirmed',
+                        'confirmed_by_name'   => auth()->user()->name ?? 'Admin',
+                        'confirmed_by_user_id' => auth()->id(),
                         'payment_method'   => $request->payment_method ?? 'cash',
                         'special_requests' => $finalRequests,
                     ]);
@@ -370,6 +374,10 @@ class BookingController extends Controller
         }
 
         $booking->status = $newStatus;
+        if (in_array($newStatus, ['confirmed', 'completed', 'checked_in']) || auth()->check()) {
+            $booking->confirmed_by_name = auth()->user()->name ?? 'Admin';
+            $booking->confirmed_by_user_id = auth()->id();
+        }
         $booking->save();
 
         // Update room status accordingly

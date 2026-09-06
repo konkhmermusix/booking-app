@@ -19,7 +19,8 @@ $cEmail = $customerEmail ?? (!empty($booking->customer_email) ? $booking->custom
 $displayCode = $primaryCode ?? ($booking->booking_code ?? 'P&T-RECEIPT');
 $items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : (isset($allDetails) && count($allDetails) > 0 ? $allDetails : collect([$details]));
 $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
-$receiverName = $booking->receiver_name 
+$receiverName = $booking->confirmed_by_name 
+    ?? $booking->receiver_name 
     ?? \App\Models\ContactSetting::where('key', 'bank_account_name')->where('status', 1)->value('value') 
     ?? \App\Models\User::where('role', 'admin')->value('name') 
     ?? 'អ្នកគ្រប់គ្រង ភីអេនធី ផាលេស';
@@ -119,13 +120,13 @@ $receiverName = $booking->receiver_name
                         <p><span class="text-gray-500 dark:text-gray-400">ស្ថានភាពការកក់ ៖</span>
                             @php $bStatus = strtolower($booking->status ?? 'pending'); @endphp
                             @if(in_array($bStatus, ['confirmed', 'approved']))
-                            <span class="font-bold text-emerald-600 dark:text-emerald-400">បានបញ្ជាក់ (Confirmed)</span>
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">បានបញ្ជាក់</span>
                             @elseif(in_array($bStatus, ['completed', 'checked_in', 'checked_out']))
                             <span class="font-bold text-blue-600 dark:text-blue-400">ចូលស្នាក់នៅ / បានបញ្ចប់</span>
                             @elseif($bStatus === 'cancelled')
-                            <span class="font-bold text-red-600 dark:text-red-400">បានបោះបង់ (Cancelled)</span>
+                            <span class="font-bold text-red-600 dark:text-red-400">បានបោះបង់</span>
                             @else
-                            <span class="font-bold text-amber-600 dark:text-amber-400">រង់ចាំការបញ្ជាក់ (Pending)</span>
+                            <span class="font-bold text-amber-600 dark:text-amber-400">រង់ចាំការបញ្ជាក់</span>
                             @endif
                         </p>
                         <p><span class="text-gray-500 dark:text-gray-400">អ្នកទទួលប្រាក់/គ្រប់គ្រង ៖</span>

@@ -84,7 +84,7 @@ class RoomBookingController extends Controller
                 $oldRoomIds = [$booking->room_id];
             }
 
-            $booking->update([
+            $updateData = [
                 'customer_name'    => $request->customer_name ?? $booking->customer_name,
                 'customer_phone'   => $request->customer_phone ?? $booking->customer_phone,
                 'customer_email'   => $request->customer_email ?? $booking->customer_email,
@@ -95,7 +95,12 @@ class RoomBookingController extends Controller
                 'payment_method'   => $request->payment_method ?? $booking->payment_method,
                 'special_requests' => $request->special_requests ?? $booking->special_requests,
                 'status'           => $request->status ?? $booking->status,
-            ]);
+            ];
+            if (in_array($request->status ?? $booking->status, ['confirmed', 'completed', 'checked_in']) || auth()->check()) {
+                $updateData['confirmed_by_name'] = auth()->user()->name ?? 'Admin';
+                $updateData['confirmed_by_user_id'] = auth()->id();
+            }
+            $booking->update($updateData);
 
             // Sync multi-room details
             if (!empty($request->room_ids)) {

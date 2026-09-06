@@ -27,11 +27,18 @@ class HotelBooking extends Model
         'payment_method',
         'special_requests',
         'status',
+        'confirmed_by_name',
+        'confirmed_by_user_id',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function confirmedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'confirmed_by_user_id');
     }
 
     public function hotel(): BelongsTo

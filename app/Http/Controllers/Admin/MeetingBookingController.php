@@ -102,6 +102,8 @@ class MeetingBookingController extends Controller
                     'setup_style'      => $request->setup_style,
                     'special_requests' => $finalRequests,
                     'status'           => 'confirmed',
+                    'confirmed_by_name'   => auth()->user()->name ?? 'Admin',
+                    'confirmed_by_user_id' => auth()->id(),
                 ]);
 
                 Room::where('id', $request->meeting_room_id)->update(['status' => 'booked']);
@@ -139,7 +141,7 @@ class MeetingBookingController extends Controller
     {
         try {
             $booking = MeetingBooking::findOrFail($id);
-            $booking->update([
+            $updateData = [
                 'customer_name'    => $request->customer_name ?? $booking->customer_name,
                 'customer_phone'   => $request->customer_phone ?? $booking->customer_phone,
                 'customer_email'   => $request->customer_email ?? $booking->customer_email,
@@ -155,7 +157,12 @@ class MeetingBookingController extends Controller
                 'setup_style'      => $request->setup_style ?? $booking->setup_style,
                 'special_requests' => $request->special_requests ?? $booking->special_requests,
                 'status'           => $request->status ?? $booking->status,
-            ]);
+            ];
+            if (in_array($request->status ?? $booking->status, ['confirmed', 'completed', 'checked_in']) || auth()->check()) {
+                $updateData['confirmed_by_name'] = auth()->user()->name ?? 'Admin';
+                $updateData['confirmed_by_user_id'] = auth()->id();
+            }
+            $booking->update($updateData);
 
             if (isset($request->status)) {
                 if (in_array($request->status, ['completed', 'cancelled'])) {

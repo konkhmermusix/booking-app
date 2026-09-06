@@ -117,9 +117,15 @@ class CalendarController extends Controller
 
             $status = $dbStatusMap[$inputStatus];
 
+            $updateData = ['status' => $status];
+            if (in_array($status, ['confirmed', 'completed', 'checked_in']) || auth()->check()) {
+                $updateData['confirmed_by_name'] = auth()->user()->name ?? 'Admin';
+                $updateData['confirmed_by_user_id'] = auth()->id();
+            }
+
             if ($type === 'meeting') {
                 $booking = MeetingBooking::with('payment')->findOrFail($id);
-                $booking->update(['status' => $status]);
+                $booking->update($updateData);
 
                 if ($booking->meeting_room_id) {
                     if (in_array($status, ['completed', 'cancelled'])) {
@@ -151,7 +157,7 @@ class CalendarController extends Controller
                 );
             } else {
                 $booking = HotelBooking::with('payment')->findOrFail($id);
-                $booking->update(['status' => $status]);
+                $booking->update($updateData);
 
                 // Sync room availability status
                 if (in_array($status, ['completed', 'cancelled'])) {
