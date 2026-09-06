@@ -486,9 +486,6 @@ $dynSiteName = $contactSettings['site_name'];
 
                 {{-- Inline Dropdown --}}
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition x-cloak>
-                    <a href="{{ route('reportsrevenue.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportsrevenue.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
-                        របាយការណ៍ចំណូល
-                    </a>
                     <a href="{{ route('reportrooms.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportrooms.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
                         របាយការណ៍កក់បន្ទប់
                     </a>
@@ -525,9 +522,6 @@ $dynSiteName = $contactSettings['site_name'];
                             <span>គ្រប់គ្រងរបាយការណ៍</span>
                             <i class="fas fa-chart-line text-xs"></i>
                         </div>
-                        <a href="{{ route('reportsrevenue.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportsrevenue.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-sack-dollar text-xs w-4"></i> របាយការណ៍ចំណូល
-                        </a>
                         <a href="{{ route('reportrooms.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportrooms.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
                             <i class="fas fa-bed text-xs w-4"></i> របាយការណ៍កក់បន្ទប់
                         </a>

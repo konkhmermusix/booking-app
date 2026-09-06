@@ -209,9 +209,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reportmeetings-export-excel', [ReportMeetingController::class, 'exportExcel'])->name('reportmeetings.export-excel');
         Route::get('/reportmeetings-export-pdf', [ReportMeetingController::class, 'exportPdf'])->name('reportmeetings.export-pdf');
 
-        Route::get('/reportsrevenue-export-excel', [ReportRevenueController::class, 'exportExcel'])->name('reportsrevenue.export-excel');
-        Route::get('/reportsrevenue-export-pdf', [ReportRevenueController::class, 'exportPdf'])->name('reportsrevenue.export-pdf');
-
         Route::get('/reportpayments-export-excel', [ReportPaymentController::class, 'exportExcel'])->name('reportpayments.export-excel');
         Route::get('/reportpayments-export-pdf', [ReportPaymentController::class, 'exportPdf'])->name('reportpayments.export-pdf');
 
@@ -226,7 +223,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('reportrooms', ReportRoomController::class);
         Route::resource('reportmeetings', ReportMeetingController::class);
-        Route::resource('reportsrevenue', ReportRevenueController::class);
         Route::resource('reportpayments', ReportPaymentController::class);
         Route::resource('reportcustomers', ReportCustomerController::class);
         Route::resource('reportroomstatus', ReportRoomStatusController::class);
