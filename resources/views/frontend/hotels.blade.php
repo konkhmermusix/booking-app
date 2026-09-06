@@ -48,7 +48,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                             <div class="absolute bottom-4 left-4">
                                 <span class="bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-wider">
-                                    PNT Palace
+                                    P&T Palace
                                 </span>
                             </div>
                         </div>

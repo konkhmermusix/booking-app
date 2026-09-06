@@ -35,7 +35,7 @@ class Booking extends Model
     {
         static::creating(function ($booking) {
             if (empty($booking->booking_code)) {
-                $booking->booking_code = 'PNT-' . strtoupper(Str::random(6));
+                $booking->booking_code = 'P&T-' . strtoupper(Str::random(6));
             }
         });
     }

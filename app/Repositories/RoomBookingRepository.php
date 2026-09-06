@@ -50,6 +50,6 @@ class RoomBookingRepository extends BaseRepository
 
     public function generateBookingCode()
     {
-        return 'PNT-' . strtoupper(Str::random(6));
+        return 'P&T-' . strtoupper(Str::random(6));
     }
 }

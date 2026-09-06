@@ -160,7 +160,7 @@ class BookingController extends Controller
 
             try {
                 $booking = DB::transaction(function () use ($request) {
-                    $bookingCode = 'PNT-' . strtoupper(Str::random(6));
+                    $bookingCode = 'P&T-' . strtoupper(Str::random(6));
 
                     $walkInInfo = !empty($request->customer_name) ? "ភ្ញៀវកក់ផ្ទាល់ ឈ្មោះ: {$request->customer_name} | លេខទូរស័ព្ទ: {$request->customer_phone}" : "";
                     $finalRequests = !empty($request->special_requests)
@@ -220,7 +220,7 @@ class BookingController extends Controller
 
             try {
                 $booking = DB::transaction(function () use ($request) {
-                    $bookingCode = 'PNT-' . strtoupper(Str::random(6));
+                    $bookingCode = 'P&T-' . strtoupper(Str::random(6));
                     $room = Room::with('roomType')->findOrFail($request->room_id);
 
                     $walkInInfo = !empty($request->customer_name) ? "ភ្ញៀវកក់ផ្ទាល់ ឈ្មោះ: {$request->customer_name} | លេខទូរស័ព្ទ: {$request->customer_phone}" : "";

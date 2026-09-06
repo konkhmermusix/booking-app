@@ -358,7 +358,7 @@ class SlipOcrService
         $lowerText = mb_strtolower($text, 'UTF-8');
 
         $qrKeywords = [
-            'pnt hotel', 'hotel bookings', 'LEAV SIS', 'ស្កែនដើម្បី', 'សណ្ឋាគារ ភីអេនធី',
+            'pnt hotel', 'p&t hotel', 'p&t', 'hotel bookings', 'LEAV SIS', 'ស្កែនដើម្បី', 'សណ្ឋាគារ ភីអេនធី',
             'សូមស្កែន', 'សូមស្កែនទូទាត់', ' bakong banking'
         ];
 

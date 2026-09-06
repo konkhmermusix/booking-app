@@ -37,7 +37,7 @@ class BookingService
                 ? $walkInInfo . " | មតិផ្សេងៗ: " . $data['special_requests']
                 : $walkInInfo;
 
-            $bookingCode = 'PNT-' . strtoupper(Str::random(6));
+            $bookingCode = 'P&T-' . strtoupper(Str::random(6));
 
             // កាត់ខណ្ឌចែកទៅតាមប្រភេទនៃការកក់
             if ($data['booking_category'] === 'hotel') {

@@ -127,7 +127,7 @@
             <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
                 <i class="fas fa-table text-indigo-500"></i> បញ្ជីស្ថានភាពបន្ទប់លម្អិត
             </h3>
-            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (PNT Palace Hotel)</p>
+            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (P&T Palace Hotel)</p>
         </div>
         <span class="text-xs text-gray-400 font-semibold">សរុប {{ $allRooms->count() }} បន្ទប់</span>
     </div>

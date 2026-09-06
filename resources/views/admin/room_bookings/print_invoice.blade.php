@@ -143,11 +143,11 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div class="flex items-center gap-4">
                     <div class="w-16 h-16 shrink-0 bg-yellow-50 rounded-2xl p-2 flex items-center justify-center border border-blue-100">
-                        <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="PNT Palace Hotel" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/2983/2983780.png'">
+                        <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="P&T Palace Hotel" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/2983/2983780.png'">
                     </div>
                     <div>
                         <h1 class="text-xl font-black text-gray-900 uppercase tracking-tight">សណ្ឋាគារ ភីអេនធី ផាលេស</h1>
-                        <p class="text-xs {{ $isMeeting ? 'text-purple-600' : 'text-blue-600' }} font-extrabold tracking-widest uppercase mt-0.5">PNT PALACE HOTEL & RESORT</p>
+                        <p class="text-xs {{ $isMeeting ? 'text-purple-600' : 'text-blue-600' }} font-extrabold tracking-widest uppercase mt-0.5">P&T PALACE HOTEL & RESORT</p>
                     </div>
                 </div>
 
@@ -357,7 +357,7 @@
         <!-- FOOTER THANK YOU -->
         <div class="mt-10 pt-4 border-t border-gray-100 text-center text-xs text-gray-400">
             <p class="font-bold text-gray-600">សូមអរគុណសម្រាប់ការជ្រើសរើស សណ្ឋាគារ ភីអេនធី ផាលេស !</p>
-            <p class="text-[10px] text-gray-400 mt-0.5">Thank you for choosing PNT Palace Hotel & Resort</p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Thank you for choosing P&T Palace Hotel & Resort</p>
         </div>
     </div>
 

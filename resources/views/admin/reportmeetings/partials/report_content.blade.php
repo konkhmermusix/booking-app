@@ -52,7 +52,7 @@
             <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
                 <i class="fas fa-list-alt text-indigo-500"></i> បញ្ជីប្រវត្តិនៃការកក់សាលប្រជុំ
             </h3>
-            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (PNT Palace Hotel)</p>
+            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (P&T Palace Hotel)</p>
         </div>
         <span class="text-xs text-gray-400 font-semibold">សរុប {{ $meetingBookings->total() }} កំណត់ត្រា</span>
     </div>

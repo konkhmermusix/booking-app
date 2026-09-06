@@ -117,7 +117,7 @@
 
 <body>
     @php
-        $hotelName = $booking->hotel->name ?? ($booking->room->roomType->hotel->name ?? 'សណ្ឋាគារ ភីអេនធី ផាលេស (PNT Palace Hotel)');
+        $hotelName = $booking->hotel->name ?? ($booking->room->roomType->hotel->name ?? 'សណ្ឋាគារ ភីអេនធី ផាលេស (P&T Palace Hotel)');
         $customerName = $booking->customer_name ?: ($booking->user->name ?? 'ភ្ញៀវមកផ្ទាល់');
         $customerContact = $booking->customer_phone ?: ($booking->user->phone ?? ($booking->customer_email ?: ($booking->user->email ?? 'N/A')));
         

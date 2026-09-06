@@ -41,7 +41,7 @@
             <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
                 <i class="fas fa-trophy text-amber-500"></i> ចំណាត់ថ្នាក់ និងប្រវត្តិអតិថិជន
             </h3>
-            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (PNT Palace Hotel)</p>
+            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (P&T Palace Hotel)</p>
         </div>
         <span class="text-xs text-gray-400 font-semibold">បង្ហាញ {{ $topCustomers->count() }} ពី {{ $topCustomers->total() }} អតិថិជន</span>
     </div>

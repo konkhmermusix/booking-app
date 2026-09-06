@@ -10,7 +10,7 @@
             <div class="flex items-center gap-3">
                 <div class="relative">
                     <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-sm shadow-md shadow-blue-500/20">
-                        PNT
+                        P&T
                     </div>
                     <span class="w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-gray-900 rounded-full absolute -bottom-0.5 -right-0.5 shadow-xs"></span>
                 </div>
@@ -40,7 +40,7 @@
                 <div data-msg-id="{{ $msg->id }}" class="group relative flex gap-2.5 items-end max-w-[85%] md:max-w-[75%] {{ $isMe ? 'flex-row-reverse' : 'flex-row' }}">
                     @if(!$isMe)
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mb-1 shadow-sm" title="សេវាកម្មអតិថិជន">
-                        PNT
+                        P&T
                     </div>
                     @endif
 
@@ -393,10 +393,10 @@
         return `
         <div class="w-full flex ${isMe ? 'justify-end' : 'justify-start'}">
             <div data-msg-id="${msgId}" class="group relative flex gap-2.5 items-end max-w-[85%] md:max-w-[75%] ${isMe ? 'flex-row-reverse' : 'flex-row'}">
-                ${!isMe ? '<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mb-1 shadow-sm" title="សេវាកម្មអតិថិជន">PNT</div>' : ''}
+                ${!isMe ? '<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mb-1 shadow-sm" title="សេវាកម្មអតិថិជន">P&T</div>' : ''}
                 <div class="space-y-1 min-w-0">
                     <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 px-1 ${isMe ? 'text-right' : 'text-left'}">
-                        ${isMe ? 'អ្នក' : 'សេវាកម្មអតិថិជន PNT'}
+                        ${isMe ? 'អ្នក' : 'សេវាកម្មអតិថិជន P&T'}
                     </p>
                     <div class="p-3.5 rounded-2xl text-sm shadow-xs ${isMe ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-xs' : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-xs border border-gray-100 dark:border-gray-700/80'}">
                         ${safeMsgText ? `<p class="leading-relaxed whitespace-pre-line break-words">${safeMsgText}</p>` : ''}

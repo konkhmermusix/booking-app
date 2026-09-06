@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>របាយការណ៍កក់សាលប្រជុំ - PNT Palace Hotel</title>
+    <title>របាយការណ៍កក់សាលប្រជុំ - P&T Palace Hotel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap');
@@ -49,7 +49,7 @@
     <div class="flex justify-between items-center border-b-2 border-gray-800 pb-4 mb-6">
         <div>
             <h1 class="text-2xl font-black text-purple-950 uppercase tracking-wide">សណ្ឋាគារ ភីអេនធី ផាលេស</h1>
-            <h2 class="text-xs font-bold text-gray-600 tracking-wider">PNT PALACE HOTEL & RESORT</h2>
+            <h2 class="text-xs font-bold text-gray-600 tracking-wider">P&T PALACE HOTEL & RESORT</h2>
             <p class="text-[11px] text-gray-500 mt-1">អាសយដ្ឋាន៖ រាជធានីភ្នំពេញ, ព្រះរាជាណាចក្រកម្ពុជា</p>
             <p class="text-[11px] text-gray-500">ទូរស័ព្ទ៖ 096 342 4789 | អ៊ីមែល៖ info@pntpalace.com</p>
         </div>

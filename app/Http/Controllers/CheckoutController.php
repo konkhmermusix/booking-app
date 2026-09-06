@@ -125,7 +125,7 @@ class CheckoutController extends Controller
             $bookedItemsForTelegram = [];
 
             if (!empty($hotelItems)) {
-                $bookingCode = 'PNT-' . strtoupper(Str::random(6));
+                $bookingCode = 'P&T-' . strtoupper(Str::random(6));
                 $generatedCodes[] = $bookingCode;
 
                 $firstHotelItem = reset($hotelItems);
@@ -195,7 +195,7 @@ class CheckoutController extends Controller
             // === ដំណើរការកក់សាលប្រជុំ (MEETING ROOMS) ===
             if (!empty($meetingItems)) {
                 foreach ($meetingItems as $item) {
-                    $mBookingCode = 'PNT-' . strtoupper(Str::random(6));
+                    $mBookingCode = 'P&T-' . strtoupper(Str::random(6));
                     $generatedCodes[] = $mBookingCode;
 
                     $mRoomId = $item['id'];
@@ -316,7 +316,11 @@ class CheckoutController extends Controller
                     $telegramMsg .= "សូមចូលទៅប្រព័ន្ធដើម្បីបញ្ជាក់ការកក់នេះបន្ថែមទៀត\n";
                 }
 
-                $this->sendTelegramNotification($telegramMsg, $photoFullPath);
+                $adminBookingUrl = route('room-bookings.index');
+                $telegramMsg .= "----------------------------------\n";
+                $telegramMsg .= "🔗 <a href=\"{$adminBookingUrl}\"><b>ចុចទីនេះដើម្បីចូលទៅគ្រប់គ្រងការកក់ (Admin)</b></a>\n";
+
+                $this->sendTelegramNotification($telegramMsg, $photoFullPath, $adminBookingUrl);
             } catch (\Exception $telegramError) {
                 \Log::error('Telegram Notification Error: ' . $telegramError->getMessage());
             }
@@ -435,7 +439,7 @@ class CheckoutController extends Controller
     }
 
     // ផ្ញើសារ ឬរូបភាពបង្កាន់ដៃបង់ប្រាក់ទៅកាន់តេឡេក្រាម
-    private function sendTelegramNotification($message, $photoPath = null)
+    private function sendTelegramNotification($message, $photoPath = null, $buttonUrl = null)
     {
         $botToken = config('services.telegram.bot_token');
         $chatId   = config('services.telegram.chat_id');
@@ -444,14 +448,27 @@ class CheckoutController extends Controller
             return;
         }
 
+        $buttonUrl = $buttonUrl ?? route('room-bookings.index');
+        $replyMarkup = json_encode([
+            'inline_keyboard' => [
+                [
+                    [
+                        'text' => '🔗 ចូលទៅគ្រប់គ្រងការកក់',
+                        'url'  => $buttonUrl
+                    ]
+                ]
+            ]
+        ]);
+
         if ($photoPath && file_exists($photoPath)) {
             try {
                 $url = "https://api.telegram.org/bot{$botToken}/sendPhoto";
                 $postFields = [
-                    'chat_id'    => $chatId,
-                    'caption'    => $message,
-                    'parse_mode' => 'HTML',
-                    'photo'      => new \CURLFile(realpath($photoPath))
+                    'chat_id'      => $chatId,
+                    'caption'      => $message,
+                    'parse_mode'   => 'HTML',
+                    'photo'        => new \CURLFile(realpath($photoPath)),
+                    'reply_markup' => $replyMarkup
                 ];
 
                 $ch = curl_init();
@@ -471,9 +488,10 @@ class CheckoutController extends Controller
 
         $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
         $data = [
-            'chat_id'    => $chatId,
-            'text'       => $message,
-            'parse_mode' => 'HTML'
+            'chat_id'      => $chatId,
+            'text'         => $message,
+            'parse_mode'   => 'HTML',
+            'reply_markup' => $replyMarkup
         ];
 
         $options = [

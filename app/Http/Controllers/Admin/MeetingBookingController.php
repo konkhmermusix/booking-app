@@ -84,7 +84,7 @@ class MeetingBookingController extends Controller
                     : $walkInInfo;
 
                 $booking = MeetingBooking::create([
-                    'booking_code'     => 'PNT-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                    'booking_code'     => 'P&T-' . strtoupper(\Illuminate\Support\Str::random(6)),
                     'booking_type'     => 'walk_in',
                     'user_id'          => auth()->id(),
                     'customer_name'    => $request->customer_name,

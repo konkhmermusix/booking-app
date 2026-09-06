@@ -73,7 +73,7 @@
             <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
                 <i class="fas fa-list-alt text-emerald-500"></i> ការបែងចែកចំណូលតាមផ្នែក (Department Revenue Breakdown)
             </h3>
-            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (PNT Palace Hotel)</p>
+            <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (P&T Palace Hotel)</p>
         </div>
     </div>
 

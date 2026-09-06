@@ -12,39 +12,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{{ $dynLogoUrl }}">
-    <title>@yield('title') | {{ $dynSiteName }}</title>
+    <title>@yield('title', 'កក់បន្ទប់ស្នាក់នៅ និងសាលប្រជុំ') | {{ $dynSiteName }}</title>
 
-    <meta name="description"
-        content="{{ $dynSiteName }} ផ្តល់សេវាកម្មកក់បន្ទប់អនឡាញ ងាយស្រួល រហ័ស និងមានបន្ទប់ស្នាក់នៅគុណភាពល្អ">
-
-    <meta name="keywords"
-        content="P&T Palace Hotel, Hotel Cambodia, Hotel Booking Cambodia, Online Room Booking, Hotel Reservation, Tbong Khmum Hotel, Cambodia Hotel">
-
+    <!-- Primary SEO Meta Tags -->
+    <meta name="description" content="@yield('meta_description', $dynSiteName . ' ផ្តល់សេវាកម្មកក់បន្ទប់ស្នាក់នៅ និងសាលប្រជុំអនឡាញ ងាយស្រួល រហ័ស ទាន់ចិត្ត ជាមួយបន្ទប់ស្នាក់នៅប្រណិត និងតម្លៃសមរម្យ។')">
+    <meta name="keywords" content="@yield('meta_keywords', 'P&T Palace Hotel, Hotel Cambodia, Hotel Booking Cambodia, Online Room Booking, Hotel Reservation, Tbong Khmum Hotel, Cambodia Hotel, កក់បន្ទប់សណ្ឋាគារ, សណ្ឋាគារខេត្តត្បូងឃ្មុំ, សាលប្រជុំ')">
     <meta name="author" content="{{ $dynSiteName }}">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ url()->current() }}">
+    <meta name="theme-color" content="#002B5B">
 
-    <!-- Search Engine -->
-    <meta name="robots" content="index, follow">
+    <!-- Open Graph / Facebook / Telegram Social Share -->
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="{{ $dynSiteName }}">
+    <meta property="og:title" content="@yield('og_title', View::getSection('title') ? View::getSection('title') . ' | ' . $dynSiteName : $dynSiteName . ' - កក់បន្ទប់ស្នាក់នៅ និងសាលប្រជុំអនឡាញ')">
+    <meta property="og:description" content="@yield('og_description', View::getSection('meta_description') ? View::getSection('meta_description') : 'កក់បន្ទប់ស្នាក់នៅយ៉ាងងាយស្រួលជាមួយ ' . $dynSiteName . ' បន្ទប់ទាន់សម័យ ផាសុកភាព និងសេវាកម្មល្អឥតខ្ចោះ។')">
+    <meta property="og:image" content="@yield('og_image', $dynLogoUrl)">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:locale" content="km_KH">
 
-    <!-- Open Graph (Facebook / Telegram / Social Share) -->
-    <meta property="og:title" content="{{ $dynSiteName }} - Online Booking">
-    <meta property="og:description"
-        content="Book your hotel room easily with {{ $dynSiteName }}. Comfortable rooms and online reservation system.">
-    <meta property="og:image" content="{{ $dynLogoUrl }}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url('/') }}">
-
-    <!-- Twitter -->
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $dynSiteName }}">
-    <meta name="twitter:description" content="Online Hotel Booking System">
-    <meta name="twitter:image" content="{{ $dynLogoUrl }}">
+    <meta name="twitter:title" content="@yield('twitter_title', View::getSection('title') ? View::getSection('title') . ' | ' . $dynSiteName : $dynSiteName)">
+    <meta name="twitter:description" content="@yield('twitter_description', 'ប្រព័ន្ធកក់បន្ទប់សណ្ឋាគារ និងសាលប្រជុំអនឡាញ')">
+    <meta name="twitter:image" content="@yield('twitter_image', $dynLogoUrl)">
 
-    <!-- Security -->
+    <!-- Security & Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Favicon -->
+    <!-- Favicon & Touch Icon -->
     <link rel="icon" type="image/png" href="{{ $dynLogoUrl }}">
+    <link rel="apple-touch-icon" href="{{ $dynLogoUrl }}">
+
+    <!-- JSON-LD Structured Data for Google Rich Snippets (Schema.org Hotel) -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Hotel",
+      "name": "{{ $dynSiteName }}",
+      "url": "{{ url('/') }}",
+      "logo": "{{ $dynLogoUrl }}",
+      "image": "{{ $dynLogoUrl }}",
+      "description": "សណ្ឋាគារ និងសាលប្រជុំ ភីអេនធី ផាលេស ផ្តល់សេវាកម្មកក់បន្ទប់អនឡាញ ងាយស្រួល រហ័ស និងមានទំនុកចិត្តខ្ពស់។",
+      "address": {
+        "@@type": "PostalAddress",
+        "addressCountry": "KH",
+        "addressRegion": "Thbong Khmum"
+      },
+      "priceRange": "$$"
+    }
+    </script>
 
     <!-- CSS Linkings -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />

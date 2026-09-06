@@ -10,13 +10,13 @@
                             @if(!empty($post->user->avatar))
                                 <img src="{{ asset('storage/' . $post->user->avatar) }}" alt="{{ $post->user->name }}" class="w-full h-full object-cover">
                             @else
-                                {{ mb_substr($post->user->name ?? 'PNT', 0, 1, 'utf-8') }}
+                                {{ mb_substr($post->user->name ?? 'P&T', 0, 3, 'utf-8') }}
                             @endif
                         </div>
 
                         <div>
                             <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
-                                {{ $post->user->name ?? 'PNT Palace Hotel' }}
+                                {{ $post->user->name ?? 'P&T Palace Hotel' }}
                             </h2>
                             <div class="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 font-medium">
                                 <span>{{ $post->created_at->diffForHumans() }}</span>

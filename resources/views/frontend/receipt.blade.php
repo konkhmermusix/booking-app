@@ -3,22 +3,22 @@
 @section('content')
 
 @php
-    $hotelAddress = \App\Models\ContactSetting::where('key', 'address')->where('status', 1)->value('value') ?? 'ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្តត្បូងឃ្មុំ (ខាងកើតរង្វង់មូល ប្រាំមួយមករា)';
-    $hotelPhone   = \App\Models\ContactSetting::where('key', 'phone')->where('status', 1)->value('value') ?? '096 711 9798 / 071 4 711 979';
-    $hotelEmail   = \App\Models\ContactSetting::where('key', 'email')->where('status', 1)->value('value') ?? 'info@pnt-hotel.com';
-    $khrRate      = \App\Models\ContactSetting::getExchangeRate();
+$hotelAddress = \App\Models\ContactSetting::where('key', 'address')->where('status', 1)->value('value') ?? 'ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្តត្បូងឃ្មុំ (ខាងកើតរង្វង់មូល ប្រាំមួយមករា)';
+$hotelPhone = \App\Models\ContactSetting::where('key', 'phone')->where('status', 1)->value('value') ?? '096 711 9798 / 071 4 711 979';
+$hotelEmail = \App\Models\ContactSetting::where('key', 'email')->where('status', 1)->value('value') ?? 'info@pnt-hotel.com';
+$khrRate = \App\Models\ContactSetting::getExchangeRate();
 
-    $bookingUser = null;
-    if (!empty($booking->user_id)) {
-        $bookingUser = \App\Models\User::find($booking->user_id);
-    }
+$bookingUser = null;
+if (!empty($booking->user_id)) {
+$bookingUser = \App\Models\User::find($booking->user_id);
+}
 
-    $cName  = $customerName ?? (!empty($booking->customer_name) ? $booking->customer_name : ($bookingUser->name ?? (Auth::check() ? Auth::user()->name : 'ភ្ញៀវស្នាក់នៅ')));
-    $cPhone = $customerPhone ?? (!empty($booking->customer_phone) ? $booking->customer_phone : ($bookingUser->phone ?? (Auth::check() ? Auth::user()->phone : 'N/A')));
-    $cEmail = $customerEmail ?? (!empty($booking->customer_email) ? $booking->customer_email : ($bookingUser->email ?? (Auth::check() ? Auth::user()->email : 'N/A')));
-    $displayCode = $primaryCode ?? ($booking->booking_code ?? 'PNT-RECEIPT');
-    $items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : (isset($allDetails) && count($allDetails) > 0 ? $allDetails : collect([$details]));
-    $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
+$cName = $customerName ?? (!empty($booking->customer_name) ? $booking->customer_name : ($bookingUser->name ?? (Auth::check() ? Auth::user()->name : 'ភ្ញៀវស្នាក់នៅ')));
+$cPhone = $customerPhone ?? (!empty($booking->customer_phone) ? $booking->customer_phone : ($bookingUser->phone ?? (Auth::check() ? Auth::user()->phone : 'N/A')));
+$cEmail = $customerEmail ?? (!empty($booking->customer_email) ? $booking->customer_email : ($bookingUser->email ?? (Auth::check() ? Auth::user()->email : 'N/A')));
+$displayCode = $primaryCode ?? ($booking->booking_code ?? 'P&T-RECEIPT');
+$items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : (isset($allDetails) && count($allDetails) > 0 ? $allDetails : collect([$details]));
+$totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
 @endphp
 
 <div class="w-full bg-gray-100 dark:bg-[#0b1120] min-h-screen py-8 transition-colors duration-300">
@@ -52,11 +52,11 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div class="flex items-center gap-3">
                         <div class="w-16 h-16 shrink-0">
-                            <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="PNT Palace Hotel Logo" class="w-full h-full object-contain">
+                            <img src="{{ asset('images/logo/P&t Palace Hotel.png') }}" alt="P&T Palace Hotel Logo" class="w-full h-full object-contain">
                         </div>
                         <div>
                             <h1 class="text-xl font-extrabold text-gray-900 dark:text-white uppercase tracking-tight">សណ្ឋាគារ ភីអេនធី ផាលេស</h1>
-                            <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">PNT PALACE HOTEL & RESORT</p>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">P&T PALACE HOTEL & RESORT</p>
                         </div>
                     </div>
 
@@ -105,11 +105,11 @@
                         </p>
                         <p><span class="text-gray-500 dark:text-gray-400">ស្ថានភាពការទូទាត់ ៖</span>
                             @if($payment && ($payment->status === 'paid' || (isset($payment->payment_status) && $payment->payment_status === 'paid')))
-                                <span class="font-bold text-emerald-600 dark:text-emerald-400">បានទូទាត់រួច</span>
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">បានទូទាត់រួច</span>
                             @elseif($booking->status === 'cancelled')
-                                <span class="font-bold text-red-600 dark:text-red-400">បានបោះបង់</span>
+                            <span class="font-bold text-red-600 dark:text-red-400">បានបោះបង់</span>
                             @else
-                                <span class="font-bold text-amber-600 dark:text-amber-400">រង់ចាំការផ្ទៀងផ្ទាត់</span>
+                            <span class="font-bold text-amber-600 dark:text-amber-400">រង់ចាំការផ្ទៀងផ្ទាត់</span>
                             @endif
                         </p>
                     </div>
@@ -138,9 +138,9 @@
                             </td>
                             <td class="py-3.5 px-3 text-gray-700 dark:text-gray-300">
                                 @if(($item->item_type ?? $type) === 'hotel')
-                                    <span>{{ \Carbon\Carbon::parse($item->check_in ?? $booking->check_in)->format('d/m/Y') }} ដល់ {{ \Carbon\Carbon::parse($item->check_out ?? $booking->check_out)->format('d/m/Y') }}</span>
+                                <span>{{ \Carbon\Carbon::parse($item->check_in ?? $booking->check_in)->format('d/m/Y') }} ដល់ {{ \Carbon\Carbon::parse($item->check_out ?? $booking->check_out)->format('d/m/Y') }}</span>
                                 @else
-                                    <span>{{ \Carbon\Carbon::parse($item->start_date ?? $booking->start_date)->format('d/m/Y') }} ({{ $item->start_time ?? $booking->start_time }} - {{ $item->end_time ?? $booking->end_time }})</span>
+                                <span>{{ \Carbon\Carbon::parse($item->start_date ?? $booking->start_date)->format('d/m/Y') }} ({{ $item->start_time ?? $booking->start_time }} - {{ $item->end_time ?? $booking->end_time }})</span>
                                 @endif
                             </td>
                             <td class="py-3.5 px-3 text-right font-bold text-sm text-gray-900 dark:text-white font-mono">
@@ -178,7 +178,7 @@
             {{-- FOOTER --}}
             <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800/80 text-center text-xs text-gray-500 dark:text-gray-400">
                 <p class="font-bold text-gray-700 dark:text-gray-300">សូមអរគុណសម្រាប់ការជ្រើសរើស សណ្ឋាគារ ភីអេនធី ផាលេស !</p>
-                <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Thank you for choosing PNT Palace Hotel & Resort</p>
+                <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">Thank you for choosing P&T Palace Hotel & Resort</p>
             </div>
         </div>
     </div>

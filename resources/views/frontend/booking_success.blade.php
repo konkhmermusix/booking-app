@@ -3,12 +3,12 @@
 @section('content')
 
 @php
-    $khrRate = \App\Models\ContactSetting::getExchangeRate(4050);
-    $cName = $customerName ?? (Auth::check() ? Auth::user()->name : ($booking->customer_name ?? 'ភ្ញៀវស្នាក់នៅ'));
-    $cPhone = $customerPhone ?? (Auth::check() ? Auth::user()->phone : ($booking->customer_phone ?? 'N/A'));
-    $cEmail = $customerEmail ?? (Auth::check() ? Auth::user()->email : ($booking->customer_email ?? 'N/A'));
-    $displayTotal = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
-    $displayCodes = isset($codes) && count($codes) > 0 ? $codes : [$booking->booking_code ?? 'PNT-SUCCESS'];
+$khrRate = \App\Models\ContactSetting::getExchangeRate(4050);
+$cName = $customerName ?? (Auth::check() ? Auth::user()->name : ($booking->customer_name ?? 'ភ្ញៀវស្នាក់នៅ'));
+$cPhone = $customerPhone ?? (Auth::check() ? Auth::user()->phone : ($booking->customer_phone ?? 'N/A'));
+$cEmail = $customerEmail ?? (Auth::check() ? Auth::user()->email : ($booking->customer_email ?? 'N/A'));
+$displayTotal = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
+$displayCodes = isset($codes) && count($codes) > 0 ? $codes : [$booking->booking_code ?? 'P&T-SUCCESS'];
 @endphp
 
 <div class="w-full bg-gray-50 dark:bg-[#0b1120] min-h-screen py-5 md:py-16 transition-colors duration-300">
@@ -16,7 +16,7 @@
 
         {{-- MAIN SUCCESS CARD --}}
         <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden transition-all duration-300">
-            
+
             {{-- TOP HERO BANNER WITH GRADIENT --}}
             <div class="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white p-3 md:p-5 text-center overflow-hidden">
                 <div class="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
@@ -108,75 +108,75 @@
                     </div>
 
                     @if(isset($allItems) && count($allItems) > 0)
-                        <div class="space-y-3">
-                            @foreach($allItems as $idx => $sItem)
-                            <div class="p-2 bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-100 dark:border-gray-700/80 shadow-xs hover:shadow-md transition-all space-y-3">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 dark:border-gray-700/60 pb-3">
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center shrink-0">
-                                            {{ $idx + 1 }}
-                                        </span>
-                                        <h4 class="font-extrabold text-gray-900 dark:text-white text-sm md:text-base">
-                                            {{ $sItem['name'] }}
-                                        </h4>
-                                        @if($sItem['type'] === 'hotel')
-                                            <span class="bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-blue-800">
-                                                <i class="fas fa-bed mr-1"></i> បន្ទប់ស្នាក់នៅ
-                                            </span>
-                                        @else
-                                            <span class="bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-purple-200 dark:border-purple-800">
-                                                <i class="fas fa-handshake mr-1"></i> សាលប្រជុំ
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <span class="font-mono text-xs text-gray-400">
-                                        Code: <strong class="text-gray-700 dark:text-gray-300">{{ $sItem['code'] }}</strong>
+                    <div class="space-y-3">
+                        @foreach($allItems as $idx => $sItem)
+                        <div class="p-2 bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-100 dark:border-gray-700/80 shadow-xs hover:shadow-md transition-all space-y-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 dark:border-gray-700/60 pb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center shrink-0">
+                                        {{ $idx + 1 }}
                                     </span>
-                                </div>
-
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                                    <div class="text-gray-600 dark:text-gray-300 space-y-1">
-                                        @if($sItem['type'] === 'hotel')
-                                            <p class="flex items-center gap-1.5 font-medium">
-                                                <i class="fas fa-calendar-alt text-blue-500"></i>
-                                                ថ្ងៃស្នាក់នៅ៖ <span class="font-mono font-bold text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($sItem['check_in'])->format('d-m-Y') }}</span> ដល់ <span class="font-mono font-bold text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($sItem['check_out'])->format('d-m-Y') }}</span>
-                                            </p>
-                                        @else
-                                            <p class="flex items-center gap-1.5 font-medium">
-                                                <i class="fas fa-calendar-alt text-blue-500"></i>
-                                                កាលបរិច្ឆេទ៖ <span class="font-mono font-bold text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($sItem['start_date'])->format('d-m-Y') }}</span>
-                                                <span class="font-mono text-gray-500">({{ $sItem['start_time'] }} - {{ $sItem['end_time'] }})</span>
-                                            </p>
-                                        @endif
-                                    </div>
-
-                                    <div class="sm:text-right shrink-0">
-                                        <span class="text-xs text-gray-400 block">តម្លៃបន្ទប់ឬសាល</span>
-                                        <span class="font-black text-blue-600 dark:text-blue-400 text-base">
-                                            ${{ number_format($sItem['total_price'], 2) }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="p-2 bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-100 dark:border-gray-700 text-xs space-y-2">
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">ប្រភេទកក់៖</span>
-                                <span class="font-bold text-gray-900 dark:text-white">{{ $details->type_name ?? 'បន្ទប់ស្នាក់នៅ / សាលប្រជុំ' }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">កាលបរិច្ឆេទ៖</span>
-                                <span class="font-bold text-gray-900 dark:text-white">
-                                    @if(isset($type) && $type === 'hotel')
-                                        {{ \Carbon\Carbon::parse($booking->check_in)->format('d-m-Y') }} ដល់ {{ \Carbon\Carbon::parse($booking->check_out)->format('d-m-Y') }}
+                                    <h4 class="font-extrabold text-gray-900 dark:text-white text-sm md:text-base">
+                                        {{ $sItem['name'] }}
+                                    </h4>
+                                    @if($sItem['type'] === 'hotel')
+                                    <span class="bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-blue-800">
+                                        <i class="fas fa-bed mr-1"></i> បន្ទប់ស្នាក់នៅ
+                                    </span>
                                     @else
-                                        {{ \Carbon\Carbon::parse($booking->start_date)->format('d-m-Y') }} ({{ $booking->start_time }} - {{ $booking->end_time }})
+                                    <span class="bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-purple-200 dark:border-purple-800">
+                                        <i class="fas fa-handshake mr-1"></i> សាលប្រជុំ
+                                    </span>
                                     @endif
+                                </div>
+                                <span class="font-mono text-xs text-gray-400">
+                                    Code: <strong class="text-gray-700 dark:text-gray-300">{{ $sItem['code'] }}</strong>
                                 </span>
                             </div>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                                <div class="text-gray-600 dark:text-gray-300 space-y-1">
+                                    @if($sItem['type'] === 'hotel')
+                                    <p class="flex items-center gap-1.5 font-medium">
+                                        <i class="fas fa-calendar-alt text-blue-500"></i>
+                                        ថ្ងៃស្នាក់នៅ៖ <span class="font-mono font-bold text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($sItem['check_in'])->format('d-m-Y') }}</span> ដល់ <span class="font-mono font-bold text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($sItem['check_out'])->format('d-m-Y') }}</span>
+                                    </p>
+                                    @else
+                                    <p class="flex items-center gap-1.5 font-medium">
+                                        <i class="fas fa-calendar-alt text-blue-500"></i>
+                                        កាលបរិច្ឆេទ៖ <span class="font-mono font-bold text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($sItem['start_date'])->format('d-m-Y') }}</span>
+                                        <span class="font-mono text-gray-500">({{ $sItem['start_time'] }} - {{ $sItem['end_time'] }})</span>
+                                    </p>
+                                    @endif
+                                </div>
+
+                                <div class="sm:text-right shrink-0">
+                                    <span class="text-xs text-gray-400 block">តម្លៃបន្ទប់ឬសាល</span>
+                                    <span class="font-black text-blue-600 dark:text-blue-400 text-base">
+                                        ${{ number_format($sItem['total_price'], 2) }}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
+                        @endforeach
+                    </div>
+                    @else
+                    <div class="p-2 bg-white dark:bg-gray-800/80 rounded-2xl border border-gray-100 dark:border-gray-700 text-xs space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">ប្រភេទកក់៖</span>
+                            <span class="font-bold text-gray-900 dark:text-white">{{ $details->type_name ?? 'បន្ទប់ស្នាក់នៅ / សាលប្រជុំ' }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">កាលបរិច្ឆេទ៖</span>
+                            <span class="font-bold text-gray-900 dark:text-white">
+                                @if(isset($type) && $type === 'hotel')
+                                {{ \Carbon\Carbon::parse($booking->check_in)->format('d-m-Y') }} ដល់ {{ \Carbon\Carbon::parse($booking->check_out)->format('d-m-Y') }}
+                                @else
+                                {{ \Carbon\Carbon::parse($booking->start_date)->format('d-m-Y') }} ({{ $booking->start_time }} - {{ $booking->end_time }})
+                                @endif
+                            </span>
+                        </div>
+                    </div>
                     @endif
                 </div>
 
@@ -188,13 +188,13 @@
                         </span>
                         <div>
                             @if((isset($paymentMethod) && $paymentMethod === 'qr') || (isset($payment->method) && $payment->method === 'qr'))
-                                <span class="bg-red-500 text-white font-extrabold px-3 py-1 rounded-xl text-xs shadow-xs inline-flex items-center gap-1.5">
-                                    <i class="fas fa-qrcode"></i> ស្កែនឃ្យូអរកូដ
-                                </span>
+                            <span class="bg-red-500 text-white font-extrabold px-3 py-1 rounded-xl text-xs shadow-xs inline-flex items-center gap-1.5">
+                                <i class="fas fa-qrcode"></i> ស្កែនឃ្យូអរកូដ
+                            </span>
                             @else
-                                <span class="bg-emerald-600 text-white font-extrabold px-3 py-1 rounded-xl text-xs shadow-xs inline-flex items-center gap-1.5">
-                                    <i class="fas fa-money-bill-wave"></i> ទូទាត់សាច់ប្រាក់នៅសណ្ឋាគារ
-                                </span>
+                            <span class="bg-emerald-600 text-white font-extrabold px-3 py-1 rounded-xl text-xs shadow-xs inline-flex items-center gap-1.5">
+                                <i class="fas fa-money-bill-wave"></i> ទូទាត់សាច់ប្រាក់នៅសណ្ឋាគារ
+                            </span>
                             @endif
                         </div>
                     </div>
@@ -217,11 +217,19 @@
                 </div>
 
                 {{-- ACTION BUTTONS --}}
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
-                    <a href="{{ route('receipt', $displayCodes[0] ?? $booking->booking_code) }}?codes={{ implode(',', $displayCodes) }}"
+                <div class="grid grid-cols-1 {{ Auth::check() && in_array(Auth::user()->role, ['admin', 'superadmin']) ? 'sm:grid-cols-4' : 'sm:grid-cols-3' }} gap-3.5 pt-2">
+                    <a href="{{ route('receipt', $displayCodes[0] ?? $booking->booking_code) }}?codes={{ urlencode(implode(',', $displayCodes)) }}"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3.5 px-4 rounded-2xl text-xs transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 active:scale-95">
                         <span>មើលវិក្កយបត្រ</span>
                     </a>
+
+                    @if(Auth::check() && in_array(Auth::user()->role, ['admin', 'superadmin']))
+                    <a href="{{ route('room-bookings.index') }}"
+                        class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black py-3.5 px-4 rounded-2xl text-xs transition-all shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 active:scale-95">
+                        <i class="fas fa-user-shield"></i>
+                        <span>គ្រប់គ្រងការកក់ (Admin)</span>
+                    </a>
+                    @endif
 
                     <a href="{{ route('mybookings') }}"
                         class="w-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-bold py-3.5 px-4 rounded-2xl text-xs transition-all flex items-center justify-center gap-2 active:scale-95">
