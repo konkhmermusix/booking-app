@@ -341,17 +341,17 @@ if (!function_exists('formatKhmerTimeCombined')) {
 {{-- 3. TABLE VIEW --}}
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm" x-transition>
     <div class="overflow-x-auto w-full max-w-full custom-scrollbar pb-2">
-        <table class="w-full min-w-[1050px] text-left border-collapse text-sm">
+        <table class="w-full min-w-[1280px] text-left border-collapse text-sm">
             <thead>
-                <tr class="bg-gray-50/70 dark:bg-gray-850 border-b border-gray-100 dark:border-gray-800 text-[11px] uppercase font-black text-gray-400 tracking-wider">
-                    <th class="px-6 py-3">លេខកូដ</th>
-                    <th class="px-6 py-5">អតិថិជន & ប្រភព</th>
-                    <th class="px-6 py-5">បន្ទប់ / សាលប្រជុំ</th>
-                    <th class="px-6 py-5 text-center">កាលបរិច្ឆេទ & ម៉ោង</th>
-                    <th class="px-6 py-5">តម្លៃសរុប</th>
-                    <th class="px-6 py-5 text-center">ការទូទាត់ប្រាក់</th>
-                    <th class="px-6 py-5 text-center">ស្ថានភាព</th>
-                    <th class="px-6 py-5 text-right">សកម្មភាព</th>
+                <tr class="bg-gray-50/70 dark:bg-gray-850 border-b border-gray-100 dark:border-gray-800 text-[11px] uppercase font-black text-gray-400 tracking-wider whitespace-nowrap">
+                    <th class="px-4 py-3.5 whitespace-nowrap">លេខកូដ</th>
+                    <th class="px-4 py-3.5 whitespace-nowrap">អតិថិជន & ប្រភព</th>
+                    <th class="px-4 py-3.5 whitespace-nowrap">បន្ទប់ / សាលប្រជុំ</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">កាលបរិច្ឆេទ & ម៉ោង</th>
+                    <th class="px-4 py-3.5 whitespace-nowrap">តម្លៃសរុប</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">ការទូទាត់ប្រាក់</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">ស្ថានភាព</th>
+                    <th class="px-4 py-3.5 text-right whitespace-nowrap">សកម្មភាព</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -386,40 +386,40 @@ if (!function_exists('formatKhmerTimeCombined')) {
                     $payMethod = $booking->payment_method ?: ($booking->payment ? $booking->payment->method : 'cash');
                 @endphp
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-850/50 transition-colors">
-                    <td class="px-6 py-4 font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                    <td class="px-4 py-3.5 font-black text-blue-600 dark:text-blue-400 whitespace-nowrap">
                         #{{ $booking->booking_code }}
                     </td>
 
                     {{-- CUSTOMER & SOURCE --}}
-                    <td class="px-6 py-4">
-                        <div class="font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                        <div class="font-extrabold text-gray-900 dark:text-white flex items-center gap-2 whitespace-nowrap">
                             <span>{{ $customerName }}</span>
                             @if($isOnline)
-                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200/50">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200/50 whitespace-nowrap">
                                 <i class="fa-solid fa-globe mr-0.5"></i> អនឡាញ
                             </span>
                             @else
-                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50 whitespace-nowrap">
                                 <i class="fa-solid fa-store mr-0.5"></i> ផ្ទាល់
                             </span>
                             @endif
                         </div>
-                        <div class="text-[11px] text-gray-400 mt-0.5">{{ $booking->customer_phone ?? ($booking->user->phone ?? 'N/A') }}</div>
-                        <div class="text-[11px] text-gray-400 mt-0.5">{{ $booking->customer_email ?? ($booking->user->email ?? 'N/A') }}</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5 whitespace-nowrap">{{ $booking->customer_phone ?? ($booking->user->phone ?? 'N/A') }}</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5 whitespace-nowrap">{{ $booking->customer_email ?? ($booking->user->email ?? 'N/A') }}</div>
                     </td>
 
                     {{-- ROOM & SETUP --}}
-                    <td class="px-6 py-4">
-                        <div class="font-bold text-gray-900 dark:text-gray-100">
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                        <div class="font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
                             @if($isMeeting)
                             <span class="text-purple-600 dark:text-purple-400 font-extrabold">សាលប្រជុំ {{ $roomNumber }}</span>
                             @else
                             <span class="text-blue-600 dark:text-blue-400 font-extrabold">បន្ទប់ {{ $roomNumber }}</span>
                             @endif
                         </div>
-                        <div class="text-[11px] text-gray-500 font-medium mt-0.5">{{ $roomTypeName }}</div>
+                        <div class="text-[11px] text-gray-500 font-medium mt-0.5 whitespace-nowrap">{{ $roomTypeName }}</div>
                         @if($isMeeting)
-                            <div class="text-[10px] text-purple-600 dark:text-purple-400 font-bold mt-1">
+                            <div class="text-[10px] text-purple-600 dark:text-purple-400 font-bold mt-1 whitespace-nowrap">
                                 <i class="fas fa-users mr-1"></i>{{ $booking->attendees_count ?? 10 }} នាក់
                                 @if($booking->setup_style)
                                     <span class="text-gray-400 font-semibold ml-1">• {{ $setupMap[$booking->setup_style] ?? $booking->setup_style }}</span>

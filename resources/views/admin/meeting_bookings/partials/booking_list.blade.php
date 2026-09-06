@@ -263,18 +263,18 @@ if (!function_exists('formatKhmerTime')) {
 {{-- 3. TABLE VIEW --}}
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm" x-transition>
     <div class="overflow-x-auto w-full max-w-full custom-scrollbar pb-2">
-        <table class="w-full min-w-[1050px] text-left border-collapse">
+        <table class="w-full min-w-[1280px] text-left border-collapse">
             <thead class="bg-gray-50/50 dark:bg-gray-800/50">
-                <tr class="text-[11px] uppercase font-black text-gray-400 tracking-widest">
-                    <th class="px-6 py-3">លេខកូដ</th>
-                    <th class="px-6 py-5">អតិថិជន & ប្រភព</th>
-                    <th class="px-6 py-5">សាលប្រជុំ & ប្រភេទ</th>
-                    <th class="px-6 py-5 text-center">កាលបរិច្ឆេទ & ម៉ោង</th>
-                    <th class="px-6 py-5 text-center">ចំនួនអ្នកចូលរួម</th>
-                    <th class="px-6 py-5 text-center">តម្លៃសរុប</th>
-                    <th class="px-6 py-5 text-center">ការទូទាត់ប្រាក់</th>
-                    <th class="px-6 py-5 text-center">ស្ថានភាព</th>
-                    <th class="px-6 py-5 text-right">សកម្មភាព</th>
+                <tr class="text-[11px] uppercase font-black text-gray-400 tracking-widest whitespace-nowrap">
+                    <th class="px-4 py-3.5 whitespace-nowrap">លេខកូដ</th>
+                    <th class="px-4 py-3.5 whitespace-nowrap">អតិថិជន & ប្រភព</th>
+                    <th class="px-4 py-3.5 whitespace-nowrap">សាលប្រជុំ & ប្រភេទ</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">កាលបរិច្ឆេទ & ម៉ោង</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">ចំនួនអ្នកចូលរួម</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">តម្លៃសរុប</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">ការទូទាត់ប្រាក់</th>
+                    <th class="px-4 py-3.5 text-center whitespace-nowrap">ស្ថានភាព</th>
+                    <th class="px-4 py-3.5 text-right whitespace-nowrap">សកម្មភាព</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
