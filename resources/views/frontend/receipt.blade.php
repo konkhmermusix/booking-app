@@ -19,6 +19,10 @@ $cEmail = $customerEmail ?? (!empty($booking->customer_email) ? $booking->custom
 $displayCode = $primaryCode ?? ($booking->booking_code ?? 'P&T-RECEIPT');
 $items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : (isset($allDetails) && count($allDetails) > 0 ? $allDetails : collect([$details]));
 $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
+$receiverName = $booking->receiver_name 
+    ?? \App\Models\ContactSetting::where('key', 'bank_account_name')->where('status', 1)->value('value') 
+    ?? \App\Models\User::where('role', 'admin')->value('name') 
+    ?? 'អ្នកគ្រប់គ្រង ភីអេនធី ផាលេស';
 @endphp
 
 <div class="w-full bg-gray-100 dark:bg-[#0b1120] min-h-screen py-8 transition-colors duration-300">
@@ -112,6 +116,21 @@ $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->
                             <span class="font-bold text-amber-600 dark:text-amber-400">រង់ចាំការផ្ទៀងផ្ទាត់</span>
                             @endif
                         </p>
+                        <p><span class="text-gray-500 dark:text-gray-400">ស្ថានភាពការកក់ ៖</span>
+                            @php $bStatus = strtolower($booking->status ?? 'pending'); @endphp
+                            @if(in_array($bStatus, ['confirmed', 'approved']))
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">បានបញ្ជាក់ (Confirmed)</span>
+                            @elseif(in_array($bStatus, ['completed', 'checked_in', 'checked_out']))
+                            <span class="font-bold text-blue-600 dark:text-blue-400">ចូលស្នាក់នៅ / បានបញ្ចប់</span>
+                            @elseif($bStatus === 'cancelled')
+                            <span class="font-bold text-red-600 dark:text-red-400">បានបោះបង់ (Cancelled)</span>
+                            @else
+                            <span class="font-bold text-amber-600 dark:text-amber-400">រង់ចាំការបញ្ជាក់ (Pending)</span>
+                            @endif
+                        </p>
+                        <p><span class="text-gray-500 dark:text-gray-400">អ្នកទទួលប្រាក់/គ្រប់គ្រង ៖</span>
+                            <strong class="text-gray-900 dark:text-white">{{ $receiverName }}</strong>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -172,6 +191,22 @@ $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->
                             <span class="text-[11px] text-gray-500 dark:text-gray-400 font-mono font-semibold">(~ {{ number_format($totalAmount * $khrRate) }} ៛)</span>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {{-- SIGNATURE & RECEIVER SECTION --}}
+            <div class="grid grid-cols-2 gap-8 pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 text-center text-xs">
+                <div class="space-y-6">
+                    <p class="font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">ហត្ថលេខាអតិថិជន (Customer)</p>
+                    <div class="border-b border-gray-300 dark:border-gray-700 w-44 mx-auto pt-8"></div>
+                    <p class="text-[11px] text-gray-600 dark:text-gray-400 font-bold">{{ $cName }}</p>
+                </div>
+
+                <div class="space-y-6">
+                    <p class="font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">អ្នកទទួលប្រាក់ / អ្នកគ្រប់គ្រង</p>
+                    <div class="border-b border-gray-300 dark:border-gray-700 w-44 mx-auto pt-8"></div>
+                    <p class="text-[11px] text-blue-600 dark:text-blue-400 font-black uppercase">{{ $receiverName }}</p>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500">សណ្ឋាគារ ភីអេនធី ផាលេស</p>
                 </div>
             </div>
 

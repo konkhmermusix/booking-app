@@ -166,7 +166,7 @@
                                     </span>
                                 @else
                                     <span class="text-rose-600 dark:text-rose-400 flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl border border-rose-100 dark:border-rose-900/50">
-                                        <i class="fas fa-exclamation-circle text-rose-500"></i> ពេញ! (កក់អស់ហើយសម្រាប់ថ្ងៃនេះ)
+                                        <i class="fas fa-exclamation-circle text-rose-500"></i> ពេញ (កក់អស់ហើយសម្រាប់ថ្ងៃនេះ)
                                     </span>
                                 @endif
                             </div>

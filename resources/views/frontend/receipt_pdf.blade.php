@@ -22,6 +22,10 @@
     $displayCode = $primaryCode ?? ($booking->booking_code ?? 'P&T-RECEIPT');
     $items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : collect();
     $totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
+    $receiverName = $booking->receiver_name 
+        ?? \App\Models\ContactSetting::where('key', 'bank_account_name')->where('status', 1)->value('value') 
+        ?? \App\Models\User::where('role', 'admin')->value('name') 
+        ?? 'អ្នកគ្រប់គ្រង ភីអេនធី ផាលេស';
     @endphp
 
     <style>
@@ -279,7 +283,7 @@
                     <div class="section-title">ព័ត៌មានការកក់ (Booking Summary)</div>
                     <div><strong>ប្រភេទ ៖</strong> {{ $type === 'combined' ? 'បន្ទប់ស្នាក់នៅ និងសាលប្រជុំ' : ($type === 'hotel' ? 'បន្ទប់សណ្ឋាគារ' : 'សាលប្រជុំ') }}</div>
                     <div><strong>វិធីសាស្ត្រទូទាត់ ៖</strong> {{ isset($payment->method) && $payment->method === 'qr' ? 'ស្កែន KHQR Code' : 'ទូទាត់សាច់ប្រាក់នៅសណ្ឋាគារ' }}</div>
-                    <div><strong>ស្ថានភាព ៖</strong>
+                    <div><strong>ស្ថានភាពទូទាត់ ៖</strong>
                         @if($payment && ($payment->status === 'paid' || (isset($payment->payment_status) && $payment->payment_status === 'paid')))
                         <span style="color: #16a34a; font-weight: bold;">បានទូទាត់រួច (Paid)</span>
                         @elseif($booking->status === 'cancelled')
@@ -288,6 +292,19 @@
                         <span style="color: #d97706; font-weight: bold;">រង់ចាំផ្ទៀងផ្ទាត់ (Pending)</span>
                         @endif
                     </div>
+                    <div><strong>ស្ថានភាពការកក់ ៖</strong>
+                        @php $bStatus = strtolower($booking->status ?? 'pending'); @endphp
+                        @if(in_array($bStatus, ['confirmed', 'approved']))
+                        <span style="color: #16a34a; font-weight: bold;">បានបញ្ជាក់ (Confirmed)</span>
+                        @elseif(in_array($bStatus, ['completed', 'checked_in', 'checked_out']))
+                        <span style="color: #2563eb; font-weight: bold;">ចូលស្នាក់នៅ / បានបញ្ចប់</span>
+                        @elseif($bStatus === 'cancelled')
+                        <span style="color: #dc2626; font-weight: bold;">បានបោះបង់ (Cancelled)</span>
+                        @else
+                        <span style="color: #d97706; font-weight: bold;">រង់ចាំការបញ្ជាក់ (Pending)</span>
+                        @endif
+                    </div>
+                    <div><strong>អ្នកទទួលប្រាក់/គ្រប់គ្រង ៖</strong> <strong>{{ $receiverName }}</strong></div>
                 </td>
             </tr>
         </table>
@@ -347,6 +364,23 @@
         </div>
         <div class="clear"></div>
     </div>
+
+    {{-- SIGNATURE SECTION --}}
+    <table style="width: 100%; margin-top: 20px; text-align: center; font-size: {{ $paperSize === 'a5' ? '9px' : '11px' }};">
+        <tr>
+            <td style="width: 50%; vertical-align: top;">
+                <div style="font-weight: bold; color: #374151; text-transform: uppercase;">ហត្ថលេខាអតិថិជន (Customer)</div>
+                <div style="margin-top: 30px; border-bottom: 1px solid #cbd5e1; width: 140px; margin-left: auto; margin-right: auto;"></div>
+                <div style="margin-top: 4px; color: #475569; font-weight: bold;">{{ $cName }}</div>
+            </td>
+            <td style="width: 50%; vertical-align: top;">
+                <div style="font-weight: bold; color: #374151; text-transform: uppercase;">អ្នកទទួលប្រាក់ / អ្នកគ្រប់គ្រង</div>
+                <div style="margin-top: 30px; border-bottom: 1px solid #cbd5e1; width: 140px; margin-left: auto; margin-right: auto;"></div>
+                <div style="margin-top: 4px; color: #2563eb; font-weight: bold;">{{ $receiverName }}</div>
+                <div style="font-size: {{ $paperSize === 'a5' ? '8px' : '9px' }}; color: #64748b;">សណ្ឋាគារ ភីអេនធី ផាលេស</div>
+            </td>
+        </tr>
+    </table>
 
     {{-- FOOTER --}}
     <div class="footer">
