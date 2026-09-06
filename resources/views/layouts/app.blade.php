@@ -188,7 +188,7 @@
                                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700"><i class="fas fa-chart-line text-blue-500"></i>ផ្ទាំងគ្រប់គ្រង</a>
                                 @endif
                                 <a href="{{ route('mybookings') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700"><i class="fas fa-calendar-check text-blue-500"></i>ការកក់របស់ខ្ញុំ</a>
-                                <a href="{{ route('notifications.index') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700"><i class="fas fa-bell text-blue-500"></i>ការជូនដំណឹង</a>
+                                <a href="{{ route('customer.notifications.index') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700"><i class="fas fa-bell text-blue-500"></i>ការជូនដំណឹង</a>
                                 <a href="{{ route('setting.edit') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 border-b dark:border-gray-700"><i class="fas fa-user-cog text-blue-500"></i>ការកំណត់</a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                                     @csrf
@@ -300,7 +300,7 @@
                             </div>
 
                             <div class="pt-2.5 px-4 border-t border-gray-100 dark:border-gray-800 text-center">
-                                <a href="{{ route('notifications.index') }}" @click="openNotif = false" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">
+                                <a href="{{ route('customer.notifications.index') }}" @click="openNotif = false" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">
                                     <span>មើលការជូនដំណឹងទាំងអស់</span>
                                     <i class="fas fa-arrow-right text-[9px]"></i>
                                 </a>
@@ -439,7 +439,7 @@
                                 <a href="{{ route('mybookings') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">
                                     <i class="fas fa-calendar-check text-gray-400 w-5"></i><span>ការកក់របស់ខ្ញុំ</span>
                                 </a>
-                                <a href="{{ route('notifications.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">
+                                <a href="{{ route('customer.notifications.index') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">
                                     <i class="fas fa-bell text-gray-400 w-5"></i><span>ការជូនដំណឹង</span>
                                 </a>
                                 <a href="{{ route('setting.edit') }}" @click="mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-xl transition">

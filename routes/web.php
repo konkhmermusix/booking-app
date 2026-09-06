@@ -118,7 +118,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/meetingdetails/{id}', [MeetingWebController::class, 'deleteReview'])->name('frontend.meeting_details.delete');
 
     // Customer Notifications
-    Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('customer.notifications.index');
     Route::get('/customer/notifications', [CustomerNotificationController::class, 'getNotifications'])->name('customer.notifications');
     Route::post('/customer/notifications/mark-read', [CustomerNotificationController::class, 'markAllAsRead'])->name('customer.notifications.mark-read');
 });

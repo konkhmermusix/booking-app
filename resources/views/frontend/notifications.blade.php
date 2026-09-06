@@ -12,7 +12,7 @@
          loadMore() {
              if (this.loading || !this.hasMore) return;
              this.loading = true;
-             fetch('{{ route("notifications.index") }}?page=' + (this.page + 1), {
+             fetch('{{ route("customer.notifications.index") }}?page=' + (this.page + 1), {
                  headers: { 'X-Requested-With': 'XMLHttpRequest' }
              })
              .then(res => res.json())

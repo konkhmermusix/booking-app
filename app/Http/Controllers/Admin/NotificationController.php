@@ -122,7 +122,7 @@ class NotificationController extends Controller
                 'title' => 'អតិថិជនបោះបង់ការកក់សាលប្រជុំ ',
                 'description' => ($cmb->customer_name ?: 'អតិថិជន') . ' - កូដ: #' . $cmb->booking_code,
                 'time' => $cmb->updated_at ? $cmb->updated_at->locale('km')->diffForHumans() : '',
-                'url' => route('admin.notifications.read', ['type' => 'meeting', 'id' => $cmb->id]),
+                'url' => route('notifications.read', ['type' => 'meeting', 'id' => $cmb->id]),
                 'is_unread' => $isUnread,
                 'timestamp' => strtotime($cmb->updated_at ?? $cmb->created_at),
             ]);
@@ -142,7 +142,7 @@ class NotificationController extends Controller
                 'title' => 'សារ Chat ថ្មីពី ' . $senderName,
                 'description' => Str::limit($cm->message ?: 'រូបភាព/ឯកសារ', 40),
                 'time' => $cm->created_at ? $cm->created_at->locale('km')->diffForHumans() : '',
-                'url' => route('admin.notifications.read', ['type' => 'chat', 'id' => $cm->conversation_id]),
+                'url' => route('notifications.read', ['type' => 'chat', 'id' => $cm->conversation_id]),
                 'is_unread' => $isUnread,
                 'timestamp' => strtotime($cm->created_at),
             ]);
@@ -161,7 +161,7 @@ class NotificationController extends Controller
                 'title' => 'សារទំនាក់ទំនងថ្មី',
                 'description' => $c->name . ' (' . ($c->email ?: $c->tell) . ')',
                 'time' => $c->created_at ? $c->created_at->locale('km')->diffForHumans() : '',
-                'url' => route('admin.notifications.read', ['type' => 'contact', 'id' => $c->id]),
+                'url' => route('notifications.read', ['type' => 'contact', 'id' => $c->id]),
                 'is_unread' => $isUnread,
                 'timestamp' => strtotime($c->created_at),
             ]);
@@ -180,7 +180,7 @@ class NotificationController extends Controller
                 'title' => 'ការវាយតម្លៃថ្មី',
                 'description' => ($r->name ?: 'ភ្ញៀវ') . ' - ពិន្ទុ: ' . $r->rating . '/5',
                 'time' => $r->created_at ? $r->created_at->locale('km')->diffForHumans() : '',
-                'url' => route('admin.notifications.read', ['type' => 'review', 'id' => $r->id]),
+                'url' => route('notifications.read', ['type' => 'review', 'id' => $r->id]),
                 'is_unread' => $isUnread,
                 'timestamp' => strtotime($r->created_at),
             ]);
@@ -328,7 +328,7 @@ class NotificationController extends Controller
                     'title' => 'ការកក់បន្ទប់ (រង់ចាំការបញ្ជាក់)',
                     'description' => ($b->customer_name ?: 'អតិថិជន') . ' - កូដ: ' . $b->booking_code,
                     'time' => $b->created_at ? $b->created_at->locale('km')->diffForHumans() : '',
-                    'url' => route('admin.notifications.read', ['type' => 'room', 'id' => $b->id]),
+                    'url' => route('notifications.read', ['type' => 'room', 'id' => $b->id]),
                     'is_unread' => $isUnread,
                     'created_at' => $b->created_at ? $b->created_at->toIso8601String() : '',
                 ]);
@@ -346,7 +346,7 @@ class NotificationController extends Controller
                     'title' => 'អតិថិជនបោះបង់ការកក់បន្ទប់ ',
                     'description' => ($cb->customer_name ?: 'អតិថិជន') . ' - កូដ: #' . $cb->booking_code,
                     'time' => $cb->updated_at ? $cb->updated_at->locale('km')->diffForHumans() : '',
-                    'url' => route('admin.notifications.read', ['type' => 'room', 'id' => $cb->id]),
+                    'url' => route('notifications.read', ['type' => 'room', 'id' => $cb->id]),
                     'is_unread' => $isUnread,
                     'created_at' => $cb->updated_at ? $cb->updated_at->toIso8601String() : ($cb->created_at ? $cb->created_at->toIso8601String() : ''),
                 ]);
@@ -365,7 +365,7 @@ class NotificationController extends Controller
                     'title' => 'ការកក់សាលប្រជុំ (រង់ចាំការបញ្ជាក់)',
                     'description' => ($mb->customer_name ?: 'អតិថិជន') . ' - កូដ: ' . $mb->booking_code,
                     'time' => $mb->created_at ? $mb->created_at->locale('km')->diffForHumans() : '',
-                    'url' => route('admin.notifications.read', ['type' => 'meeting', 'id' => $mb->id]),
+                    'url' => route('notifications.read', ['type' => 'meeting', 'id' => $mb->id]),
                     'is_unread' => $isUnread,
                     'created_at' => $mb->created_at ? $mb->created_at->toIso8601String() : '',
                 ]);
@@ -383,7 +383,7 @@ class NotificationController extends Controller
                     'title' => 'អតិថិជនបោះបង់ការកក់សាលប្រជុំ',
                     'description' => ($cmb->customer_name ?: 'អតិថិជន') . ' - កូដ: #' . $cmb->booking_code,
                     'time' => $cmb->updated_at ? $cmb->updated_at->locale('km')->diffForHumans() : '',
-                    'url' => route('admin.notifications.read', ['type' => 'meeting', 'id' => $cmb->id]),
+                    'url' => route('notifications.read', ['type' => 'meeting', 'id' => $cmb->id]),
                     'is_unread' => $isUnread,
                     'created_at' => $cmb->updated_at ? $cmb->updated_at->toIso8601String() : ($cmb->created_at ? $cmb->created_at->toIso8601String() : ''),
                 ]);
@@ -403,7 +403,7 @@ class NotificationController extends Controller
                     'title' => 'សារ Chat ថ្មីពី ' . $senderName,
                     'description' => Str::limit($cm->message ?: 'រូបភាព/ឯកសារ', 30),
                     'time' => $cm->created_at ? $cm->created_at->locale('km')->diffForHumans() : '',
-                    'url' => route('admin.notifications.read', ['type' => 'chat', 'id' => $cm->conversation_id]),
+                    'url' => route('notifications.read', ['type' => 'chat', 'id' => $cm->conversation_id]),
                     'is_unread' => $isUnread,
                     'created_at' => $cm->created_at ? $cm->created_at->toIso8601String() : '',
                 ]);
@@ -422,7 +422,7 @@ class NotificationController extends Controller
                     'title' => 'សារទំនាក់ទំនងថ្មី',
                     'description' => $c->name . ' (' . ($c->email ?: $c->tell) . ')',
                     'time' => $c->created_at ? $c->created_at->locale('km')->diffForHumans() : '',
-                    'url' => route('admin.notifications.read', ['type' => 'contact', 'id' => $c->id]),
+                    'url' => route('notifications.read', ['type' => 'contact', 'id' => $c->id]),
                     'is_unread' => $isUnread,
                     'created_at' => $c->created_at ? $c->created_at->toIso8601String() : '',
                 ]);
@@ -441,7 +441,7 @@ class NotificationController extends Controller
                     'title' => 'ការវាយតម្លៃថ្មី',
                     'description' => ($r->name ?: 'ភ្ញៀវ') . ' - ពិន្ទុ: ' . $r->rating . '/5',
                     'time' => $r->created_at ? $r->created_at->locale('km')->diffForHumans() : '',
-                    'url' => route('admin.notifications.read', ['type' => 'review', 'id' => $r->id]),
+                    'url' => route('notifications.read', ['type' => 'review', 'id' => $r->id]),
                     'is_unread' => $isUnread,
                     'created_at' => $r->created_at ? $r->created_at->toIso8601String() : '',
                 ]);

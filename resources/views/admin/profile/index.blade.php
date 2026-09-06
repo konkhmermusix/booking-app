@@ -331,7 +331,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400">គ្រប់គ្រងការជូនដំណឹងអំពីការកក់បន្ទប់ កក់សាលប្រជុំ និងការផ្ញើសារពីអតិថិជន</p>
                     </div>
 
-                    <a href="{{ route('admin.notifications.index') }}" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md transition-all inline-flex items-center gap-2 shrink-0">
+                    <a href="{{ route('notifications.index') }}" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md transition-all inline-flex items-center gap-2 shrink-0">
                         <i class="fas fa-bell"></i>
                         <span>មើលការជូនដំណឹងទាំងអស់</span>
                     </a>

@@ -12,7 +12,7 @@
          loadMore() {
              if (this.loading || !this.hasMore) return;
              this.loading = true;
-             fetch('{{ route("admin.notifications.index") }}?page=' + (this.page + 1), {
+             fetch('{{ route("notifications.index") }}?page=' + (this.page + 1), {
                  headers: { 'X-Requested-With': 'XMLHttpRequest' }
              })
              .then(res => res.json())
@@ -160,7 +160,7 @@
 
 <script>
 function markAdminAllRead() {
-    fetch('{{ route('admin.notifications.mark-read') }}', {
+    fetch('{{ route('notifications.mark-read') }}', {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
