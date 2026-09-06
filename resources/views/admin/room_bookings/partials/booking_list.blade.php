@@ -258,8 +258,8 @@ $statusLabels = [
 
 {{-- 3. TABLE VIEW --}}
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm" x-transition>
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+    <div class="overflow-x-auto w-full max-w-full custom-scrollbar pb-2">
+        <table class="w-full min-w-[1050px] text-left border-collapse">
             <thead class="bg-gray-50/50 dark:bg-gray-800/50">
                 <tr class="text-[11px] uppercase font-black text-gray-400 tracking-widest">
                     <th class="px-6 py-3">លេខកូដ</th>

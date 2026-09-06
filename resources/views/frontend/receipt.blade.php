@@ -91,7 +91,7 @@ $receiverName = !empty($booking->confirmed_by_name)
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6 p-4 bg-gray-50 dark:bg-gray-800/40 rounded-xl border border-gray-100 dark:border-gray-800 text-xs">
                 <div>
                     <h3 class="font-bold text-gray-900 dark:text-white uppercase text-[11px] tracking-wider mb-2 text-blue-600 dark:text-blue-400">
-                        ព័ត៌មានអតិថិជន (Customer Information)
+                        ព័ត៌មានអតិថិជន
                     </h3>
                     <div class="space-y-1 text-gray-700 dark:text-gray-300">
                         <p><span class="text-gray-500 dark:text-gray-400">ឈ្មោះ ៖</span> <strong class="text-gray-900 dark:text-white">{{ $cName }}</strong></p>

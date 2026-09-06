@@ -100,16 +100,25 @@ if (!function_exists('formatKhmerTimeCombined')) {
 
                 <div class="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-0 group-hover/img:opacity-100 transition-opacity">
                     @if($isMeeting)
-                    <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="w-9 h-9 bg-white text-purple-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg" title="ព្រីនវិក្កយបត្រ">
+                    <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="w-9 h-9 bg-white text-purple-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                         <i class="fas fa-print"></i>
                     </a>
                     @else
-                    <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="w-9 h-9 bg-white text-blue-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg" title="ព្រីនវិក្កយបត្រ">
+                    <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="w-9 h-9 bg-white text-blue-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                         <i class="fas fa-print"></i>
                     </a>
                     @endif
+                    <button type="button" @click="openDetailModal({{ $booking->toJson() }})" class="w-9 h-9 bg-white text-blue-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="មើលលម្អិត">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button type="button" @click="openEditModal({{ $booking->toJson() }})" class="w-9 h-9 bg-white text-amber-500 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="កែសម្រួល">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button type="button" @click="deleteBooking({{ $booking->id }})" class="w-9 h-9 bg-white text-rose-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="លុប">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                     @if($booking->payment && $booking->payment->payment_slip)
-                    <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="w-9 h-9 bg-white text-emerald-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg" title="មើលបង្កាន់ដៃបង់ប្រាក់">
+                    <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="w-9 h-9 bg-white text-emerald-600 rounded-xl hover:scale-110 transition flex items-center justify-center shadow-lg cursor-pointer" title="មើលបង្កាន់ដៃបង់ប្រាក់">
                         <i class="fas fa-file-image"></i>
                     </button>
                     @endif
@@ -302,15 +311,21 @@ if (!function_exists('formatKhmerTimeCombined')) {
 
             <div class="flex items-center gap-1">
                 @if($isMeeting)
-                <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2.5 bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white dark:bg-purple-950/30 dark:text-purple-400 rounded-xl transition-all" title="ព្រីនវិក្កយបត្រ">
+                <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2.5 bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white dark:bg-purple-950/30 dark:text-purple-400 rounded-xl transition-all cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                     <i class="fas fa-print text-xs"></i>
                 </a>
                 @else
-                <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-950/30 dark:text-blue-400 rounded-xl transition-all" title="ព្រីនវិក្កយបត្រ">
+                <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-950/30 dark:text-blue-400 rounded-xl transition-all cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                     <i class="fas fa-print text-xs"></i>
                 </a>
                 @endif
-                <button @click="deleteBooking({{ $booking->id }})" class="p-2.5 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white dark:bg-rose-950/30 dark:text-rose-400 rounded-xl transition-all" title="លុប">
+                <button type="button" @click="openDetailModal({{ $booking->toJson() }})" class="p-2.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-950/30 dark:text-blue-400 rounded-xl transition-all cursor-pointer" title="មើលលម្អិត">
+                    <i class="fas fa-eye text-xs"></i>
+                </button>
+                <button type="button" @click="openEditModal({{ $booking->toJson() }})" class="p-2.5 bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white dark:bg-amber-950/30 dark:text-amber-400 rounded-xl transition-all cursor-pointer" title="កែសម្រួល">
+                    <i class="fas fa-edit text-xs"></i>
+                </button>
+                <button type="button" @click="deleteBooking({{ $booking->id }})" class="p-2.5 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white dark:bg-rose-950/30 dark:text-rose-400 rounded-xl transition-all cursor-pointer" title="លុប">
                     <i class="fas fa-trash-alt text-xs"></i>
                 </button>
             </div>
@@ -325,8 +340,8 @@ if (!function_exists('formatKhmerTimeCombined')) {
 
 {{-- 3. TABLE VIEW --}}
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm" x-transition>
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-sm">
+    <div class="overflow-x-auto w-full max-w-full custom-scrollbar pb-2">
+        <table class="w-full min-w-[1050px] text-left border-collapse text-sm">
             <thead>
                 <tr class="bg-gray-50/70 dark:bg-gray-850 border-b border-gray-100 dark:border-gray-800 text-[11px] uppercase font-black text-gray-400 tracking-wider">
                     <th class="px-6 py-3">លេខកូដ</th>
@@ -498,18 +513,24 @@ if (!function_exists('formatKhmerTimeCombined')) {
 
                     {{-- ACTIONS --}}
                     <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
-                        <div class="flex justify-end items-center gap-1">
+                        <div class="flex justify-end items-center gap-1.5">
                             @if($isMeeting)
-                            <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 transition-colors" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
+                            <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
                                 <i class="fas fa-print text-sm"></i>
                             </a>
                             @else
-                            <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-blue-600 hover:text-blue-800 transition-colors" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
+                            <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
                                 <i class="fas fa-print text-sm"></i>
                             </a>
                             @endif
-                            <button type="button" @click="deleteBooking({{ $booking->id }})" class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">
-                                <i class="fas fa-trash text-sm"></i>
+                            <button type="button" @click="openDetailModal({{ $booking->toJson() }})" class="p-2 text-gray-400 hover:text-blue-500 transition-colors cursor-pointer" title="មើលលម្អិត">
+                                <i class="fas fa-eye text-sm"></i>
+                            </button>
+                            <button type="button" @click="openEditModal({{ $booking->toJson() }})" class="p-2 text-gray-400 hover:text-amber-500 transition-colors cursor-pointer" title="កែសម្រួល">
+                                <i class="fas fa-edit text-sm"></i>
+                            </button>
+                            <button type="button" @click="deleteBooking({{ $booking->id }})" class="p-2 text-gray-400 hover:text-rose-500 transition-colors cursor-pointer" title="លុប">
+                                <i class="fas fa-trash-alt text-sm"></i>
                             </button>
                         </div>
                     </td>
