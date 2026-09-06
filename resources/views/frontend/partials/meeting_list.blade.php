@@ -4,12 +4,35 @@
     <div x-data="{ 
             isMeetingModalOpen: false, 
             selectedMeetingRoomTypeId: null,
-            startDate: new Date().toISOString().split('T')[0],
-            endDate: new Date().toISOString().split('T')[0],
+            startDate: '',
+            endDate: '',
+            
+            init() {
+                let searchStart = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                let searchEnd = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+                let todayStr = new Date().toISOString().split('T')[0];
+                this.startDate = searchStart || todayStr;
+                this.endDate = (searchEnd && searchEnd >= this.startDate) ? searchEnd : this.startDate;
+            },
+
             openMeetingModal(id) {
                 this.selectedMeetingRoomTypeId = id;
-                if (!this.startDate) this.startDate = new Date().toISOString().split('T')[0];
-                if (!this.endDate) this.endDate = new Date().toISOString().split('T')[0];
+                let searchStart = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                let searchEnd = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+                let todayStr = new Date().toISOString().split('T')[0];
+
+                if (searchStart) {
+                    this.startDate = searchStart;
+                } else if (!this.startDate) {
+                    this.startDate = todayStr;
+                }
+
+                if (searchEnd && searchEnd >= this.startDate) {
+                    this.endDate = searchEnd;
+                } else if (!this.endDate || this.endDate < this.startDate) {
+                    this.endDate = this.startDate;
+                }
+
                 this.isMeetingModalOpen = true;
             }
         }"

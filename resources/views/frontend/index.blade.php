@@ -135,19 +135,43 @@
                         let offset = today.getTimezoneOffset();
                         let localToday = new Date(today.getTime() - (offset * 60 * 1000));
                         this.minCheckIn = localToday.toISOString().split('T')[0];
-                        this.checkInDate = this.minCheckIn;
                         
                         let tomorrow = new Date();
                         tomorrow.setDate(tomorrow.getDate() + 1);
                         let localTomorrow = new Date(tomorrow.getTime() - (offset * 60 * 1000));
                         this.minCheckOut = localTomorrow.toISOString().split('T')[0];
-                        this.checkOutDate = this.minCheckOut;
+
+                        let searchCheckIn = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                        let searchCheckOut = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+
+                        this.checkInDate = searchCheckIn || this.minCheckIn;
+                        this.handleCheckInChange();
+                        if (searchCheckOut && searchCheckOut > this.checkInDate) {
+                            this.checkOutDate = searchCheckOut;
+                        } else if (!this.checkOutDate) {
+                            this.checkOutDate = this.minCheckOut;
+                        }
                     },
                     
                     openHotelModal(id) {
                         this.selectedRoomTypeId = id;
-                        if (!this.checkInDate) this.checkInDate = this.minCheckIn;
-                        if (!this.checkOutDate) this.checkOutDate = this.minCheckOut;
+                        let searchCheckIn = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                        let searchCheckOut = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+
+                        if (searchCheckIn) {
+                            this.checkInDate = searchCheckIn;
+                        } else if (!this.checkInDate) {
+                            this.checkInDate = this.minCheckIn;
+                        }
+
+                        this.handleCheckInChange();
+
+                        if (searchCheckOut && searchCheckOut > this.checkInDate) {
+                            this.checkOutDate = searchCheckOut;
+                        } else if (!this.checkOutDate || this.checkOutDate <= this.checkInDate) {
+                            this.checkOutDate = this.minCheckOut;
+                        }
+
                         this.isHotelModalOpen = true;
                     },
                     
@@ -335,7 +359,7 @@
                                                 <button type="submit"
                                                     class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
                                                     <div class="flex items-center gap-2">
-                                                        <span>បន្តទៅការទូទាត់ប្រាក់</span>
+                                                        <span>ទូទាត់ប្រាក់</span>
                                                     </div>
                                                 </button>
                                             </div>
@@ -372,12 +396,35 @@
                 <div x-data="{ 
                     isMeetingModalOpen: false, 
                     selectedMeetingRoomTypeId: null,
-                    startDate: new Date().toISOString().split('T')[0],
-                    endDate: new Date().toISOString().split('T')[0],
+                    startDate: '',
+                    endDate: '',
+
+                    init() {
+                        let searchStart = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                        let searchEnd = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+                        let todayStr = new Date().toISOString().split('T')[0];
+                        this.startDate = searchStart || todayStr;
+                        this.endDate = (searchEnd && searchEnd >= this.startDate) ? searchEnd : this.startDate;
+                    },
+
                     openMeetingModal(id) {
                         this.selectedMeetingRoomTypeId = id;
-                        if (!this.startDate) this.startDate = new Date().toISOString().split('T')[0];
-                        if (!this.endDate) this.endDate = new Date().toISOString().split('T')[0];
+                        let searchStart = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                        let searchEnd = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+                        let todayStr = new Date().toISOString().split('T')[0];
+
+                        if (searchStart) {
+                            this.startDate = searchStart;
+                        } else if (!this.startDate) {
+                            this.startDate = todayStr;
+                        }
+
+                        if (searchEnd && searchEnd >= this.startDate) {
+                            this.endDate = searchEnd;
+                        } else if (!this.endDate || this.endDate < this.startDate) {
+                            this.endDate = this.startDate;
+                        }
+
                         this.isMeetingModalOpen = true;
                     }
                 }">
@@ -563,7 +610,7 @@
                                                 <button type="submit"
                                                     class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
                                                     <div class="flex items-center gap-2">
-                                                        <span>បន្តទៅការទូទាត់ប្រាក់</span>
+                                                        <span>ទូទាត់ប្រាក់</span>
                                                     </div>
                                                 </button>
                                             </div>
@@ -636,14 +683,17 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             let localTomorrow = new Date(tomorrow.getTime() - (offset * 60 * 1000)).toISOString().split('T')[0];
 
+            let searchCheckIn = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+            let searchCheckOut = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+
             if(type === 'hotel') {
-                if (!this.checkIn) this.checkIn = localToday;
-                if (!this.checkOut || this.checkOut <= this.checkIn) this.checkOut = localTomorrow;
+                this.checkIn = searchCheckIn || localToday;
+                this.checkOut = (searchCheckOut && searchCheckOut > this.checkIn) ? searchCheckOut : localTomorrow;
                 this.isHotelModalOpen = true;
                 this.hotelSpecialRequests = '';
             } else {
-                if (!this.startDate) this.startDate = localToday;
-                if (!this.endDate || this.endDate < this.startDate) this.endDate = localToday;
+                this.startDate = searchCheckIn || localToday;
+                this.endDate = (searchCheckOut && searchCheckOut >= this.startDate) ? searchCheckOut : localToday;
                 this.isMeetingModalOpen = true;
                 this.meetingSpecialRequests = '';
             }

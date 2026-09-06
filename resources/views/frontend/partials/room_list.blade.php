@@ -123,19 +123,43 @@
                         let offset = today.getTimezoneOffset();
                         let localToday = new Date(today.getTime() - (offset * 60 * 1000));
                         this.minCheckIn = localToday.toISOString().split('T')[0];
-                        this.checkInDate = this.minCheckIn;
                         
                         let tomorrow = new Date();
                         tomorrow.setDate(tomorrow.getDate() + 1);
                         let localTomorrow = new Date(tomorrow.getTime() - (offset * 60 * 1000));
                         this.minCheckOut = localTomorrow.toISOString().split('T')[0];
-                        this.checkOutDate = this.minCheckOut;
+
+                        let searchCheckIn = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                        let searchCheckOut = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+
+                        this.checkInDate = searchCheckIn || this.minCheckIn;
+                        this.handleCheckInChange();
+                        if (searchCheckOut && searchCheckOut > this.checkInDate) {
+                            this.checkOutDate = searchCheckOut;
+                        } else if (!this.checkOutDate) {
+                            this.checkOutDate = this.minCheckOut;
+                        }
                     },
                     
                     openHotelModal(id) {
                         this.selectedRoomTypeId = id;
-                        if (!this.checkInDate) this.checkInDate = this.minCheckIn;
-                        if (!this.checkOutDate) this.checkOutDate = this.minCheckOut;
+                        let searchCheckIn = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
+                        let searchCheckOut = document.getElementById('check_out')?.value || '{{ request("check_out") }}';
+
+                        if (searchCheckIn) {
+                            this.checkInDate = searchCheckIn;
+                        } else if (!this.checkInDate) {
+                            this.checkInDate = this.minCheckIn;
+                        }
+
+                        this.handleCheckInChange();
+
+                        if (searchCheckOut && searchCheckOut > this.checkInDate) {
+                            this.checkOutDate = searchCheckOut;
+                        } else if (!this.checkOutDate || this.checkOutDate <= this.checkInDate) {
+                            this.checkOutDate = this.minCheckOut;
+                        }
+
                         this.isHotelModalOpen = true;
                     },
                     
@@ -218,7 +242,7 @@
                                     <button type="submit"
                                         class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
                                         <div class="flex items-center gap-2">
-                                            <span>បន្តទៅការទូទាត់ប្រាក់</span>
+                                            <span>ទូទាត់ប្រាក់</span>
                                         </div>
                                     </button>
                                 </div>
