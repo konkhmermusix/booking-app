@@ -65,7 +65,7 @@ class NotificationController extends Controller
                 'title' => 'ការកក់បន្ទប់ (រង់ចាំការពិនិត្យ)',
                 'description' => ($b->customer_name ?: 'អតិថិជន') . ' - កូដ: #' . $b->booking_code,
                 'time' => $b->created_at ? $b->created_at->locale('km')->diffForHumans() : '',
-                'url' => route('admin.notifications.read', ['type' => 'room', 'id' => $b->id]),
+                'url' => route('notifications.read', ['type' => 'room', 'id' => $b->id]),
                 'is_unread' => $isUnread,
                 'timestamp' => strtotime($b->created_at),
             ]);
@@ -84,7 +84,7 @@ class NotificationController extends Controller
                 'title' => 'អតិថិជនបោះបង់ការកក់បន្ទប់ ',
                 'description' => ($cb->customer_name ?: 'អតិថិជន') . ' - កូដ: #' . $cb->booking_code,
                 'time' => $cb->updated_at ? $cb->updated_at->locale('km')->diffForHumans() : '',
-                'url' => route('admin.notifications.read', ['type' => 'room', 'id' => $cb->id]),
+                'url' => route('notifications.read', ['type' => 'room', 'id' => $cb->id]),
                 'is_unread' => $isUnread,
                 'timestamp' => strtotime($cb->updated_at ?? $cb->created_at),
             ]);
@@ -103,7 +103,7 @@ class NotificationController extends Controller
                 'title' => 'ការកក់សាលប្រជុំ (រង់ចាំការពិនិត្យ)',
                 'description' => ($mb->customer_name ?: 'អតិថិជន') . ' - កូដ: #' . $mb->booking_code,
                 'time' => $mb->created_at ? $mb->created_at->locale('km')->diffForHumans() : '',
-                'url' => route('admin.notifications.read', ['type' => 'meeting', 'id' => $mb->id]),
+                'url' => route('notifications.read', ['type' => 'meeting', 'id' => $mb->id]),
                 'is_unread' => $isUnread,
                 'timestamp' => strtotime($mb->created_at),
             ]);

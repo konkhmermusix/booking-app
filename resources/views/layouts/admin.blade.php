@@ -564,7 +564,7 @@ $dynSiteName = $contactSettings['site_name'];
                 {{-- Inline Dropdown --}}
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition x-cloak>
                     <a href="{{ route('profile.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('profile.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការកំណត់គណនី</a>
-                    <a href="{{ route('notifications.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('notifications.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការជូនដំណឹងក្នុងប្រព័ន្ធ</a>
+                    <a href="{{ route('admin.notifications.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.notifications.*') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការជូនដំណឹងក្នុងប្រព័ន្ធ</a>
                     <a href="{{ route('users.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('users.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីអ្នកប្រើប្រាស់</a>
                     <a href="{{ route('contact.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('contact.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការផ្ដល់មតិពីភ្ញៀវ</a>
                     <a href="{{ route('reviews.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reviews.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការវាយតម្លៃពីភ្ញៀវ</a>
@@ -589,7 +589,7 @@ $dynSiteName = $contactSettings['site_name'];
                         <a href="{{ route('profile.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
                             <i class="fas fa-user-gear text-xs w-4"></i> ការកំណត់គណនី
                         </a>
-                        <a href="{{ route('notifications.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.notifications.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
+                        <a href="{{ route('admin.notifications.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.notifications.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
                             <i class="fas fa-bell text-xs w-4"></i> ការជូនដំណឹងក្នុងប្រព័ន្ធ
                         </a>
                         <a href="{{ route('users.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('users.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
@@ -805,7 +805,7 @@ $dynSiteName = $contactSettings['site_name'];
                     <i class="fas fa-bars"></i>
                 </button>
 
-                <form action="{{ route('admin.global-search') }}" method="GET" class="hidden lg:flex items-center bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl focus-within:border-blue-500 transition-all w-64 border border-transparent focus-within:border-blue-500/50">
+                <form action="{{ route('global-search') }}" method="GET" class="hidden lg:flex items-center bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-xl focus-within:border-blue-500 transition-all w-64 border border-transparent focus-within:border-blue-500/50">
                     <i class="fas fa-search text-gray-400 text-sm"></i>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="ស្វែងរក..." class="bg-transparent border-none outline-none text-sm ml-2 w-full dark:text-white">
                 </form>
