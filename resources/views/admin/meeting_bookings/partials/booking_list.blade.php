@@ -263,7 +263,7 @@ if (!function_exists('formatKhmerTime')) {
 {{-- 3. TABLE VIEW --}}
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm" x-transition>
     <div class="overflow-x-auto w-full max-w-full custom-scrollbar pb-2">
-        <table class="w-full min-w-[1280px] text-left border-collapse">
+        <table class="w-full min-w-[1380px] text-left border-collapse">
             <thead class="bg-gray-50/50 dark:bg-gray-800/50">
                 <tr class="text-[11px] uppercase font-black text-gray-400 tracking-widest whitespace-nowrap">
                     <th class="px-4 py-3.5 whitespace-nowrap">លេខកូដ</th>
@@ -297,86 +297,86 @@ if (!function_exists('formatKhmerTime')) {
                     $payMethod = $booking->payment_method ?: ($booking->payment ? $booking->payment->method : 'cash');
                 @endphp
                 <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
-                    <td class="px-6 py-4 font-black text-purple-600">#{{ $booking->booking_code }}</td>
+                    <td class="px-4 py-3.5 font-black text-purple-600 whitespace-nowrap">#{{ $booking->booking_code }}</td>
 
                     {{-- CUSTOMER & SOURCE --}}
-                    <td class="px-6 py-4">
-                        <div class="font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                        <div class="font-extrabold text-gray-900 dark:text-white flex items-center gap-2 whitespace-nowrap">
                             <span>{{ $customerName }}</span>
                             @if($isOnline)
-                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200/50">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200/50 whitespace-nowrap shrink-0">
                                 <i class="fa-solid fa-globe mr-0.5"></i> អនឡាញ
                             </span>
                             @else
-                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50 whitespace-nowrap shrink-0">
                                 <i class="fa-solid fa-store mr-0.5"></i> ផ្ទាល់
                             </span>
                             @endif
                         </div>
-                        <div class="text-[11px] text-gray-400 mt-0.5">{{ $booking->customer_phone ?? ($booking->user->phone ?? 'N/A') }}</div>
-                        <div class="text-[11px] text-gray-400 mt-0.5">{{ $booking->customer_email ?? ($booking->user->email ?? 'N/A') }}</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5 whitespace-nowrap">{{ $booking->customer_phone ?? ($booking->user->phone ?? 'N/A') }}</div>
+                        <div class="text-[11px] text-gray-400 mt-0.5 whitespace-nowrap">{{ $booking->customer_email ?? ($booking->user->email ?? 'N/A') }}</div>
                     </td>
 
                     {{-- ROOM & ROOM TYPE --}}
-                    <td class="px-6 py-4">
-                        <div class="font-extrabold text-purple-600 dark:text-purple-400">សាលប្រជុំ {{ $roomNumber }}</div>
-                        <div class="text-xs font-bold text-gray-500 dark:text-gray-400">{{ $roomTypeName }}</div>
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                        <div class="font-extrabold text-purple-600 dark:text-purple-400 whitespace-nowrap">សាលប្រជុំ {{ $roomNumber }}</div>
+                        <div class="text-xs font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ $roomTypeName }}</div>
                     </td>
 
                     {{-- DATES & TIMES --}}
-                    <td class="px-6 py-4 text-center">
-                        <div class="inline-flex flex-col items-center gap-1 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-gray-200/60 dark:border-gray-700/60">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">{{ $startDateFormatted }}</span>
+                    <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                        <div class="inline-flex flex-col items-center gap-1 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-gray-200/60 dark:border-gray-700/60 whitespace-nowrap">
+                            <div class="flex items-center gap-2 whitespace-nowrap">
+                                <span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">{{ $startDateFormatted }}</span>
                                 <i class="fa-solid fa-arrow-right text-[10px] text-gray-400"></i>
-                                <span class="text-xs font-extrabold text-rose-600 dark:text-rose-400">{{ $endDateFormatted }}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-300">
+                                <span class="text-xs font-extrabold text-rose-600 dark:text-rose-400 whitespace-nowrap">{{ $endDateFormatted }}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-300 whitespace-nowrap shrink-0">
                                     {{ $daysCount }} ថ្ងៃ
                                 </span>
                             </div>
-                            <div class="text-[10px] font-bold text-gray-400">
+                            <div class="text-[10px] font-bold text-gray-400 whitespace-nowrap">
                                 <i class="far fa-clock text-amber-500 mr-1"></i>{{ formatKhmerTime($booking->start_time) }} - {{ formatKhmerTime($booking->end_time) }} ({{ $booking->total_hours }}h)
                             </div>
                         </div>
                     </td>
 
                     {{-- ATTENDEES & SETUP --}}
-                    <td class="px-6 py-4 text-center">
-                        <span class="px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 font-bold text-xs">
+                    <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                        <span class="px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 font-bold text-xs whitespace-nowrap shrink-0">
                             <i class="fas fa-users text-[10px] mr-1"></i> {{ $booking->attendees_count ?? 10 }} នាក់
                         </span>
                         @if($booking->setup_style)
-                        <div class="text-[10px] text-gray-400 mt-1 font-semibold">រៀបចំ: {{ $setupMap[$booking->setup_style] ?? $booking->setup_style }}</div>
+                        <div class="text-[10px] text-gray-400 mt-1 font-semibold whitespace-nowrap">រៀបចំ: {{ $setupMap[$booking->setup_style] ?? $booking->setup_style }}</div>
                         @endif
                     </td>
 
                     {{-- TOTAL PRICE --}}
-                    <td class="px-6 py-4 text-center font-black text-gray-900 dark:text-white">
+                    <td class="px-4 py-3.5 text-center font-black text-gray-900 dark:text-white whitespace-nowrap">
                         ${{ number_format($booking->total_price, 2) }}
                     </td>
 
                     {{-- PAYMENT STATUS --}}
-                    <td class="px-6 py-4 text-center">
-                        <div class="flex flex-col items-center gap-1">
+                    <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1 whitespace-nowrap">
                             @if($payStatus === 'paid')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-check-circle text-[9px]"></i> បានបង់រួច
                                 </span>
                             @elseif($payStatus === 'pending')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-clock text-[9px]"></i> រង់ចាំបង់
                                 </span>
                             @elseif($payStatus === 'refunded')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-undo text-[9px]"></i> បានសងវិញ
                                 </span>
                             @else
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-times-circle text-[9px]"></i> បរាជ័យ
                                 </span>
                             @endif
 
-                            <span class="text-[10px] text-gray-400 font-bold uppercase">
+                            <span class="text-[10px] text-gray-400 font-bold uppercase whitespace-nowrap">
                                 @if(in_array($payMethod, ['qr', 'khqr']))
                                     ឃ្យូអរកូដ
                                 @else
@@ -385,7 +385,7 @@ if (!function_exists('formatKhmerTime')) {
                             </span>
 
                             @if($booking->payment && $booking->payment->payment_slip)
-                            <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="mt-1 px-2 py-0.5 rounded text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center justify-center gap-1 cursor-pointer">
+                            <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="mt-1 px-2 py-0.5 rounded text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
                                 <i class="fas fa-file-image"></i> មើលបង្កាន់ដៃបង់ប្រាក់
                             </button>
                             @endif
@@ -393,15 +393,15 @@ if (!function_exists('formatKhmerTime')) {
                     </td>
 
                     {{-- STATUS --}}
-                    <td class="px-6 py-4 text-center">
-                        <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase {{ $statusColors[$booking->status] ?? 'bg-gray-100 text-gray-600' }}">
+                    <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                        <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase whitespace-nowrap inline-block shrink-0 {{ $statusColors[$booking->status] ?? 'bg-gray-100 text-gray-600' }}">
                             {{ $statusLabels[$booking->status] ?? $booking->status }}
                         </span>
                     </td>
 
                     {{-- ACTIONS --}}
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
-                        <div class="flex justify-end items-center gap-1">
+                    <td class="px-4 py-3.5 whitespace-nowrap text-right text-xs font-medium">
+                        <div class="flex justify-end items-center gap-1 whitespace-nowrap">
                             <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
                                 <i class="fas fa-print text-sm"></i>
                             </a>

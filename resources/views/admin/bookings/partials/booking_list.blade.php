@@ -341,7 +341,7 @@ if (!function_exists('formatKhmerTimeCombined')) {
 {{-- 3. TABLE VIEW --}}
 <div x-show="viewMode === 'table'" class="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm" x-transition>
     <div class="overflow-x-auto w-full max-w-full custom-scrollbar pb-2">
-        <table class="w-full min-w-[1280px] text-left border-collapse text-sm">
+        <table class="w-full min-w-[1380px] text-left border-collapse text-sm">
             <thead>
                 <tr class="bg-gray-50/70 dark:bg-gray-850 border-b border-gray-100 dark:border-gray-800 text-[11px] uppercase font-black text-gray-400 tracking-wider whitespace-nowrap">
                     <th class="px-4 py-3.5 whitespace-nowrap">លេខកូដ</th>
@@ -395,11 +395,11 @@ if (!function_exists('formatKhmerTimeCombined')) {
                         <div class="font-extrabold text-gray-900 dark:text-white flex items-center gap-2 whitespace-nowrap">
                             <span>{{ $customerName }}</span>
                             @if($isOnline)
-                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200/50 whitespace-nowrap">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200/50 whitespace-nowrap shrink-0">
                                 <i class="fa-solid fa-globe mr-0.5"></i> អនឡាញ
                             </span>
                             @else
-                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50 whitespace-nowrap">
+                            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200/50 whitespace-nowrap shrink-0">
                                 <i class="fa-solid fa-store mr-0.5"></i> ផ្ទាល់
                             </span>
                             @endif
@@ -429,18 +429,18 @@ if (!function_exists('formatKhmerTimeCombined')) {
                     </td>
 
                     {{-- DATES & TIMES --}}
-                    <td class="px-6 py-4 text-center">
-                        <div class="inline-flex flex-col items-center gap-1 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-gray-200/60 dark:border-gray-700/60">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">{{ $checkInDate }}</span>
+                    <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                        <div class="inline-flex flex-col items-center gap-1 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-xl border border-gray-200/60 dark:border-gray-700/60 whitespace-nowrap">
+                            <div class="flex items-center gap-2 whitespace-nowrap">
+                                <span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">{{ $checkInDate }}</span>
                                 <i class="fa-solid fa-arrow-right text-[10px] text-gray-400"></i>
-                                <span class="text-xs font-extrabold text-rose-600 dark:text-rose-400">{{ $checkOutDate }}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-300">
+                                <span class="text-xs font-extrabold text-rose-600 dark:text-rose-400 whitespace-nowrap">{{ $checkOutDate }}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-300 whitespace-nowrap shrink-0">
                                     {{ $durationCount }} {{ $isMeeting ? 'ថ្ងៃ' : 'យប់' }}
                                 </span>
                             </div>
                             @if($isMeeting)
-                            <div class="text-[10px] font-bold text-gray-400">
+                            <div class="text-[10px] font-bold text-gray-400 whitespace-nowrap">
                                 <i class="far fa-clock text-amber-500 mr-1"></i>{{ formatKhmerTimeCombined($booking->start_time) }} - {{ formatKhmerTimeCombined($booking->end_time) }} ({{ $booking->total_hours }}h)
                             </div>
                             @endif
@@ -448,33 +448,33 @@ if (!function_exists('formatKhmerTimeCombined')) {
                     </td>
 
                     {{-- TOTAL PRICE --}}
-                    <td class="px-6 py-4 font-black text-gray-900 dark:text-white whitespace-nowrap">
-                        <div>${{ number_format($booking->total_price, 2) }}</div>
-                        <div class="text-[11px] text-gray-400 font-normal font-mono">({{ number_format($booking->total_price * $khrRate) }} ៛)</div>
+                    <td class="px-4 py-3.5 font-black text-gray-900 dark:text-white whitespace-nowrap">
+                        <div class="whitespace-nowrap">${{ number_format($booking->total_price, 2) }}</div>
+                        <div class="text-[11px] text-gray-400 font-normal font-mono whitespace-nowrap">({{ number_format($booking->total_price * $khrRate) }} ៛)</div>
                     </td>
 
                     {{-- PAYMENT STATUS & SLIP --}}
-                    <td class="px-6 py-4 text-center whitespace-nowrap">
-                        <div class="flex flex-col items-center gap-1">
+                    <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                        <div class="flex flex-col items-center gap-1 whitespace-nowrap">
                             @if($payStatus === 'paid')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-check-circle text-[9px]"></i> បានបង់រួច
                                 </span>
                             @elseif($payStatus === 'pending')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-clock text-[9px]"></i> រង់ចាំបង់
                                 </span>
                             @elseif($payStatus === 'refunded')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-undo text-[9px]"></i> បានសងវិញ
                                 </span>
                             @else
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 inline-flex items-center gap-1">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 inline-flex items-center gap-1 whitespace-nowrap shrink-0">
                                     <i class="fas fa-times-circle text-[9px]"></i> បរាជ័យ
                                 </span>
                             @endif
 
-                            <span class="text-[10px] text-gray-400 font-bold uppercase">
+                            <span class="text-[10px] text-gray-400 font-bold uppercase whitespace-nowrap">
                                 @if(in_array($payMethod, ['qr', 'khqr']))
                                     ឃ្យូអរកូដ
                                 @else
@@ -483,7 +483,7 @@ if (!function_exists('formatKhmerTimeCombined')) {
                             </span>
 
                             @if($booking->payment && $booking->payment->payment_slip)
-                            <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="mt-1 px-2 py-0.5 rounded text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center justify-center gap-1 cursor-pointer" title="មើលបង្កាន់ដៃបង់ប្រាក់">
+                            <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="mt-1 px-2 py-0.5 rounded text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap" title="មើលបង្កាន់ដៃបង់ប្រាក់">
                                 <i class="fas fa-file-image"></i> មើលបង្កាន់ដៃបង់ប្រាក់
                             </button>
                             @endif
@@ -491,29 +491,29 @@ if (!function_exists('formatKhmerTimeCombined')) {
                     </td>
 
                     {{-- BOOKING STATUS --}}
-                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                    <td class="px-4 py-3.5 text-center whitespace-nowrap">
                         @if($booking->status === 'confirmed')
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400 whitespace-nowrap shrink-0">
                             បានបញ្ជាក់
                         </span>
                         @elseif($booking->status === 'completed')
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 whitespace-nowrap shrink-0">
                             រួចរាល់
                         </span>
                         @elseif($booking->status === 'cancelled')
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 whitespace-nowrap shrink-0">
                             បានបោះបង់
                         </span>
                         @else
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 whitespace-nowrap shrink-0">
                             រង់ចាំពិនិត្យ
                         </span>
                         @endif
                     </td>
 
                     {{-- ACTIONS --}}
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
-                        <div class="flex justify-end items-center gap-1.5">
+                    <td class="px-4 py-3.5 whitespace-nowrap text-right text-xs font-medium">
+                        <div class="flex justify-end items-center gap-1.5 whitespace-nowrap">
                             @if($isMeeting)
                             <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
                                 <i class="fas fa-print text-sm"></i>
