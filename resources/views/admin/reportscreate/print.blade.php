@@ -120,6 +120,10 @@
                         <th class="p-2 border">សមត្ថភាព</th>
                         <th class="p-2 border text-center">ស្ថានភាព</th>
                         <th class="p-2 border text-right">តម្លៃ/យប់ ($)</th>
+                    @else
+                        <th class="p-2 border">ID</th>
+                        <th class="p-2 border">ឈ្មោះ/ចំណងជើង</th>
+                        <th class="p-2 border text-right">ថ្ងៃបង្កើត</th>
                     @endif
                 </tr>
             </thead>
@@ -162,6 +166,10 @@
                             <td class="p-2 border">{{ $row->capacity }} នាក់</td>
                             <td class="p-2 border text-center font-bold">{{ $row->status }}</td>
                             <td class="p-2 border text-right font-bold">${{ number_format($row->price_per_night, 2) }}</td>
+                        @else
+                            <td class="p-2 border font-mono text-xs text-gray-400">#{{ $row->id }}</td>
+                            <td class="p-2 border font-bold">{{ $row->title ?: ($row->name ?: ($row->room_number ?? 'Item #'.$row->id)) }}</td>
+                            <td class="p-2 border text-right text-xs text-gray-400">{{ isset($row->created_at) ? $row->created_at->format('Y-m-d H:i') : 'N/A' }}</td>
                         @endif
                     </tr>
                 @endforeach

@@ -71,13 +71,13 @@
                     <select name="period" onchange="toggleCustomDates(this.value); this.form.submit()" id="periodSelect"
                             class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold transition-all">
                         <option value="today" {{ $period === 'today' ? 'selected' : '' }}>ថ្ងៃនេះ</option>
-                        <option value="yesterday" {{ $period === 'yesterday' ? 'selected' : '' }}>⏪ ម្សិលមិញ</option>
-                        <option value="this_week" {{ $period === 'this_week' ? 'selected' : '' }}>📊 សប្ដាហ៍នេះ</option>
-                        <option value="last_7_days" {{ $period === 'last_7_days' ? 'selected' : '' }}>🗓️ ៧ ថ្ងៃចុងក្រោយ</option>
-                        <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>📈 ខែនេះ</option>
-                        <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>📉 ខែមុន</option>
-                        <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>📆 ឆ្នាំនេះ</option>
-                        <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>⚙️ កំណត់ថ្ងៃដោយខ្លួនឯង</option>
+                        <option value="yesterday" {{ $period === 'yesterday' ? 'selected' : '' }}>ម្សិលមិញ</option>
+                        <option value="this_week" {{ $period === 'this_week' ? 'selected' : '' }}>សប្ដាហ៍នេះ</option>
+                        <option value="last_7_days" {{ $period === 'last_7_days' ? 'selected' : '' }}>៧ ថ្ងៃចុងក្រោយ</option>
+                        <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>ខែនេះ</option>
+                        <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>ខែមុន</option>
+                        <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>ឆ្នាំនេះ</option>
+                        <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>កំណត់ថ្ងៃដោយខ្លួនឯង</option>
                     </select>
                 </div>
 
@@ -374,7 +374,6 @@
                                 <td class="p-4 font-mono text-xs text-gray-400">#{{ $row->id }}</td>
                                 <td class="p-4 font-bold">{{ $row->title ?: ($row->name ?: ($row->room_number ?? 'Item #'.$row->id)) }}</td>
                                 <td class="p-4 text-right text-xs text-gray-400">{{ isset($row->created_at) ? $row->created_at->format('Y-m-d H:i') : 'N/A' }}</td>
-                            @endif
                             @endif
                         </tr>
                     @empty
