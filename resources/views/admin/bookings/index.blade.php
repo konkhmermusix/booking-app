@@ -470,25 +470,7 @@
                     <i class="fa-solid fa-plus text-[10px]"></i> កក់សាលប្រជុំ
                 </a>
 
-                {{-- Report Button Dropdown --}}
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @click.outside="open = false" class="h-9 px-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all">
-                        <i class="fas fa-file-export text-emerald-500"></i>
-                        <span>របាយការណ៍</span>
-                        <i class="fas fa-chevron-down text-[10px]"></i>
-                    </button>
-                    <div x-show="open" x-cloak x-transition class="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl z-50 p-1.5 text-xs font-semibold">
-                        <a href="{{ route('reportscreate.index', ['table' => 'room_bookings']) }}" class="flex items-center gap-2 px-3 py-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg font-bold">
-                            <i class="fas fa-sliders-h"></i> បង្កើតរបាយការណ៍តាមថ្ងៃ/ខែ
-                        </a>
-                        <a href="{{ route('reportrooms.export-excel') }}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg">
-                            <i class="fas fa-file-excel"></i> ទាញយកជា Excel
-                        </a>
-                        <a href="{{ route('reportrooms.export-pdf') }}" target="_blank" class="flex items-center gap-2 px-3 py-2 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg">
-                            <i class="fas fa-file-pdf"></i> ទាញយកជា PDF
-                        </a>
-                    </div>
-                </div>
+
             </div>
         </div>
 
