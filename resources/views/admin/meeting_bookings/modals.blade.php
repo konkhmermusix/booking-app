@@ -241,12 +241,13 @@
     </div>
 </div>
 
+
 {{-- 2. MEETING BOOKING DETAIL MODAL --}}
 <div x-show="showDetailModal" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
     <div class="flex items-center justify-center min-h-screen px-4 py-10">
         <div class="fixed inset-0 bg-gray-900/75 backdrop-blur-sm transition-opacity" @click="showDetailModal = false"></div>
 
-        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-3xl relative border border-gray-100 dark:border-gray-800 overflow-hidden transition-all"
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-3xl relative border border-gray-100 dark:border-gray-800 overflow-hidden transition-all"
             x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-8 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100">
 
             {{-- HEADER --}}
@@ -272,7 +273,7 @@
                     <div>
                         <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest block">ប្រភពការកក់</span>
                         <span class="font-black text-sm text-purple-600 dark:text-purple-400 mt-1 block flex items-center gap-1.5"
-                            x-text="selectedBooking.booking_type === 'online' || (selectedBooking.user_id && !selectedBooking.customer_name) ? '🌐 កក់តាមអនឡាញ (Website)' : '🏬 កក់ផ្ទាល់ (Walk-In)'"></span>
+                            x-text="selectedBooking.booking_type === 'online' || (selectedBooking.user_id && !selectedBooking.customer_name) ? 'កក់តាមអនឡាញ' : 'កក់ផ្ទាល់'"></span>
                     </div>
                     <div>
                         <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest block text-right">ស្ថានភាពការកក់</span>
@@ -388,7 +389,7 @@
                         <div>
                             <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest block">វិធីសាស្ត្របង់ប្រាក់</span>
                             <span class="font-black text-gray-800 dark:text-gray-100 uppercase text-sm mt-1 flex items-center gap-1.5"
-                                x-text="['qr', 'bank_transfer', 'khqr'].includes(selectedBooking.payment_method || (selectedBooking.payment ? selectedBooking.payment.method : '')) ? 'ឃ្យូអរកូដ (Bank QR)' : 'សាច់ប្រាក់ (Cash)'"></span>
+                                x-text="['qr', 'bank_transfer', 'khqr'].includes(selectedBooking.payment_method || (selectedBooking.payment ? selectedBooking.payment.method : '')) ? 'ឃ្យូអរកូដ' : 'សាច់ប្រាក់'"></span>
                             <template x-if="selectedBooking.payment && selectedBooking.payment.payment_slip">
                                 <button type="button" @click="viewSlip(getSlipUrl(selectedBooking.payment.payment_slip))"
                                     class="mt-1.5 text-xs font-black text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 flex items-center gap-1 cursor-pointer transition">
@@ -402,7 +403,7 @@
                                 x-text="selectedBooking.payment?.transaction_id || 'N/A'"></span>
                         </div>
                         <div class="text-right">
-                            <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest block">តម្លៃសរុប (Grand Total)</span>
+                            <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest block">តម្លៃសរុប</span>
                             <span class="font-black text-3xl text-purple-600 dark:text-purple-400 mt-1 block" x-text="`$${parseFloat(selectedBooking.total_price || 0).toFixed(2)}`"></span>
                         </div>
                     </div>

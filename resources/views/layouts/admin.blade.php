@@ -379,7 +379,7 @@ $dynSiteName = $contactSettings['site_name'];
                     <a href="{{ route('slideshows.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('slideshows.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីបដារ</a>
                     <a href="{{ route('tours.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('tours.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីទេសចរណ៍</a>
                     <a href="{{ route('abouts.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('abouts.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីអំពីយើង</a>
-                    <a href="{{ route('contacts_sett.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('contacts_sett.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីទំនាក់ទំនង</a>
+                    <a href="{{ route('contacts_sett.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('contacts_sett.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការកំណត់ប្រព័ន្ធ</a>
                     <a href="{{ route('galleries.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('galleries.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីរូបភាព</a>
                     <a href="{{ route('posts.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('posts.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីព័ត៌មានថ្មីៗ</a>
                 </div>
@@ -410,7 +410,7 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-info-circle text-xs w-4"></i> បញ្ជីអំពីយើង
                         </a>
                         <a href="{{ route('contacts_sett.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('contacts_sett.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-address-book text-xs w-4"></i> បញ្ជីទំនាក់ទំនង
+                            <i class="fas fa-sliders-h text-xs w-4"></i> ការកំណត់ប្រព័ន្ធ
                         </a>
                         <a href="{{ route('galleries.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('galleries.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
                             <i class="fas fa-photo-video text-xs w-4"></i> បញ្ជីរូបភាព

@@ -7,9 +7,9 @@
             <div class="px-6 py-4 border-b dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
                 <div>
                     <h3 class="font-black text-lg dark:text-white uppercase tracking-tight flex items-center gap-2"> 
-                        បន្ថែមព័ត៌មាន / ការកំណត់ថ្មី
+                        បន្ថែមកំណត់ប្រព័ន្ធថ្មី
                     </h3>
-                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">New System Setting Item</p>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">ការកំណត់ប្រព័ន្ធថ្មី</p>
                 </div>
                 <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl transition-transform hover:rotate-90">&times;</button>
             </div>
@@ -114,9 +114,9 @@
             <div class="px-6 py-4 border-b dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
                 <div>
                     <h3 class="font-black text-lg dark:text-white uppercase tracking-tight flex items-center gap-2">
-                        កែប្រែ៖ <span x-text="currentSetting.label" class="text-blue-600 dark:text-blue-400"></span>
+                        កែសម្រួលការកំណត់ប្រព័ន្ធ៖ <span x-text="currentSetting.label" class="text-blue-600 dark:text-blue-400"></span>
                     </h3>
-                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Update Setting Details</p>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">កែសម្រួលព័ត៌មានការកំណត់ប្រព័ន្ធ</p>
                 </div>
                 <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl transition-transform hover:rotate-90">&times;</button>
             </div>

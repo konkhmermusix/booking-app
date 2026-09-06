@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'គ្រប់គ្រងការកំណត់ និងអត្រាប្តូរប្រាក់')
+@section('title', 'គ្រប់គ្រងការកំណត់ប្រព័ន្ធ និងអត្រាប្តូរប្រាក់')
 
 @section('content')
 <div class="p-2 sm:p-2" x-data="{ 
@@ -103,14 +103,15 @@
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6">
         <div>
             <h2 class="text-lg font-bold dark:text-white flex items-center gap-2">
-                គ្រប់គ្រងព័ត៌មានទំនាក់ទំនង & កំណត់ប្រព័ន្ធ
+                <i class="fas fa-sliders-h text-blue-600 dark:text-blue-400"></i>
+                គ្រប់គ្រងការកំណត់ប្រព័ន្ធ & អត្រាប្តូរប្រាក់
             </h2>
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">System Settings, Phone Numbers, Social Links & Exchange Rate</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">System Settings, Phone Numbers, Social Links & Dynamic Exchange Rate</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
             <button @click="currentSetting = {}; showAddModal = true" class="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md text-sm font-bold flex items-center gap-2 transition-all active:scale-95">
-                <i class="fas fa-plus-circle"></i> បន្ថែមព័ត៌មានថ្មី
+                <i class="fas fa-plus-circle"></i> បន្ថែមកំណត់ប្រព័ន្ធថ្មី
             </button>
         </div>
     </div>
@@ -120,7 +121,7 @@
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-50/70 dark:bg-gray-800/50 text-gray-400 dark:text-gray-400 text-xs uppercase font-bold tracking-wider">
                 <tr>
-                    <th class="px-6 py-4">ព័ត៌មាន / Label</th>
+                    <th class="px-6 py-4">ឈ្មោះការកំណត់ (Setting Label)</th>
                     <th class="px-6 py-4">តម្លៃ (Value)</th>
                     <th class="px-6 py-4">រូបតំណាង (Icon)</th>
                     <th class="px-6 py-4 text-center">ស្ថានភាព</th>
@@ -207,7 +208,7 @@
                 @empty
                 <tr>
                     <td colspan="5" class="px-6 py-12 text-center text-gray-400">
-                        មិនមានទិន្នន័យកំណត់ឡើយ
+                        មិនមានទិន្នន័យកំណត់ប្រព័ន្ធឡើយ
                     </td>
                 </tr>
                 @endforelse
