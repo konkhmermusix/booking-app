@@ -549,12 +549,12 @@ $dynSiteName = $contactSettings['site_name'];
                 @mouseenter="if(!sidebarOpen) { topPos = $el.getBoundingClientRect().top; hover = true; }"
                 @mouseleave="if(!sidebarOpen) { hover = false; }"
                 x-data="{ 
-                    open: {{ request()->routeIs('users.*', 'contact.*', 'reviews.*') ? 'true' : 'false' }},
+                    open: {{ request()->routeIs('users.*', 'contact.*', 'reviews.*', 'profile.*', 'notifications.*') ? 'true' : 'false' }},
                     hover: false,
                     topPos: 0
                 }">
                 <button @click="if(sidebarOpen) open = !open"
-                    class="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all {{ request()->routeIs('notifications.*', 'users.*', 'contact.*', 'reviews.*') ? 'bg-white/10 text-white' : '' }}"
+                    class="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all {{ request()->routeIs('users.*', 'contact.*', 'reviews.*','profile.*', 'notifications.*') ? 'bg-white/10 text-white' : '' }}"
                     :class="sidebarOpen ? 'justify-start' : 'justify-center'">
                     <i class="fas fa-user-cog w-6 text-center text-lg"></i>
                     <span x-show="sidebarOpen" class="flex-1 text-left font-medium">គ្រប់គ្រង់ប្រព័ន្ធ</span>
@@ -563,8 +563,8 @@ $dynSiteName = $contactSettings['site_name'];
 
                 {{-- Inline Dropdown --}}
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition x-cloak>
-                    <a href="{{ route('admin.profile.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.profile.*') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការកំណត់គណនី (Profile)</a>
-                    <a href="{{ route('admin.notifications.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.notifications.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការជូនដំណឹងក្នុងប្រព័ន្ធ</a>
+                    <a href="{{ route('profile.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('profile.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការកំណត់គណនី</a>
+                    <a href="{{ route('notifications.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('notifications.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការជូនដំណឹងក្នុងប្រព័ន្ធ</a>
                     <a href="{{ route('users.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('users.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">បញ្ជីអ្នកប្រើប្រាស់</a>
                     <a href="{{ route('contact.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('contact.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការផ្ដល់មតិពីភ្ញៀវ</a>
                     <a href="{{ route('reviews.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reviews.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">ការវាយតម្លៃពីភ្ញៀវ</a>
@@ -586,10 +586,10 @@ $dynSiteName = $contactSettings['site_name'];
                             <span>គ្រប់គ្រង់ប្រព័ន្ធ</span>
                             <i class="fas fa-user-cog text-xs"></i>
                         </div>
-                        <a href="{{ route('admin.profile.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.profile.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-user-gear text-xs w-4"></i> ការកំណត់គណនី (Profile)
+                        <a href="{{ route('profile.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
+                            <i class="fas fa-user-gear text-xs w-4"></i> ការកំណត់គណនី
                         </a>
-                        <a href="{{ route('admin.notifications.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.notifications.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
+                        <a href="{{ route('notifications.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('admin.notifications.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
                             <i class="fas fa-bell text-xs w-4"></i> ការជូនដំណឹងក្នុងប្រព័ន្ធ
                         </a>
                         <a href="{{ route('users.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('users.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
@@ -945,8 +945,8 @@ $dynSiteName = $contactSettings['site_name'];
                             <p class="text-[10px] font-bold text-gray-400 uppercase">គណនីគ្រប់គ្រង</p>
                         </div>
 
-                        <a href="{{ route('admin.profile.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
-                            <i class="fas fa-user-gear text-blue-500"></i> ការកំណត់គណនី (Profile Settings)
+                        <a href="{{ route('profile.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
+                            <i class="fas fa-user-gear text-blue-500"></i> ការកំណត់គណនី
                         </a>
 
                         <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 transition">

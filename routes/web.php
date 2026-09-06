@@ -194,13 +194,13 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin,staff'])->prefix('admin')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/notifications-page', [NotificationController::class, 'index'])->name('admin.notifications.index');
-        Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('admin.notifications');
-        Route::get('/notifications/read/{type}/{id}', [NotificationController::class, 'readAndRedirect'])->name('admin.notifications.read');
-        Route::post('/notifications/mark-read', [NotificationController::class, 'markAllAsRead'])->name('admin.notifications.mark-read');
-        Route::get('/global-search', [GlobalSearchController::class, 'index'])->name('admin.global-search');
-        Route::post('/bookings/{id}/approve', [DashboardController::class, 'approve'])->name('admin.bookings.approve');
-        Route::post('/bookings/{id}/reject', [DashboardController::class, 'reject'])->name('admin.bookings.reject');
+        Route::get('/notifications-page', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('notifications');
+        Route::get('/notifications/read/{type}/{id}', [NotificationController::class, 'readAndRedirect'])->name('notifications.read');
+        Route::post('/notifications/mark-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-read');
+        Route::get('/global-search', [GlobalSearchController::class, 'index'])->name('global-search');
+        Route::post('/bookings/{id}/approve', [DashboardController::class, 'approve'])->name('bookings.approve');
+        Route::post('/bookings/{id}/reject', [DashboardController::class, 'reject'])->name('bookings.reject');
 
         Route::get('/reportrooms-export-excel', [ReportRoomController::class, 'exportExcel'])->name('reportrooms.export-excel');
         Route::get('/reportrooms-export-pdf', [ReportRoomController::class, 'exportPdf'])->name('reportrooms.export-pdf');
@@ -260,10 +260,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/conversations/{id}', [ChatController::class, 'destroyConversation'])->name('conversations.destroy');
 
         // Admin & Staff Profile Settings
-        Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile.index');
-        Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update');
-        Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('admin.profile.update-password');
-        Route::post('/profile/preferences', [ProfileController::class, 'updatePreferences'])->name('admin.profile.update-preferences');
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+        Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+        Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+        Route::post('/profile/preferences', [ProfileController::class, 'updatePreferences'])->name('profile.update-preferences');
     });
 
     // For Admin Only

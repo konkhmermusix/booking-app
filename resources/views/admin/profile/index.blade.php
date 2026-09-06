@@ -12,7 +12,7 @@
 }">
 
     {{-- Top Profile Header Banner --}}
-    <div class="bg-gradient-to-r from-[#002B5B] via-indigo-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl mb-6 relative overflow-hidden">
+    <div class="bg-gradient-to-r from-blue-800 via-indigo-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl mb-6 relative overflow-hidden">
         <div class="absolute right-0 top-0 bottom-0 opacity-10 pointer-events-none flex items-center pr-10">
             <i class="fas fa-user-gear text-9xl"></i>
         </div>
@@ -45,24 +45,21 @@
         {{-- Tab Navigation Buttons --}}
         <div class="flex items-center gap-2 mt-8 pt-4 border-t border-white/10 overflow-x-auto custom-scrollbar">
             <button @click="activeTab = 'profile'"
-                :class="activeTab === 'profile' ? 'bg-white text-[#002B5B] font-black shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20 font-bold'"
+                :class="activeTab === 'profile' ? 'bg-blue text-[#002B5B] font-black shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20 font-bold'"
                 class="px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap">
-                <i class="fas fa-user-circle text-sm"></i>
-                <span>ព័ត៌មានគណនី (Profile)</span>
+                <span>ព័ត៌មានគណនី</span>
             </button>
 
             <button @click="activeTab = 'password'"
-                :class="activeTab === 'password' ? 'bg-white text-[#002B5B] font-black shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20 font-bold'"
+                :class="activeTab === 'password' ? 'bg-blue text-[#002B5B] font-black shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20 font-bold'"
                 class="px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap">
-                <i class="fas fa-key text-sm"></i>
-                <span>ប្តូរលេខសម្ងាត់ (Password)</span>
+                <span>ប្តូរលេខសម្ងាត់ </span>
             </button>
 
             <button @click="activeTab = 'others'"
-                :class="activeTab === 'others' ? 'bg-white text-[#002B5B] font-black shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20 font-bold'"
+                :class="activeTab === 'others' ? 'bg-blue text-[#002B5B] font-black shadow-lg' : 'bg-white/10 text-white/80 hover:bg-white/20 font-bold'"
                 class="px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap">
-                <i class="fas fa-sliders-h text-sm"></i>
-                <span>ការកំណត់ផ្សេងៗ (Preferences)</span>
+                <span>ការកំណត់ផ្សេងៗ</span>
             </button>
         </div>
     </div>
@@ -99,14 +96,13 @@
             <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 mb-6">
                 <div>
                     <h3 class="text-lg font-black dark:text-white flex items-center gap-2">
-                        <i class="fas fa-user-edit text-blue-600 dark:text-blue-400"></i>
                         កែប្រែព័ត៌មានគណនីផ្ទាល់ខ្លួន
                     </h3>
                     <p class="text-xs text-gray-400 mt-0.5">ធ្វើបច្ចុប្បន្នភាពឈ្មោះ អ៊ីមែល លេខទូរស័ព្ទ និងរូបថតគណនីរបស់អ្នក</p>
                 </div>
             </div>
 
-            <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-6">
                     {{-- Avatar Upload & Preview --}}
@@ -116,7 +112,7 @@
                         </div>
                         <div class="space-y-2 text-center sm:text-left flex-1">
                             <label class="block text-xs font-black text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                រូបថតផ្ទាល់ខ្លួន (Profile Picture)
+                                រូបថតផ្ទាល់ខ្លួន
                             </label>
                             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3">
                                 <label class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-2 active:scale-95">
@@ -197,14 +193,13 @@
             <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 mb-6">
                 <div>
                     <h3 class="text-lg font-black dark:text-white flex items-center gap-2">
-                        <i class="fas fa-lock text-amber-500"></i>
                         ប្តូរលេខសម្ងាត់គណនី
                     </h3>
                     <p class="text-xs text-gray-400 mt-0.5">ដើម្បីសុវត្ថិភាពគណនី សូមប្រើប្រាស់លេខសម្ងាត់ដែលពិបាកទាយ</p>
                 </div>
             </div>
 
-            <form action="{{ route('admin.profile.update-password') }}" method="POST">
+            <form action="{{ route('profile.update-password') }}" method="POST">
                 @csrf
                 <div class="space-y-6">
 
@@ -304,8 +299,8 @@
                     <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl mb-4">
                         <i class="fas fa-palette"></i>
                     </div>
-                    <h3 class="text-lg font-black dark:text-white mb-1">ពណ៌ប្រព័ន្ធ (Theme Preference)</h3>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">ជ្រើសរើសស្ទីលបង្ហាញប្រព័ន្ធរវាង Light Mode ឬ Dark Mode តាមតម្រូវការ</p>
+                    <h3 class="text-lg font-black dark:text-white mb-1">ពណ៌ប្រព័ន្ធ</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">ជ្រើសរើសស្ទីលបង្ហាញប្រព័ន្ធរវាងពន្លឺ ឬងងឹត តាមតម្រូវការ</p>
                 </div>
 
                 <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center gap-4">
@@ -313,14 +308,14 @@
                         :class="!isDark ? 'bg-blue-600 text-white font-black shadow-md' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-bold'"
                         class="flex-1 py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all cursor-pointer">
                         <i class="fas fa-sun text-amber-400 text-sm"></i>
-                        <span>Light Mode</span>
+                        <span>ពន្លឺ</span>
                     </button>
 
                     <button type="button" @click="isDark = true; localStorage.theme = 'dark'"
                         :class="isDark ? 'bg-blue-600 text-white font-black shadow-md' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 font-bold'"
                         class="flex-1 py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all cursor-pointer">
                         <i class="fas fa-moon text-indigo-400 text-sm"></i>
-                        <span>Dark Mode</span>
+                        <span>ងងឹត</span>
                     </button>
                 </div>
             </div>
@@ -332,7 +327,7 @@
                         <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl mb-4">
                             <i class="fas fa-bell"></i>
                         </div>
-                        <h3 class="text-lg font-black dark:text-white mb-1">ការជូនដំណឹងប្រព័ន្ធ (Notification Settings)</h3>
+                        <h3 class="text-lg font-black dark:text-white mb-1">ការជូនដំណឹងប្រព័ន្ធ</h3>
                         <p class="text-xs text-gray-500 dark:text-gray-400">គ្រប់គ្រងការជូនដំណឹងអំពីការកក់បន្ទប់ កក់សាលប្រជុំ និងការផ្ញើសារពីអតិថិជន</p>
                     </div>
 
