@@ -201,7 +201,7 @@ $receiverName = !empty($booking->confirmed_by_name)
             {{-- SIGNATURE & RECEIVER SECTION --}}
             <div class="grid grid-cols-2 gap-8 pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 text-center text-xs">
                 <div class="space-y-6">
-                    <p class="font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">ហត្ថលេខាអតិថិជន (Customer)</p>
+                    <p class="font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">ហត្ថលេខាអតិថិជន</p>
                     <div class="border-b border-gray-300 dark:border-gray-700 w-44 mx-auto pt-8"></div>
                     <p class="text-[11px] text-gray-600 dark:text-gray-400 font-bold">{{ $cName }}</p>
                 </div>
