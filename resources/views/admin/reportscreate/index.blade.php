@@ -52,7 +52,14 @@
                         <option value="meeting_bookings" {{ $tableType === 'meeting_bookings' ? 'selected' : '' }}>🏛️ ការកក់សាលប្រជុំ (Meeting Bookings)</option>
                         <option value="payments" {{ $tableType === 'payments' ? 'selected' : '' }}>💳 ប្រតិបត្តិការបង់ប្រាក់ (Payments)</option>
                         <option value="customers" {{ $tableType === 'customers' ? 'selected' : '' }}>👥 អ្នកប្រើប្រាស់ និងអតិថិជន (Customers)</option>
-                        <option value="rooms" {{ $tableType === 'rooms' ? 'selected' : '' }}>🔑 ស្ថានភាពបន្ទប់ (Rooms & Inventory)</option>
+                        <option value="rooms" {{ $tableType === 'rooms' ? 'selected' : '' }}>🔑 ស្ថានភាពបន្ទប់ (Rooms)</option>
+                        <option value="promotions" {{ $tableType === 'promotions' ? 'selected' : '' }}>🏷️ កម្មវិធីបញ្ចុះតម្លៃ (Promotions)</option>
+                        <option value="reviews" {{ $tableType === 'reviews' ? 'selected' : '' }}>⭐ ការវាយតម្លៃភ្ញៀវ (Reviews)</option>
+                        <option value="contacts" {{ $tableType === 'contacts' ? 'selected' : '' }}>📩 សារទំនាក់ទំនង (Contacts)</option>
+                        <option value="tours" {{ $tableType === 'tours' ? 'selected' : '' }}>🗺️ កញ្ចប់ទស្សនកិច្ច (Tours)</option>
+                        <option value="posts" {{ $tableType === 'posts' ? 'selected' : '' }}>📰 ព័ត៌មាននិងអត្ថបទ (Posts)</option>
+                        <option value="facilities" {{ $tableType === 'facilities' ? 'selected' : '' }}>🏊‍♂️ បរិក្ខារ (Facilities)</option>
+                        <option value="room_types" {{ $tableType === 'room_types' ? 'selected' : '' }}>🛋️ ប្រភេទបន្ទប់ (Room Types)</option>
                     </select>
                 </div>
 
@@ -226,6 +233,29 @@
                             <th class="p-4 text-center">ស្ថានភាព</th>
                             <th class="p-4 text-right">តម្លៃ/យប់ ($)</th>
                             <th class="p-4 text-right">ថ្ងៃបង្កើត</th>
+                        @elseif($tableType === 'promotions')
+                            <th class="p-4">កូដបញ្ចុះតម្លៃ</th>
+                            <th class="p-4">ចំណងជើង</th>
+                            <th class="p-4 text-center">ភាគរយ (%)</th>
+                            <th class="p-4">កាលបរិច្ឆេទ</th>
+                            <th class="p-4 text-center">ស្ថានភាព</th>
+                            <th class="p-4 text-right">ថ្ងៃបង្កើត</th>
+                        @elseif($tableType === 'reviews')
+                            <th class="p-4">ID</th>
+                            <th class="p-4">ឈ្មោះអតិថិជន</th>
+                            <th class="p-4 text-center">ពិន្ទុ (Stars)</th>
+                            <th class="p-4">មតិយោបល់</th>
+                            <th class="p-4 text-right">ថ្ងៃបង្កើត</th>
+                        @elseif($tableType === 'contacts')
+                            <th class="p-4">ID</th>
+                            <th class="p-4">ឈ្មោះ</th>
+                            <th class="p-4">អ៊ីមែល/ទូរស័ព្ទ</th>
+                            <th class="p-4">ប្រធានបទ & សារ</th>
+                            <th class="p-4 text-right">ថ្ងៃផ្ញើ</th>
+                        @else
+                            <th class="p-4">ID</th>
+                            <th class="p-4">ឈ្មោះ/ចំណងជើង</th>
+                            <th class="p-4 text-right">ថ្ងៃបង្កើត</th>
                         @endif
                     </tr>
                 </thead>
@@ -313,6 +343,38 @@
                                 </td>
                                 <td class="p-4 text-right font-bold text-emerald-600 dark:text-emerald-400">${{ number_format($row->price_per_night, 2) }}</td>
                                 <td class="p-4 text-right text-xs text-gray-400">{{ $row->created_at->format('Y-m-d H:i') }}</td>
+
+                            @elseif($tableType === 'promotions')
+                                <td class="p-4 font-mono font-bold text-rose-600 dark:text-rose-400">{{ $row->code }}</td>
+                                <td class="p-4 font-bold">{{ $row->title }}</td>
+                                <td class="p-4 text-center font-bold text-emerald-600">{{ $row->discount_percentage }}%</td>
+                                <td class="p-4 text-xs text-gray-500">{{ $row->start_date }} ➔ {{ $row->end_date }}</td>
+                                <td class="p-4 text-center">
+                                    <span class="px-2.5 py-1 rounded-full text-[11px] font-bold {{ $row->is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500' }}">
+                                        {{ $row->is_active ? 'សកម្ម' : 'អសកម្ម' }}
+                                    </span>
+                                </td>
+                                <td class="p-4 text-right text-xs text-gray-400">{{ $row->created_at->format('Y-m-d H:i') }}</td>
+
+                            @elseif($tableType === 'reviews')
+                                <td class="p-4 font-mono text-xs text-gray-400">#{{ $row->id }}</td>
+                                <td class="p-4 font-bold">{{ $row->user->name ?? 'N/A' }}</td>
+                                <td class="p-4 text-center font-bold text-amber-500">⭐ {{ $row->rating }} / 5</td>
+                                <td class="p-4 text-xs text-gray-600 dark:text-gray-300 max-w-xs truncate">{{ $row->comment }}</td>
+                                <td class="p-4 text-right text-xs text-gray-400">{{ $row->created_at->format('Y-m-d H:i') }}</td>
+
+                            @elseif($tableType === 'contacts')
+                                <td class="p-4 font-mono text-xs text-gray-400">#{{ $row->id }}</td>
+                                <td class="p-4 font-bold">{{ $row->name }}</td>
+                                <td class="p-4 text-xs">{{ $row->email }} <br> <span class="text-gray-400">{{ $row->phone }}</span></td>
+                                <td class="p-4 text-xs"><span class="font-semibold">{{ $row->subject }}</span>: <span class="text-gray-500">{{ $row->message }}</span></td>
+                                <td class="p-4 text-right text-xs text-gray-400">{{ $row->created_at->format('Y-m-d H:i') }}</td>
+
+                            @else
+                                <td class="p-4 font-mono text-xs text-gray-400">#{{ $row->id }}</td>
+                                <td class="p-4 font-bold">{{ $row->title ?: ($row->name ?: ($row->room_number ?? 'Item #'.$row->id)) }}</td>
+                                <td class="p-4 text-right text-xs text-gray-400">{{ isset($row->created_at) ? $row->created_at->format('Y-m-d H:i') : 'N/A' }}</td>
+                            @endif
                             @endif
                         </tr>
                     @empty

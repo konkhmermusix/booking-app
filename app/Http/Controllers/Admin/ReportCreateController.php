@@ -10,6 +10,13 @@ use App\Models\MeetingBooking;
 use App\Models\Payment;
 use App\Models\User;
 use App\Models\Room;
+use App\Models\RoomType;
+use App\Models\Promotion;
+use App\Models\Review;
+use App\Models\Contact;
+use App\Models\Tour;
+use App\Models\Post;
+use App\Models\Facility;
 use App\Models\ContactSetting;
 
 class ReportCreateController extends Controller
@@ -61,15 +68,6 @@ class ReportCreateController extends Controller
 
         $reportData = $this->buildReportQuery($tableType, $period, $status, $search, $startDate, $endDate);
         $records = $reportData['query']->get();
-
-        $tableNameTitle = match ($tableType) {
-            'room_bookings' => 'របាយការណ៍កក់បន្ទប់សណ្ឋាគារ',
-            'meeting_bookings' => 'របាយការណ៍កក់សាលប្រជុំ',
-            'payments' => 'របាយការណ៍ប្រតិបត្តិការបង់ប្រាក់',
-            'customers' => 'របាយការណ៍អ្នកប្រើប្រាស់និងអតិថិជន',
-            'rooms' => 'របាយការណ៍ស្ថានភាពបន្ទប់',
-            default => 'របាយការណ៍ទិន្នន័យ'
-        };
 
         $fileName = 'Report_' . $tableType . '_' . date('Y-m-d_H-i') . '.csv';
 
@@ -154,6 +152,42 @@ class ReportCreateController extends Controller
                         $row->created_at->format('Y-m-d H:i')
                     ]);
                 }
+            } elseif ($tableType === 'promotions') {
+                fputcsv($file, ['កូដបញ្ចុះតម្លៃ', 'ឈ្មោះ', 'ភាគរយ (%)', 'ថ្ងៃចាប់ផ្តើម', 'ថ្ងៃបញ្ចប់', 'ស្ថានភាព']);
+                foreach ($records as $row) {
+                    fputcsv($file, [
+                        $row->code,
+                        $row->title,
+                        $row->discount_percentage . '%',
+                        $row->start_date,
+                        $row->end_date,
+                        $row->is_active ? 'សកម្ម' : 'អសកម្ម'
+                    ]);
+                }
+            } elseif ($tableType === 'reviews') {
+                fputcsv($file, ['ID', 'ឈ្មោះអតិថិជន', 'ពិន្ទុ (Stars)', 'មតិយោបល់', 'ថ្ងៃបង្កើត']);
+                foreach ($records as $row) {
+                    fputcsv($file, [
+                        $row->id,
+                        $row->user->name ?? 'N/A',
+                        $row->rating . ' / 5',
+                        $row->comment,
+                        $row->created_at->format('Y-m-d H:i')
+                    ]);
+                }
+            } elseif ($tableType === 'contacts') {
+                fputcsv($file, ['ID', 'ឈ្មោះ', 'អ៊ីមែល', 'លេខទូរស័ព្ទ', 'ប្រធានបទ', 'សារ', 'ថ្ងៃផ្ញើ']);
+                foreach ($records as $row) {
+                    fputcsv($file, [
+                        $row->id,
+                        $row->name,
+                        $row->email,
+                        $row->phone ?: 'N/A',
+                        $row->subject,
+                        $row->message,
+                        $row->created_at->format('Y-m-d H:i')
+                    ]);
+                }
             }
 
             fclose($file);
@@ -221,6 +255,48 @@ class ReportCreateController extends Controller
                 $searchFields = ['room_number'];
                 break;
 
+            case 'promotions':
+                $query = Promotion::query();
+                $amountColumn = null;
+                $searchFields = ['code', 'title'];
+                break;
+
+            case 'reviews':
+                $query = Review::with('user');
+                $amountColumn = null;
+                $searchFields = ['comment'];
+                break;
+
+            case 'contacts':
+                $query = Contact::query();
+                $amountColumn = null;
+                $searchFields = ['name', 'email', 'phone', 'subject'];
+                break;
+
+            case 'tours':
+                $query = Tour::query();
+                $amountColumn = 'price';
+                $searchFields = ['title'];
+                break;
+
+            case 'posts':
+                $query = Post::query();
+                $amountColumn = null;
+                $searchFields = ['title'];
+                break;
+
+            case 'facilities':
+                $query = Facility::query();
+                $amountColumn = null;
+                $searchFields = ['name'];
+                break;
+
+            case 'room_types':
+                $query = RoomType::query();
+                $amountColumn = 'base_price';
+                $searchFields = ['name'];
+                break;
+
             case 'room_bookings':
             default:
                 $query = HotelBooking::with(['user', 'room.roomType']);
@@ -263,8 +339,12 @@ class ReportCreateController extends Controller
         if ($status && $status !== 'all') {
             if ($tableType === 'customers') {
                 $query->where('role', $status);
+            } elseif ($tableType === 'promotions') {
+                $query->where('is_active', $status === 'active' ? 1 : 0);
             } else {
-                $query->where('status', $status);
+                if (\Schema::hasColumn($query->getModel()->getTable(), 'status')) {
+                    $query->where('status', $status);
+                }
             }
         }
 
