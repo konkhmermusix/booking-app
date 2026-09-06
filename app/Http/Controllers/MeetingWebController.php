@@ -15,6 +15,7 @@ class MeetingWebController extends Controller
     public function index(Request $request)
     {
         // ចាប់យក INPUT ពី Request
+        $hasDateFilter = $request->filled('start_date') || $request->filled('check_in') || session()->has('search_check_in');
         if ($request->filled('start_date')) {
             session(['search_check_in' => $request->input('start_date')]);
         } elseif ($request->filled('check_in')) {

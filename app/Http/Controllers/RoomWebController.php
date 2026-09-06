@@ -16,6 +16,7 @@ class RoomWebController extends Controller
     public function index(Request $request)
     {
         // INPUT & DATE FILTER DETECT
+        $hasDateFilter = $request->filled('check_in') || session()->has('search_check_in');
         if ($request->filled('check_in')) {
             session(['search_check_in' => $request->input('check_in')]);
         }
