@@ -93,11 +93,11 @@ if (!function_exists('formatKhmerTime')) {
             @endif
 
             <div class="absolute inset-0 bg-black/40 flex items-center justify-center gap-2 opacity-0 group-hover/img:opacity-100 transition-opacity">
-                <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="w-9 h-9 bg-white text-purple-600 rounded-xl hover:scale-110 transition flex items-center justify-center cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
+                <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="w-9 h-9 bg-white text-purple-600 rounded-xl hover:scale-110 transition flex items-center justify-center cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                     <i class="fas fa-print"></i>
                 </a>
                 @if($booking->payment && $booking->payment->payment_slip)
-                <button @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="w-9 h-9 bg-white text-emerald-600 rounded-xl hover:scale-110 transition flex items-center justify-center cursor-pointer" title="មើល Slip បង់ប្រាក់">
+                <button @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="w-9 h-9 bg-white text-emerald-600 rounded-xl hover:scale-110 transition flex items-center justify-center cursor-pointer" title="មើលបង្កាន់ដៃបង់ប្រាក់">
                     <i class="fas fa-file-image"></i>
                 </button>
                 @endif
@@ -235,11 +235,11 @@ if (!function_exists('formatKhmerTime')) {
                 @endif
             </div>
             <div class="flex gap-1 items-center">
-                <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
+                <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                     <i class="fas fa-print text-sm"></i>
                 </a>
                 @if($booking->payment && $booking->payment->payment_slip)
-                <button @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="p-2 text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer" title="មើល Slip បង់ប្រាក់">
+                <button @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="p-2 text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer" title="មើលបង្កាន់ដៃបង់ប្រាក់">
                     <i class="fas fa-file-image text-sm"></i>
                 </button>
                 @endif
@@ -402,18 +402,18 @@ if (!function_exists('formatKhmerTime')) {
                     {{-- ACTIONS --}}
                     <td class="px-4 py-3.5 whitespace-nowrap text-right text-xs font-medium">
                         <div class="flex justify-end items-center gap-1 whitespace-nowrap">
-                            <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
+                            <a href="{{ route('meeting-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-purple-600 hover:text-purple-800 dark:text-purple-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                                 <i class="fas fa-print text-sm"></i>
                             </a>
                             @if($booking->payment && $booking->payment->payment_slip)
-                            <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="p-2 text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer" title="មើល Slip បង់ប្រាក់">
+                            <button type="button" @click="viewSlip('{{ asset('storage/' . $booking->payment->payment_slip) }}')" class="p-2 text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer" title="មើលបង្កាន់ដៃបង់ប្រាក់">
                                 <i class="fas fa-file-image text-sm"></i>
                             </button>
                             @endif
                             <button type="button" @click="viewDetail({{ $booking->toJson() }})" class="p-2 text-gray-400 hover:text-blue-500 transition-colors" title="មើលលម្អិត">
                                 <i class="fas fa-eye text-sm"></i>
                             </button>
-                            <button type="button" @click="editBooking({{ $booking->toJson() }})" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែប្រែ">
+                            <button type="button" @click="editBooking({{ $booking->toJson() }})" class="p-2 text-gray-400 hover:text-amber-500 transition-colors" title="កែសម្រួល">
                                 <i class="fas fa-edit text-sm"></i>
                             </button>
                             <button type="button" @click="deleteBooking({{ $booking->id }})" class="p-2 text-gray-400 hover:text-red-500 transition-colors" title="លុប">

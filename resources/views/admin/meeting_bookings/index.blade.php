@@ -8,7 +8,7 @@
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6 border border-gray-100 dark:border-gray-800">
         <div>
             <h2 class="text-lg font-bold dark:text-white">គ្រប់គ្រងការកក់សាលប្រជុំ និងពិធីការ</h2>
-            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Meeting & Event Booking Management</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">ប្រព័ន្ធគ្រប់គ្រងការកក់សាលប្រជុំ</p>
         </div>
         <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
             {{-- Search Input --}}

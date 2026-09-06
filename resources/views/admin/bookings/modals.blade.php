@@ -24,12 +24,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] font-black uppercase text-gray-400 mb-1">ឈ្មោះអតិថិជន <span class="text-red-500">*</span></label>
-                                    <input type="text" x-model="newBooking.customer_name" required placeholder="ឧ. កក្កដា ទេព"
+                                    <input type="text" x-model="newBooking.customer_name" required placeholder="ឈ្មោះអតិថិជន"
                                         class="w-full h-12 px-4 rounded-xl border-none bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black uppercase text-gray-400 mb-1">លេខទូរស័ព្ទ <span class="text-red-500">*</span></label>
-                                    <input type="text" x-model="newBooking.customer_phone" required placeholder="ឧ. 096 XXXXXXX"
+                                    <input type="text" x-model="newBooking.customer_phone" required placeholder="លេខទូរស័ព្ទ"
                                         class="w-full h-12 px-4 rounded-xl border-none bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium">
                                 </div>
                             </div>
@@ -43,7 +43,7 @@
                                     <option value="" disabled selected>ជ្រើសរើសបន្ទប់</option>
                                     @foreach($rooms as $room)
                                     <option value="{{ $room->id }}" data-price="{{ $room->roomType->base_price ?? 0 }}">
-                                        បន្ទប់លេខ {{ $room->room_number }} - {{ $room->roomType->name ?? 'Standard' }} (${{ number_format($room->roomType->base_price ?? 0, 2) }}/យប់)
+                                        បន្ទប់លេខ {{ $room->room_number }} - {{ $room->roomType->name }} (${{ number_format($room->roomType->base_price ?? 0, 2) }}/យប់)
                                     </option>
                                     @endforeach
                                 </select>
@@ -88,10 +88,10 @@
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2">ស្ថានភាពការកក់ <span class="text-red-500">*</span></label>
                             <select x-model="newBooking.booking_status" required class="w-full h-14 px-5 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                                <option value="pending">Pending (រង់ចាំ)</option>
-                                <option value="confirmed">Confirmed (បានបញ្ជាក់)</option>
-                                <option value="completed">Completed (រួចរាល់)</option>
-                                <option value="cancelled">Cancelled (បានបោះបង់)</option>
+                                <option value="pending">រង់ចាំពិនិត្យ</option>
+                                <option value="confirmed">បានបញ្ជាក់</option>
+                                <option value="completed">បានបញ្ចប់</option>
+                                <option value="cancelled">បានបោះបង់</option>
                             </select>
                         </div>
                     </div>
@@ -643,24 +643,24 @@
 
                 {{-- Status Change Action Buttons --}}
                 <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">ប្តូរស្ថានភាពការកក់រហ័ស (Quick Status Update)</p>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">ប្តូរស្ថានភាពការកក់រហ័ស</p>
                     <div class="flex flex-wrap gap-2">
                         <button type="button" @click="quickUpdateStatus(currentBooking.id, 'confirmed')"
                             class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
                             :class="currentBooking?.booking_status === 'confirmed' ? 'bg-blue-600 text-white shadow-md' : 'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400'">
-                            <i class="fas fa-check-circle text-xs"></i> Confirm (បញ្ជាក់)
+                            <i class="fas fa-check-circle text-xs"></i> បានបញ្ជាក់
                         </button>
 
                         <button type="button" @click="quickUpdateStatus(currentBooking.id, 'completed')"
                             class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
                             :class="currentBooking?.booking_status === 'completed' ? 'bg-emerald-600 text-white shadow-md' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400'">
-                            <i class="fas fa-flag-checkered text-xs"></i> Complete (រួចរាល់)
+                            <i class="fas fa-flag-checkered text-xs"></i> បានបញ្ចប់
                         </button>
 
                         <button type="button" @click="quickUpdateStatus(currentBooking.id, 'cancelled')"
                             class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5"
                             :class="currentBooking?.booking_status === 'cancelled' ? 'bg-rose-600 text-white shadow-md' : 'bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-900/20 dark:text-rose-400'">
-                            <i class="fas fa-times-circle text-xs"></i> Cancel (បោះបង់)
+                            <i class="fas fa-times-circle text-xs"></i> បានបោះបង់
                         </button>
                     </div>
                 </div>

@@ -11,7 +11,7 @@
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
                 <div>
                     <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">កក់សាលប្រជុំថ្មី</h3>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Customer, Meeting Room & Event Details</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">ព័ត៌មានអតិថិជន សាលប្រជុំ និងកាលបរិច្ឆេទ</p>
                 </div>
                 <button type="button" @click="showAddModal = false" class="text-gray-400 hover:text-gray-600 text-3xl transition-transform hover:rotate-90 cursor-pointer">&times;</button>
             </div>
@@ -23,13 +23,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">ឈ្មោះអតិថិជន / អង្គភាព <span class="text-red-500">*</span></label>
-                            <input type="text" x-model="newBooking.customer_name" required placeholder="ឈ្មោះពេញ"
+                            <input type="text" x-model="newBooking.customer_name" required placeholder="ឈ្មោះអតិថិជន"
                                 class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all font-bold placeholder:font-normal text-sm">
                             <template x-if="errors.customer_name"><span class="text-[10px] text-red-500 ml-2 block" x-text="errors.customer_name[0]"></span></template>
                         </div>
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">លេខទូរស័ព្ទ <span class="text-red-500">*</span></label>
-                            <input type="text" x-model="newBooking.customer_phone" required placeholder="012 XXXXXX"
+                            <input type="text" x-model="newBooking.customer_phone" required placeholder="លេខទូរស័ព្ទ"
                                 class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all font-bold placeholder:font-normal text-sm">
                             <template x-if="errors.customer_phone"><span class="text-[10px] text-red-500 ml-2 block" x-text="errors.customer_phone[0]"></span></template>
                         </div>
@@ -81,7 +81,7 @@
                             <div @click="openMeetingSearch = !openMeetingSearch"
                                 class="w-full h-14 px-6 rounded-2xl bg-gray-50 dark:bg-gray-800 dark:text-white border-none focus-within:ring-2 focus-within:ring-purple-500 flex items-center justify-between cursor-pointer transition-all">
                                 <span class="font-bold text-sm truncate" 
-                                    x-text="newBooking.meeting_room_id ? (meetingRooms.find(r => r.id == newBooking.meeting_room_id) ? `សាលប្រជុំ ${meetingRooms.find(r => r.id == newBooking.meeting_room_id).room_number} (${meetingRooms.find(r => r.id == newBooking.meeting_room_id).room_type?.name || 'Meeting'}) - $${meetingRooms.find(r => r.id == newBooking.meeting_room_id).room_type?.base_price || 0}/ម៉ោង` : 'ជ្រើសរើសសាលប្រជុំដែលទំនេរ...') : 'ជ្រើសរើសសាលប្រជុំដែលទំនេរ...'">
+                                    x-text="newBooking.meeting_room_id ? (meetingRooms.find(r => r.id == newBooking.meeting_room_id) ? `សាលប្រជុំ ${meetingRooms.find(r => r.id == newBooking.meeting_room_id).room_number} (${meetingRooms.find(r => r.id == newBooking.meeting_room_id).room_type?.name || 'សាលប្រជុំ'}) - $${meetingRooms.find(r => r.id == newBooking.meeting_room_id).room_type?.base_price || 0}/ម៉ោង` : 'ជ្រើសរើសសាលប្រជុំដែលទំនេរ...') : 'ជ្រើសរើសសាលប្រជុំដែលទំនេរ...'">
                                 </span>
                                 <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200" :class="openMeetingSearch ? 'rotate-180 text-purple-500' : ''"></i>
                             </div>
@@ -109,7 +109,7 @@
                                             <div class="flex items-center gap-2">
                                                 <i class="fa-solid fa-users" :class="newBooking.meeting_room_id == room.id ? 'text-white' : (isRoomBusy(room.id) ? 'text-gray-400' : 'text-purple-500')"></i>
                                                 <span class="font-bold" x-text="`សាលប្រជុំ ${room.room_number}`"></span>
-                                                <span class="opacity-80" x-text="`(${room.room_type?.name || 'Meeting'})`"></span>
+                                                <span class="opacity-80" x-text="`(${room.room_type?.name || 'សាលប្រជុំ'})`"></span>
                                             </div>
                                             <div class="flex items-center gap-2">
                                                 <template x-if="newBooking.meeting_room_id == room.id">
@@ -140,7 +140,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">ចំនួនអ្នកចូលរួម (នាក់)</label>
-                            <input type="number" x-model="newBooking.attendees_count" placeholder="ឧ. 20"
+                            <input type="number" x-model="newBooking.attendees_count" placeholder="ចំនួនអ្នកចូលរួម"
                                 class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all font-bold text-sm">
                         </div>
                         <div class="space-y-2">
@@ -208,7 +208,7 @@
                         {{-- លេខប្រតិបត្តិការ (Transaction ID for QR) --}}
                         <div x-show="newBooking.payment_method === 'qr' || newBooking.payment_method === 'bank_transfer' || newBooking.payment_method === 'khqr'" class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-500 dark:text-gray-400 ml-1 tracking-widest">លេខប្រតិបត្តិការ / Transaction ID (ប្រសិនបើមាន)</label>
-                            <input type="text" x-model="newBooking.transaction_id" placeholder="TXN-987654321"
+                            <input type="text" x-model="newBooking.transaction_id" placeholder="លេខប្រតិបត្តិការ (TXN ID)"
                                 class="w-full h-12 px-4 rounded-xl border-none bg-white dark:bg-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none font-bold text-xs">
                         </div>
 
@@ -260,7 +260,7 @@
                             <h3 class="font-black text-lg tracking-tight uppercase">ព័ត៌មានលម្អិតការកក់សាលប្រជុំ</h3>
                             <span class="px-2.5 py-0.5 rounded-lg bg-amber-400 text-purple-950 font-black text-xs font-mono" x-text="`#${selectedBooking.booking_code || ''}`"></span>
                         </div>
-                        <p class="text-[11px] text-purple-200 font-bold uppercase tracking-widest mt-0.5">Meeting Booking Details</p>
+                        <p class="text-[11px] text-purple-200 font-bold uppercase tracking-widest mt-0.5">ព័ត៌មានលម្អិតនៃការកក់សាលប្រជុំ</p>
                     </div>
                 </div>
                 <button type="button" @click="showDetailModal = false" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl transition-transform hover:rotate-90 cursor-pointer">&times;</button>
@@ -477,7 +477,7 @@
             <div class="px-7 py-3 flex justify-between items-center bg-white dark:bg-gray-900 border-b dark:border-gray-800">
                 <div>
                     <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">កែសម្រួលព័ត៌មានកក់សាលប្រជុំ</h3>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Update Meeting Booking Information</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">កែសម្រួលព័ត៌មានការកក់សាលប្រជុំ</p>
                 </div>
                 <button type="button" @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 text-3xl transition-transform hover:rotate-90 cursor-pointer">&times;</button>
             </div>
@@ -489,12 +489,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">ឈ្មោះអតិថិជន / អង្គភាព <span class="text-red-500">*</span></label>
-                            <input type="text" x-model="editingBooking.customer_name" required
+                            <input type="text" x-model="editingBooking.customer_name" required placeholder="ឈ្មោះអតិថិជន"
                                 class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all font-bold text-sm">
                         </div>
                         <div class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-400 ml-2 tracking-widest">លេខទូរស័ព្ទ <span class="text-red-500">*</span></label>
-                            <input type="text" x-model="editingBooking.customer_phone" required
+                            <input type="text" x-model="editingBooking.customer_phone" required placeholder="លេខទូរស័ព្ទ"
                                 class="w-full h-14 px-6 rounded-2xl border-none bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all font-bold text-sm">
                         </div>
                     </div>
@@ -542,7 +542,7 @@
                             <div @click="openEditMeetingSearch = !openEditMeetingSearch"
                                 class="w-full h-14 px-6 rounded-2xl bg-gray-50 dark:bg-gray-800 dark:text-white border-none focus-within:ring-2 focus-within:ring-purple-500 flex items-center justify-between cursor-pointer transition-all">
                                 <span class="font-bold text-sm truncate" 
-                                    x-text="editingBooking.meeting_room_id ? (meetingRooms.find(r => r.id == editingBooking.meeting_room_id) ? `សាលប្រជុំ ${meetingRooms.find(r => r.id == editingBooking.meeting_room_id).room_number} (${meetingRooms.find(r => r.id == editingBooking.meeting_room_id).room_type?.name || 'Meeting'}) - $${meetingRooms.find(r => r.id == editingBooking.meeting_room_id).room_type?.base_price || 0}/ម៉ោង` : 'ជ្រើសរើសសាលប្រជុំ...') : 'ជ្រើសរើសសាលប្រជុំ...'">
+                                    x-text="editingBooking.meeting_room_id ? (meetingRooms.find(r => r.id == editingBooking.meeting_room_id) ? `សាលប្រជុំ ${meetingRooms.find(r => r.id == editingBooking.meeting_room_id).room_number} (${meetingRooms.find(r => r.id == editingBooking.meeting_room_id).room_type?.name || 'សាលប្រជុំ'}) - $${meetingRooms.find(r => r.id == editingBooking.meeting_room_id).room_type?.base_price || 0}/ម៉ោង` : 'ជ្រើសរើសសាលប្រជុំ...') : 'ជ្រើសរើសសាលប្រជុំ...'">
                                 </span>
                                 <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200" :class="openEditMeetingSearch ? 'rotate-180 text-purple-500' : ''"></i>
                             </div>
@@ -570,7 +570,7 @@
                                             <div class="flex items-center gap-2">
                                                 <i class="fa-solid fa-users" :class="editingBooking.meeting_room_id == room.id ? 'text-white' : (isRoomBusy(room.id) ? 'text-gray-400' : 'text-purple-500')"></i>
                                                 <span class="font-bold" x-text="`សាលប្រជុំ ${room.room_number}`"></span>
-                                                <span class="opacity-80" x-text="`(${room.room_type?.name || 'Meeting'})`"></span>
+                                                <span class="opacity-80" x-text="`(${room.room_type?.name || 'សាលប្រជុំ'})`"></span>
                                             </div>
                                             <div class="flex items-center gap-2">
                                                 <template x-if="editingBooking.meeting_room_id == room.id">
@@ -651,7 +651,7 @@
                         {{-- លេខប្រតិបត្តិការ (Transaction ID) --}}
                         <div x-show="editingBooking.payment_method === 'qr' || editingBooking.payment_method === 'bank_transfer' || editingBooking.payment_method === 'khqr'" class="space-y-2">
                             <label class="block text-[11px] font-black uppercase text-gray-500 dark:text-gray-400 ml-1 tracking-widest">លេខប្រតិបត្តិការ / Transaction ID</label>
-                            <input type="text" x-model="editingBooking.transaction_id" placeholder="TXN-987654321"
+                            <input type="text" x-model="editingBooking.transaction_id" placeholder="លេខប្រតិបត្តិការ (TXN ID)"
                                 class="w-full h-12 px-4 rounded-xl border-none bg-white dark:bg-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none font-bold text-xs">
                         </div>
                     </div>
