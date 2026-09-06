@@ -41,6 +41,20 @@ class ReportCreateController extends Controller
         $records = $reportData['query']->paginate($perPage)->withQueryString();
         $summary = $reportData['summary'];
 
+        if ($request->ajax()) {
+            return view('admin.reportscreate.partials.report_content', compact(
+                'tableType',
+                'period',
+                'status',
+                'search',
+                'startDate',
+                'endDate',
+                'records',
+                'summary',
+                'exchangeRate'
+            ));
+        }
+
         return view('admin.reportscreate.index', compact(
             'tableType',
             'period',
