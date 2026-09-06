@@ -228,6 +228,9 @@ $statusLabels = [
                 {{ $statusLabels[$booking->status] ?? $booking->status }}
             </span>
             <div class="flex gap-1 items-center">
+                <a href="{{ route('receipt', $booking->booking_code) }}" target="_blank" class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 transition-colors cursor-pointer" title="មើលវិក្កយបត្រ (Receipt)">
+                    <i class="fas fa-file-receipt text-sm"></i>
+                </a>
                 <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ (Print Invoice)">
                     <i class="fas fa-print text-sm"></i>
                 </a>
@@ -403,6 +406,9 @@ $statusLabels = [
                     {{-- ACTIONS --}}
                     <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
                         <div class="flex justify-end items-center gap-1">
+                            <a href="{{ route('receipt', $booking->booking_code) }}" target="_blank" class="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 transition-colors cursor-pointer" title="មើលវិក្កយបត្រ (Receipt)">
+                                <i class="fas fa-file-receipt text-sm"></i>
+                            </a>
                             <a href="{{ route('room-bookings.print-invoice', $booking->id) }}" target="_blank" class="p-2 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 transition-colors cursor-pointer" title="ព្រីនវិក្កយបត្រ">
                                 <i class="fas fa-print text-sm"></i>
                             </a>

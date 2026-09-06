@@ -316,11 +316,18 @@ class CheckoutController extends Controller
                     $telegramMsg .= "សូមចូលទៅប្រព័ន្ធដើម្បីបញ្ជាក់ការកក់នេះបន្ថែមទៀត\n";
                 }
 
+                $firstCode = $generatedCodes[0] ?? '';
+                $receiptUrl = route('receipt', $firstCode);
+                if (count($generatedCodes) > 1) {
+                    $receiptUrl .= '?codes=' . urlencode(implode(',', $generatedCodes));
+                }
+
                 $adminBookingUrl = route('room-bookings.index');
                 $telegramMsg .= "----------------------------------\n";
+                $telegramMsg .= "🧾 <b>វិក្កយបត្រ:</b> <a href=\"{$receiptUrl}\">{$receiptUrl}</a>\n";
                 $telegramMsg .= "🔗 <a href=\"{$adminBookingUrl}\"><b>ចុចទីនេះដើម្បីចូលទៅគ្រប់គ្រងការកក់ (Admin)</b></a>\n";
 
-                $this->sendTelegramNotification($telegramMsg, $photoFullPath, $adminBookingUrl);
+                $this->sendTelegramNotification($telegramMsg, $photoFullPath, $adminBookingUrl, $receiptUrl);
             } catch (\Exception $telegramError) {
                 \Log::error('Telegram Notification Error: ' . $telegramError->getMessage());
             }
@@ -332,7 +339,8 @@ class CheckoutController extends Controller
                     . "លេខកូដកក់: " . implode(', ', $generatedCodes) . "\n"
                     . "ឈ្មោះអតិថិជន: {$request->name}\n"
                     . "លេខទូរស័ព្ទ: {$request->phone}\n"
-                    . "វិធីទូទាត់: {$paymentText}\n\n"
+                    . "វិធីទូទាត់: {$paymentText}\n"
+                    . "វិក្កយបត្ររបស់អ្នក: {$receiptUrl}\n\n"
                     . "សូមអរគុណសម្រាប់ការជ្រើសរើសសណ្ឋាគាររបស់យើងខ្ញុំ យើងខ្ញុំនឹងបញ្ជាក់ព័ត៌មានបន្ថែមក្នុងពេលឆាប់ៗនេះ។\n\n"
                     . "ដោយការគោរពពី,\n"
                     . "សណ្ឋាគារ ភីអេនធី ផាលេស";
@@ -439,7 +447,7 @@ class CheckoutController extends Controller
     }
 
     // ផ្ញើសារ ឬរូបភាពបង្កាន់ដៃបង់ប្រាក់ទៅកាន់តេឡេក្រាម
-    private function sendTelegramNotification($message, $photoPath = null, $buttonUrl = null)
+    private function sendTelegramNotification($message, $photoPath = null, $adminUrl = null, $receiptUrl = null)
     {
         $botToken = config('services.telegram.bot_token');
         $chatId   = config('services.telegram.chat_id');
@@ -448,15 +456,23 @@ class CheckoutController extends Controller
             return;
         }
 
-        $buttonUrl = $buttonUrl ?? route('room-bookings.index');
+        $adminUrl = $adminUrl ?? route('room-bookings.index');
+        
+        $keyboardRow = [];
+        if ($receiptUrl) {
+            $keyboardRow[] = [
+                'text' => '🧾 មើលវិក្កយបត្រ (Receipt)',
+                'url'  => $receiptUrl
+            ];
+        }
+        $keyboardRow[] = [
+            'text' => '🔗 គ្រប់គ្រងការកក់ (Admin)',
+            'url'  => $adminUrl
+        ];
+
         $replyMarkup = json_encode([
             'inline_keyboard' => [
-                [
-                    [
-                        'text' => '🔗 ចូលទៅគ្រប់គ្រងការកក់',
-                        'url'  => $buttonUrl
-                    ]
-                ]
+                $keyboardRow
             ]
         ]);
 
