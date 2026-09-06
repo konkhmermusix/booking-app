@@ -186,6 +186,7 @@
 
                             <form action="{{ route('cart.add.hotel') }}" method="POST" class="space-y-4">
                                 @csrf
+                                <input type="hidden" name="direct_checkout" value="1">
                                 <input type="hidden" name="room_type_id" :value="selectedRoomTypeId">
                                 <div class="p-4 space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">

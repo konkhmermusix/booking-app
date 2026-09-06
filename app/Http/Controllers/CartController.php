@@ -121,18 +121,20 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
-                'status' => 'success',
-                'success' => true,
-                'message' => 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់',
-                'cartItems' => array_values($cart),
-                'count' => count($cart),
-                'redirect_url' => route('cart.index')
+                'status'       => 'success',
+                'success'      => true,
+                'message'      => 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់',
+                'cartItems'    => array_values($cart),
+                'count'        => count($cart),
+                'redirect_url' => $redirectUrl
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់');
+        return redirect()->to($redirectUrl)->with('success', 'បានបន្ថែមចូលក្នុងកន្ត្រករួចរាល់');
     }
 
     // សម្រាប់ថែម "សាលប្រជុំ" ចូលកន្ត្រក (គិតជាម៉ោង)
@@ -217,14 +219,16 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
-                'status' => 'success',
-                'message' => 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់',
-                'redirect_url' => route('cart.index')
+                'status'       => 'success',
+                'message'      => 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់',
+                'redirect_url' => $redirectUrl
             ]);
         }
-        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់');
+        return redirect()->to($redirectUrl)->with('success', 'បានបន្ថែមសាលប្រជុំចូលក្នុងកន្ត្រករួចរាល់');
     }
 
     // កក់បន្ទប់ស្នាក់នៅតម្លៃប្រូម៉ូសិនចូលកន្ត្រក
@@ -295,18 +299,20 @@ class CartController extends Controller
         session()->put('cart', $cart);
         session()->flash('success', 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់');
 
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
             return response()->json([
-                'status' => 'success',
-                'success' => true,
-                'message' => 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់',
-                'cartItems' => array_values($cart),
-                'count' => count($cart),
-                'redirect_url' => route('cart.index')
+                'status'       => 'success',
+                'success'      => true,
+                'message'      => 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់',
+                'cartItems'    => array_values($cart),
+                'count'        => count($cart),
+                'redirect_url' => $redirectUrl
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់');
+        return redirect()->to($redirectUrl)->with('success', 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់');
     }
 
     // កក់សាលប្រជុំតម្លៃប្រូម៉ូសិនចូលកន្ត្រក
@@ -393,17 +399,19 @@ class CartController extends Controller
         session()->put('cart', $cart);
         session()->flash('success', 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់');
 
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
             return response()->json([
-                'status' => 'success',
-                'success' => true,
-                'message' => 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់',
-                'cartItems' => array_values($cart),
-                'count' => count($cart),
-                'redirect_url' => route('cart.index')
+                'status'       => 'success',
+                'success'      => true,
+                'message'      => 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់',
+                'cartItems'    => array_values($cart),
+                'count'        => count($cart),
+                'redirect_url' => $redirectUrl
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់');
+        return redirect()->to($redirectUrl)->with('success', 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់');
     }
 }

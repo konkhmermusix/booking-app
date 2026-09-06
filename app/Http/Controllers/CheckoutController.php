@@ -461,12 +461,12 @@ class CheckoutController extends Controller
         $keyboardRow = [];
         if ($receiptUrl) {
             $keyboardRow[] = [
-                'text' => '🧾 មើលវិក្កយបត្រ (Receipt)',
+                'text' => '🧾 មើលវិក្កយបត្រ',
                 'url'  => $receiptUrl
             ];
         }
         $keyboardRow[] = [
-            'text' => '🔗 គ្រប់គ្រងការកក់ (Admin)',
+            'text' => '🔗 គ្រប់គ្រងការកក់',
             'url'  => $adminUrl
         ];
 

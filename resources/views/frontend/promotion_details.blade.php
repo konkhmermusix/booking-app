@@ -141,7 +141,7 @@
 
                     <form action="{{ $roomType->category === 'stay' ? route('promotion.addhotelpro') : route('promotion.addmeetingpro') }}" method="POST" class="space-y-4">
                         @csrf
-
+                        <input type="hidden" name="direct_checkout" value="1">
                         <input type="hidden" name="room_type_id" value="{{ $roomType->id }}">
                         <input type="hidden" name="promo_price" value="{{ $promotion->discounted_price }}">
 
