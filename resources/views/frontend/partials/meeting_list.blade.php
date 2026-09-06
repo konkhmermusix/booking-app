@@ -116,15 +116,15 @@
                     </p>
                     @elseif(($meeting->available_rooms_count ?? 0) > 2)
                     <p class="text-green-600 dark:text-green-400 font-medium flex items-center">
-                        <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> 🟢 ទំនេរសម្រាប់កក់ {{ $meeting->available_rooms_count }} សាល
+                        <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> ទំនេរសម្រាប់កក់ {{ $meeting->available_rooms_count }} សាល
                     </p>
                     @elseif(($meeting->available_rooms_count ?? 0) > 0)
                     <p class="text-amber-600 dark:text-amber-400 font-bold flex items-center">
-                        <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span> 🟢 នៅសល់ត្រឹមតែ {{ $meeting->available_rooms_count }} សាលប៉ុណ្ណោះ!
+                        <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span> នៅសល់ត្រឹមតែ {{ $meeting->available_rooms_count }} សាលប៉ុណ្ណោះ!
                     </p>
                     @else
                     <p class="text-red-500 font-medium flex items-center">
-                        <span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1.5"></span> 🔴 ពេញ (កក់អស់ហើយសម្រាប់កាលបរិច្ឆេទនេះ)
+                        <span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1.5"></span> ពេញ! សម្រាប់ការកក់កាលបរិច្ឆេទនេះ
                     </p>
                     @endif
                 </div>

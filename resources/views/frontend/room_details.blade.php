@@ -166,7 +166,7 @@
                                     </span>
                                 @else
                                     <span class="text-rose-600 dark:text-rose-400 flex items-center gap-1.5 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl border border-rose-100 dark:border-rose-900/50">
-                                        <i class="fas fa-exclamation-circle text-rose-500"></i> ពេញ (កក់អស់ហើយសម្រាប់ថ្ងៃនេះ)
+                                        <i class="fas fa-exclamation-circle text-rose-500"></i> ពេញ! (កក់អស់ហើយសម្រាប់ថ្ងៃនេះ)
                                     </span>
                                 @endif
                             </div>
@@ -190,7 +190,7 @@
 
                 <div class="flex flex-wrap gap-3 mb-8 text-gray-700 dark:text-gray-300">
                     <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium">
-                        <i class="fas fa-bed mr-2 text-blue-600 dark:text-blue-400"></i>គ្រែ៖ {{ $roomType->beds ?? 1 }} គ្រែ
+                        <i class="fas fa-bed mr-2 text-blue-600 dark:text-blue-400"></i>គ្រែ៖ {{ $roomType->beds }} គ្រែ
                     </span>
                     <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium">
                         <i class="fas fa-users mr-2 text-blue-600 dark:text-blue-400"></i>ស្នាក់នៅបាន៖ {{ $roomType->max_guests }} នាក់

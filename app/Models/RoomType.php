@@ -44,6 +44,29 @@ class RoomType extends Model
         return $this->hasMany(Promotion::class);
     }
 
+    public function getBedsAttribute()
+    {
+        if (isset($this->attributes['beds']) && $this->attributes['beds'] !== null) {
+            return (int) $this->attributes['beds'];
+        }
+
+        $name = $this->name ?? '';
+        if (mb_strpos($name, 'គ្រែពីរ') !== false || mb_stripos($name, 'double') !== false || mb_stripos($name, 'twin') !== false) {
+            return 2;
+        }
+        if (mb_strpos($name, 'គ្រែបី') !== false || mb_stripos($name, 'triple') !== false) {
+            return 3;
+        }
+        if (mb_strpos($name, 'គ្រែបួន') !== false || mb_stripos($name, 'quad') !== false) {
+            return 4;
+        }
+        if (mb_strpos($name, 'គ្រែមួយ') !== false || mb_stripos($name, 'single') !== false) {
+            return 1;
+        }
+
+        return ($this->max_guests && $this->max_guests >= 4) ? 2 : 1;
+    }
+
     protected static function boot()
     {
         parent::boot();
