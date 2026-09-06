@@ -25,8 +25,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
 
-        if (app()->environment('production') || str_contains(config('app.url'), 'https://') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
-            URL::forceScheme('https');
+        $host = request()->getHost();
+        $isLocalHost = in_array($host, ['127.0.0.1', 'localhost', '::1']) || str_contains($host, '127.0.0.1') || str_contains($host, 'localhost');
+
+        if (!$isLocalHost) {
+            if (app()->environment('production') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
+                URL::forceScheme('https');
+            }
         }
 
         View::composer('*', function ($view) {
