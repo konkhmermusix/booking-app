@@ -178,7 +178,7 @@
                                 <div class="flex items-center gap-4">
                                     <div>
                                         <h3 class="font-black text-xl dark:text-white uppercase tracking-tight">ជ្រើសរើសថ្ងៃខែស្នាក់នៅ</h3>
-                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">បំពេញព័ត៌មានខាងក្រោមដើម្បីថែមទៅកន្ដ្រក</p>
+                                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">បំពេញព័ត៌មានខាងក្រោមដើម្បីបន្តទៅការទូទាត់ប្រាក់</p>
                                     </div>
                                 </div>
                                 <button @click="isHotelModalOpen = false" class="text-gray-400 hover:text-red-500 text-3xl transition-all hover:rotate-90">&times;</button>
@@ -218,7 +218,7 @@
                                     <button type="submit"
                                         class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
                                         <div class="flex items-center gap-2">
-                                            <span>បន្ថែមទៅក្នុងបញ្ជីកក់</span>
+                                            <span>បន្តទៅការទូទាត់ប្រាក់</span>
                                         </div>
                                     </button>
                                 </div>
