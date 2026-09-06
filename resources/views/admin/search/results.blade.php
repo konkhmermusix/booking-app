@@ -9,11 +9,11 @@
             <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">Global Search Results</p>
         </div>
 
-        <form action="{{ route('admin.global-search') }}" method="GET" class="w-full md:w-96 flex items-center bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-xl focus-within:ring-2 focus-within:ring-blue-500/50 transition-all border border-transparent">
+        <form action="{{ route('global-search') }}" method="GET" class="w-full md:w-96 flex items-center bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded-xl focus-within:ring-2 focus-within:ring-blue-500/50 transition-all border border-transparent">
             <i class="fas fa-search text-gray-400 text-sm"></i>
             <input type="text" name="search" value="{{ $search }}" placeholder="ស្វែងរក..." class="bg-transparent border-none outline-none text-sm ml-2 w-full dark:text-white">
             @if($search)
-                <a href="{{ route('admin.global-search') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                <a href="{{ route('global-search') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
                     <i class="fas fa-times-circle"></i>
                 </a>
             @endif
