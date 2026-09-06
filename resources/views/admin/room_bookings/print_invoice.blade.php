@@ -114,11 +114,15 @@
         $payStatus = $booking->payment ? $booking->payment->status : 'paid';
         $payMethod = $booking->payment_method ?: ($booking->payment ? $booking->payment->method : 'cash');
         $transactionId = $booking->payment ? $booking->payment->transaction_id : null;
-        $receiverName = $booking->confirmed_by_name 
-            ?? $booking->receiver_name 
-            ?? \App\Models\ContactSetting::where('key', 'bank_account_name')->where('status', 1)->value('value') 
-            ?? \App\Models\User::where('role', 'admin')->value('name') 
-            ?? 'សណ្ឋាគារ ភីអេនធី ផាលេស';
+
+        $bStatus = strtolower($booking->status ?? 'pending');
+        $isConfirmedState = in_array($bStatus, ['confirmed', 'approved', 'completed', 'checked_in', 'checked_out']);
+
+        $receiverName = !empty($booking->confirmed_by_name)
+            ? $booking->confirmed_by_name
+            : ($isConfirmedState 
+                ? ($booking->receiver_name ?? \App\Models\User::where('role', 'admin')->value('name') ?? 'អ្នកគ្រប់គ្រង ភីអេនធី ផាលេស')
+                : 'រង់ចាំការបញ្ជាក់');
     @endphp
 
     <!-- ACTION BAR (HIDDEN WHEN PRINTING) -->

@@ -3,9 +3,9 @@
 @section('content')
 
 @php
-$hotelAddress = \App\Models\ContactSetting::where('key', 'address')->where('status', 1)->value('value') ?? 'ភូមិនិគមលើ ឃុំស្រឡប់ ស្រុកត្បូងឃ្មុំ ខេត្តត្បូងឃ្មុំ (ខាងកើតរង្វង់មូល ប្រាំមួយមករា)';
-$hotelPhone = \App\Models\ContactSetting::where('key', 'phone')->where('status', 1)->value('value') ?? '096 711 9798 / 071 4 711 979';
-$hotelEmail = \App\Models\ContactSetting::where('key', 'email')->where('status', 1)->value('value') ?? 'info@pnt-hotel.com';
+$hotelAddress = \App\Models\ContactSetting::where('key', 'address')->where('status', 1)->value('value');
+$hotelPhone = \App\Models\ContactSetting::where('key', 'phone')->where('status', 1)->value('value');
+$hotelEmail = \App\Models\ContactSetting::where('key', 'email')->where('status', 1)->value('value');
 $khrRate = \App\Models\ContactSetting::getExchangeRate();
 
 $bookingUser = null;
@@ -18,12 +18,14 @@ $cPhone = $customerPhone ?? (!empty($booking->customer_phone) ? $booking->custom
 $cEmail = $customerEmail ?? (!empty($booking->customer_email) ? $booking->customer_email : ($bookingUser->email ?? (Auth::check() ? Auth::user()->email : 'N/A')));
 $displayCode = $primaryCode ?? ($booking->booking_code ?? 'P&T-RECEIPT');
 $items = isset($allReceiptItems) && count($allReceiptItems) > 0 ? $allReceiptItems : (isset($allDetails) && count($allDetails) > 0 ? $allDetails : collect([$details]));
-$totalAmount = isset($grandTotal) && $grandTotal > 0 ? $grandTotal : ($booking->total_price ?? 0);
-$receiverName = $booking->confirmed_by_name 
-    ?? $booking->receiver_name 
-    ?? \App\Models\ContactSetting::where('key', 'bank_account_name')->where('status', 1)->value('value') 
-    ?? \App\Models\User::where('role', 'admin')->value('name') 
-    ?? 'អ្នកគ្រប់គ្រង ភីអេនធី ផាលេស';
+$bStatus = strtolower($booking->status ?? 'pending');
+$isConfirmedState = in_array($bStatus, ['confirmed', 'approved', 'completed', 'checked_in', 'checked_out']);
+
+$receiverName = !empty($booking->confirmed_by_name)
+    ? $booking->confirmed_by_name
+    : ($isConfirmedState 
+        ? ($booking->receiver_name ?? \App\Models\User::where('role', 'admin')->value('name'))
+        : 'រង់ចាំការបញ្ជាក់');
 @endphp
 
 <div class="w-full bg-gray-100 dark:bg-[#0b1120] min-h-screen py-8 transition-colors duration-300">
