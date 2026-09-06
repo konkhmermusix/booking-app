@@ -151,7 +151,7 @@
                                 <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                     <i class="fas fa-calendar-alt text-blue-500 mr-1"></i> ថ្ងៃចូលស្នាក់នៅ
                                 </label>
-                                <input type="date" name="check_in" id="check_in" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" required
+                                <input type="date" name="check_in" id="check_in" min="{{ date('Y-m-d') }}" value="{{ $check_in ?? session('search_check_in', date('Y-m-d')) }}" required
                                     class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]">
                             </div>
 
@@ -159,7 +159,7 @@
                                 <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                     <i class="fas fa-calendar-alt text-blue-600 mr-1"></i> ថ្ងៃចាកចេញ
                                 </label>
-                                <input type="date" name="check_out" id="check_out" min="{{ date('Y-m-d', strtotime('+1 day')) }}" value="{{ date('Y-m-d', strtotime('+1 day')) }}" required
+                                <input type="date" name="check_out" id="check_out" min="{{ date('Y-m-d', strtotime('+1 day')) }}" value="{{ $check_out ?? session('search_check_out', date('Y-m-d', strtotime('+1 day'))) }}" required
                                     class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]">
                             </div>
                             @else
@@ -167,7 +167,7 @@
                                 <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                     <i class="fas fa-calendar-alt text-blue-500 mr-1"></i> ថ្ងៃចាប់ផ្តើមប្រជុំ
                                 </label>
-                                <input type="date" name="start_date" id="start_date" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" required
+                                <input type="date" name="start_date" id="start_date" min="{{ date('Y-m-d') }}" value="{{ $check_in ?? session('search_check_in', date('Y-m-d')) }}" required
                                     class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]">
                             </div>
 
@@ -175,7 +175,7 @@
                                 <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                     <i class="fas fa-calendar-alt text-blue-600 mr-1"></i> ថ្ងៃបញ្ចប់ប្រជុំ
                                 </label>
-                                <input type="date" name="end_date" id="end_date" value="{{ date('Y-m-d') }}" required
+                                <input type="date" name="end_date" id="end_date" value="{{ $check_out ?? session('search_check_out', date('Y-m-d')) }}" required
                                     class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]">
                             </div>
 

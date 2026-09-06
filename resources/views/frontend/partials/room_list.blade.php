@@ -185,7 +185,7 @@
                         <span>កក់ឥឡូវនេះ</span>
                     </button>
 
-                    <a href="{{ route('frontend.room_details', $stay->id) }}"
+                    <a :href="'{{ route('frontend.room_details', $stay->id) }}?check_in=' + (document.getElementById('check_in')?.value || '{{ $check_in ?? session('search_check_in', date('Y-m-d')) }}') + '&check_out=' + (document.getElementById('check_out')?.value || '{{ $check_out ?? session('search_check_out', date('Y-m-d', strtotime('+1 day'))) }}')"
                         class="flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-bold py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all text-sm">
                         <span>មើលលម្អិត</span>
                     </a>

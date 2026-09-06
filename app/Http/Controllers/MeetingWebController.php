@@ -15,9 +15,20 @@ class MeetingWebController extends Controller
     public function index(Request $request)
     {
         // ចាប់យក INPUT ពី Request
-        $hasDateFilter = $request->filled('check_in');
-        $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
-        $check_out = $request->input('check_out', $check_in);
+        if ($request->filled('start_date')) {
+            session(['search_check_in' => $request->input('start_date')]);
+        } elseif ($request->filled('check_in')) {
+            session(['search_check_in' => $request->input('check_in')]);
+        }
+
+        if ($request->filled('end_date')) {
+            session(['search_check_out' => $request->input('end_date')]);
+        } elseif ($request->filled('check_out')) {
+            session(['search_check_out' => $request->input('check_out')]);
+        }
+
+        $check_in  = $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d')));
+        $check_out = $request->input('check_out', session('search_check_out', $check_in));
         $sort      = $request->input('sort', 'asc');
         $search    = $request->input('search');
         $guests    = $request->input('guests');
@@ -93,8 +104,20 @@ class MeetingWebController extends Controller
     // សម្រាប់ Meeting Hall
     public function meeting_detail(Request $request, $id)
     {
-        $startDate = $request->input('start_date', Carbon::today()->format('Y-m-d'));
-        $endDate   = $request->input('end_date', Carbon::today()->format('Y-m-d'));
+        if ($request->filled('start_date')) {
+            session(['search_check_in' => $request->input('start_date')]);
+        } elseif ($request->filled('check_in')) {
+            session(['search_check_in' => $request->input('check_in')]);
+        }
+
+        if ($request->filled('end_date')) {
+            session(['search_check_out' => $request->input('end_date')]);
+        } elseif ($request->filled('check_out')) {
+            session(['search_check_out' => $request->input('check_out')]);
+        }
+
+        $startDate = $request->input('start_date', $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d'))));
+        $endDate   = $request->input('end_date', $request->input('check_out', session('search_check_out', $startDate)));
         $startTime = $request->input('start_time', '08:00');
         $endTime   = $request->input('end_time', '17:00');
 
@@ -129,7 +152,7 @@ class MeetingWebController extends Controller
             ->take(3)
             ->get();
 
-        return view('frontend.meeting_details', compact('roomType', 'similarRooms', 'availableRoomsCount'));
+        return view('frontend.meeting_details', compact('roomType', 'similarRooms', 'availableRoomsCount', 'startDate', 'endDate', 'startTime', 'endTime'));
     }
 
     public function checkAvailability(Request $request)

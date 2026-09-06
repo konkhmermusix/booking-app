@@ -16,9 +16,15 @@ class RoomWebController extends Controller
     public function index(Request $request)
     {
         // INPUT & DATE FILTER DETECT
-        $hasDateFilter = $request->filled('check_in') && $request->filled('check_out');
-        $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
-        $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
+        if ($request->filled('check_in')) {
+            session(['search_check_in' => $request->input('check_in')]);
+        }
+        if ($request->filled('check_out')) {
+            session(['search_check_out' => $request->input('check_out')]);
+        }
+
+        $check_in  = $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d')));
+        $check_out = $request->input('check_out', session('search_check_out', Carbon::tomorrow()->format('Y-m-d')));
         $type_name = $request->input('type');
         $sort      = $request->input('sort', 'asc');
         $search    = $request->input('search');
@@ -120,8 +126,15 @@ class RoomWebController extends Controller
     // សម្រាប់ Stay Room
     public function room_detail(Request $request, $id)
     {
-        $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
-        $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
+        if ($request->filled('check_in')) {
+            session(['search_check_in' => $request->input('check_in')]);
+        }
+        if ($request->filled('check_out')) {
+            session(['search_check_out' => $request->input('check_out')]);
+        }
+
+        $check_in  = $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d')));
+        $check_out = $request->input('check_out', session('search_check_out', Carbon::tomorrow()->format('Y-m-d')));
 
         $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
             ->withAvg('reviews', 'rating')

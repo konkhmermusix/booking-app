@@ -21,9 +21,15 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         // INPUT (DEFAULT DATES & DATE FILTER DETECT)
-        $hasDateFilter = $request->filled('check_in') && $request->filled('check_out');
-        $check_in  = $request->input('check_in', Carbon::today()->format('Y-m-d'));
-        $check_out = $request->input('check_out', Carbon::tomorrow()->format('Y-m-d'));
+        if ($request->filled('check_in')) {
+            session(['search_check_in' => $request->input('check_in')]);
+        }
+        if ($request->filled('check_out')) {
+            session(['search_check_out' => $request->input('check_out')]);
+        }
+
+        $check_in  = $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d')));
+        $check_out = $request->input('check_out', session('search_check_out', Carbon::tomorrow()->format('Y-m-d')));
         $type_id   = $request->input('room_type_id');
 
         // Reusable availability filter closure for selected date range
@@ -154,7 +160,7 @@ class HomeController extends Controller
         ));
     }
 
-    public function promotion_detail($id)
+    public function promotion_detail(Request $request, $id)
     {
         $promotion = Promotion::with(['roomType.images', 'roomType.facilities'])->findOrFail($id);
 
@@ -164,7 +170,17 @@ class HomeController extends Controller
             return redirect()->back()->with('error', 'មិនមានទិន្នន័យប្រភេទបន្ទប់សម្រាប់ប្រូម៉ូសិននេះទេ។');
         }
 
-        return view('frontend.promotion_details', compact('promotion', 'roomType'));
+        if ($request->filled('check_in')) {
+            session(['search_check_in' => $request->input('check_in')]);
+        }
+        if ($request->filled('check_out')) {
+            session(['search_check_out' => $request->input('check_out')]);
+        }
+
+        $check_in  = $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d')));
+        $check_out = $request->input('check_out', session('search_check_out', Carbon::tomorrow()->format('Y-m-d')));
+
+        return view('frontend.promotion_details', compact('promotion', 'roomType', 'check_in', 'check_out'));
     }
 
 

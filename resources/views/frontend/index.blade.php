@@ -302,7 +302,7 @@
                                 </button>
                                 @endif
 
-                                <a href="{{ route('frontend.room_details', $stay->id) }}"
+                                <a :href="'{{ route('frontend.room_details', $stay->id) }}?check_in=' + (document.getElementById('check_in')?.value || '{{ session('search_check_in', date('Y-m-d')) }}') + '&check_out=' + (document.getElementById('check_out')?.value || '{{ session('search_check_out', date('Y-m-d', strtotime('+1 day'))) }}')"
                                     class="flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm ">
                                     <span>មើលលម្អិត</span>
                                 </a>
@@ -536,7 +536,7 @@
                                 </button>
                                 @endif
 
-                                <a href="{{ route('frontend.meeting_details', $meeting->id) }}"
+                                <a :href="'{{ route('frontend.meeting_details', $meeting->id) }}?start_date=' + (document.getElementById('check_in')?.value || '{{ session('search_check_in', date('Y-m-d')) }}') + '&end_date=' + (document.getElementById('check_out')?.value || '{{ session('search_check_out', date('Y-m-d')) }}')"
                                     class="flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm ">
                                     <span>មើលលម្អិត</span>
                                 </a>
@@ -872,7 +872,7 @@
                                     <span>កក់ឥឡូវនេះ</span>
                                 </button>
 
-                                <a href="{{ route('frontend.promotion_details', $promo->id) }}"
+                                <a :href="'{{ route('frontend.promotion_details', $promo->id) }}?check_in=' + (document.getElementById('check_in')?.value || '{{ session('search_check_in', date('Y-m-d')) }}') + '&check_out=' + (document.getElementById('check_out')?.value || '{{ session('search_check_out', date('Y-m-d', strtotime('+1 day'))) }}')"
                                     class="flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-3 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm ">
                                     <span>មើលលម្អិត</span>
                                 </a>

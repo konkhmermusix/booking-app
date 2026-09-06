@@ -150,7 +150,7 @@
                         <span>កក់ឥឡូវនេះ</span>
                     </button>
 
-                    <a href="{{ route('frontend.meeting_details', $meeting->id) }}"
+                    <a :href="'{{ route('frontend.meeting_details', $meeting->id) }}?start_date=' + (document.getElementById('check_in')?.value || '{{ $startDate ?? session('search_check_in', date('Y-m-d')) }}') + '&end_date=' + (document.getElementById('check_out')?.value || '{{ $endDate ?? session('search_check_out', date('Y-m-d')) }}')"
                         class="flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-2.5 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm active:scale-95">
                         <span>មើលលម្អិត</span>
                     </a>
