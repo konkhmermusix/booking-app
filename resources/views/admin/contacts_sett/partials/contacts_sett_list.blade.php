@@ -3,7 +3,7 @@
         <thead>
             <tr class="bg-gray-50/50 dark:bg-gray-800/50">
                 <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">ព័ត៌មាន</th>
-                <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">តម្លៃ (Value)</th>
+                <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">តម្លៃ</th>
                 <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">ស្ថានភាព</th>
                 <th class="px-6 py-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider text-right">សកម្មភាព</th>
             </tr>

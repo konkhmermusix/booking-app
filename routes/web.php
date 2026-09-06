@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\FacilityController;
 use App\Http\Controllers\Admin\SlideshowController;
 use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ContactSettingController;
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -257,6 +258,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/messages/{conversation}', [ChatController::class, 'show'])->name('messages.show');
         Route::post('/messages/{conversation}', [ChatController::class, 'store'])->name('messages.store');
         Route::delete('/conversations/{id}', [ChatController::class, 'destroyConversation'])->name('conversations.destroy');
+
+        // Admin & Staff Profile Settings
+        Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile.index');
+        Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('admin.profile.update');
+        Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('admin.profile.update-password');
+        Route::post('/profile/preferences', [ProfileController::class, 'updatePreferences'])->name('admin.profile.update-preferences');
     });
 
     // For Admin Only

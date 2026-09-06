@@ -21,40 +21,39 @@
                     <!-- Quick Presets -->
                     <div class="p-3 bg-blue-50/70 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-800 space-y-2">
                         <span class="text-xs font-bold text-blue-800 dark:text-blue-300 flex items-center gap-1.5">
-                            <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
                             កំណត់រហ័ស៖
                         </span>
                         <div class="flex flex-wrap gap-1.5">
                             <button type="button" @click="currentSetting.key = 'khr_rate'; currentSetting.label = 'អត្រាប្តូរប្រាក់ (USD ➔ KHR)'; currentSetting.value = '4100'; currentSetting.icon = 'fa-solid fa-coins'; currentSetting.color = 'emerald';"
                                 class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[10px] uppercase shadow-xs transition-all">
-                                + KHR Rate
+                                KHR Rate
                             </button>
                             <button type="button" @click="currentSetting.key = 'logo'; currentSetting.label = 'រូបសញ្ញាប្រព័ន្ធ (Logo)'; currentSetting.value = 'images/logo/P&t Palace Hotel.png'; currentSetting.icon = 'fa-solid fa-image'; currentSetting.color = 'amber';"
                                 class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-[10px] uppercase shadow-xs transition-all">
-                                + Logo
+                                Logo
                             </button>
                             <button type="button" @click="currentSetting.key = 'site_name'; currentSetting.label = 'ឈ្មោះសណ្ឋាគារ/ប្រព័ន្ធ'; currentSetting.value = 'ភីអេនធី ផាលេស'; currentSetting.icon = 'fa-solid fa-hotel'; currentSetting.color = 'blue';"
                                 class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-[10px] uppercase shadow-xs transition-all">
-                                + Site Name
+                                Site Name
                             </button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Key (សម្គាល់) <span class="text-red-500">*</span></label>
-                            <input type="text" name="key" x-model="currentSetting.key" placeholder="ឧ. khr_rate, phone" required
+                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Key <span class="text-red-500">*</span></label>
+                            <input type="text" name="key" x-model="currentSetting.key" placeholder="khr_rate, phone" required
                                 class="w-full h-11 px-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 outline-none transition-all text-xs font-mono">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Label (បង្ហាញ) <span class="text-red-500">*</span></label>
-                            <input type="text" name="label" x-model="currentSetting.label" placeholder="ឧ. អត្រាប្តូរប្រាក់" required
+                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">បង្ហាញ <span class="text-red-500">*</span></label>
+                            <input type="text" name="label" x-model="currentSetting.label" placeholder="អត្រាប្តូរប្រាក់" required
                                 class="w-full h-11 px-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 outline-none transition-all text-xs font-bold">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">តម្លៃ (Value) <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">តម្លៃ <span class="text-red-500">*</span></label>
                         <textarea name="value" x-model="currentSetting.value" placeholder="ឧ. 4100 (សម្រាប់ KHR exchange rate) ឬលេខទូរស័ព្ទ/Link..." rows="2"
                             class="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 outline-none transition-all text-xs font-medium resize-none"></textarea>
                     </div>
@@ -69,12 +68,12 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Icon (FontAwesome)</label>
+                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Icon FontAwesome</label>
                             <input type="text" name="icon" x-model="currentSetting.icon" placeholder="fas fa-coins"
                                 class="w-full h-11 px-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 outline-none transition-all text-xs font-mono">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">ពណ៌ (Theme Color)</label>
+                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">ពណ៌</label>
                             <select name="color" x-model="currentSetting.color" class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:border-blue-500 outline-none transition-all text-xs font-bold">
                                 <option value="emerald">បៃតង</option>
                                 <option value="blue">ខៀវ</option>

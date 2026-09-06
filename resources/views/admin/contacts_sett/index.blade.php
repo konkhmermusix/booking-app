@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'គ្រប់គ្រងការកំណត់ប្រព័ន្ធ និងអត្រាប្តូរប្រាក់')
+@section('title', 'គ្រប់គ្រងការកំណត់ប្រព័ន្ធ')
 
 @section('content')
 <div class="p-2 sm:p-2" x-data="{ 
@@ -25,7 +25,7 @@
                     <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-full">
                         <i class="fa-solid fa-bolt text-amber-300 mr-1"></i> Dynamic Exchange Rate
                     </span>
-                    <h3 class="text-2xl font-black mt-2 tracking-tight">អត្រាប្តូរប្រាក់រៀល (USD ➔ KHR)</h3>
+                    <h3 class="text-2xl font-black mt-2 tracking-tight">អត្រាប្តូរប្រាក់រៀល</h3>
                     <p class="text-xs text-emerald-100 mt-0.5">កំណត់តម្លៃលុយខ្មែរសម្រាប់ប្រើប្រាស់ទូទាំងប្រព័ន្ធ</p>
                 </div>
 
@@ -50,18 +50,10 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 z-10">
                 <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                    <p class="text-[10px] uppercase font-bold text-emerald-200 tracking-wider">អត្រាផ្លូវការបច្ចុប្បន្ន (Current Rate)</p>
+                    <p class="text-[10px] uppercase font-bold text-emerald-200 tracking-wider">អត្រាផ្លូវការបច្ចុប្បន្ន</p>
                     <div class="flex items-baseline gap-2 mt-1">
                         <span class="text-3xl font-black font-mono">1 $ =</span>
                         <span class="text-3xl font-black font-mono text-amber-300">{{ number_format($khrRate) }} ៛</span>
-                    </div>
-                </div>
-
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 flex flex-col justify-center">
-                    <p class="text-[10px] uppercase font-bold text-emerald-200 tracking-wider">ស្ថានភាពប្រព័ន្ធ (Status)</p>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-300 animate-pulse"></span>
-                        <span class="text-sm font-bold">ដំណើរការ Dynamic ស្វ័យប្រវត្តិ</span>
                     </div>
                 </div>
             </div>
@@ -72,7 +64,6 @@
             <div>
                 <div class="flex items-center justify-between mb-4">
                     <h4 class="font-black text-gray-800 dark:text-white text-base flex items-center gap-2">
-                        <i class="fa-solid fa-calculator text-blue-500"></i>
                         គណនាប្រាក់រហ័ស
                     </h4>
                     <span class="text-[10px] font-bold text-gray-400 uppercase">Calculator</span>
@@ -103,8 +94,7 @@
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-sm mb-6">
         <div>
             <h2 class="text-lg font-bold dark:text-white flex items-center gap-2">
-                <i class="fas fa-sliders-h text-blue-600 dark:text-blue-400"></i>
-                គ្រប់គ្រងការកំណត់ប្រព័ន្ធ & អត្រាប្តូរប្រាក់
+                គ្រប់គ្រងការកំណត់ប្រព័ន្ធ
             </h2>
             <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">System Settings, Phone Numbers, Social Links & Dynamic Exchange Rate</p>
         </div>
@@ -121,9 +111,9 @@
         <table class="w-full text-left border-collapse">
             <thead class="bg-gray-50/70 dark:bg-gray-800/50 text-gray-400 dark:text-gray-400 text-xs uppercase font-bold tracking-wider">
                 <tr>
-                    <th class="px-6 py-4">ឈ្មោះការកំណត់ (Setting Label)</th>
-                    <th class="px-6 py-4">តម្លៃ (Value)</th>
-                    <th class="px-6 py-4">រូបតំណាង (Icon)</th>
+                    <th class="px-6 py-4">ឈ្មោះការកំណត់</th>
+                    <th class="px-6 py-4">តម្លៃ</th>
+                    <th class="px-6 py-4">រូបតំណាង</th>
                     <th class="px-6 py-4 text-center">ស្ថានភាព</th>
                     <th class="px-6 py-4 text-right">សកម្មភាព</th>
                 </tr>
