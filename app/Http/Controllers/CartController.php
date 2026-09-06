@@ -121,7 +121,7 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
-        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.index') : route('cart.index');
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
@@ -219,7 +219,7 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
-        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.index') : route('cart.index');
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
@@ -299,7 +299,7 @@ class CartController extends Controller
         session()->put('cart', $cart);
         session()->flash('success', 'បានបន្ថែមបន្ទប់ស្នាក់ទៅក្នុងកន្ត្រករួចរាល់');
 
-        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.index') : route('cart.index');
 
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -399,7 +399,7 @@ class CartController extends Controller
         session()->put('cart', $cart);
         session()->flash('success', 'បានបន្ថែមសាលប្រជុំប្រូម៉ូសិនចូលក្នុងកន្ត្រករួចរាល់');
 
-        $redirectUrl = $request->has('direct_checkout') ? route('checkout.show') : route('cart.index');
+        $redirectUrl = $request->has('direct_checkout') ? route('checkout.index') : route('cart.index');
 
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
             return response()->json([
