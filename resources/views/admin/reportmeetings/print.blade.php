@@ -132,18 +132,7 @@
     </table>
 
     <!-- Signature Footer -->
-    <div class="grid grid-cols-2 gap-8 pt-8 text-center text-xs">
-        <div>
-            <p class="font-bold text-gray-700 mb-16">អ្នករៀបចំរបាយការណ៍ (Prepared By)</p>
-            <p class="font-semibold text-gray-900">......................................................</p>
-            <p class="text-[11px] text-gray-500 mt-1">ថ្ងៃទី........ ខែ........ ឆ្នាំ២០....</p>
-        </div>
-        <div>
-            <p class="font-bold text-gray-700 mb-16">ប្រធានផ្នែកគ្រប់គ្រង / អ្នកអនុម័ត (Approved By)</p>
-            <p class="font-semibold text-gray-900">......................................................</p>
-            <p class="text-[11px] text-gray-500 mt-1">ថ្ងៃទី........ ខែ........ ឆ្នាំ២០....</p>
-        </div>
-    </div>
+    @include('admin.partials.report_footer')
 
 </body>
 </html>

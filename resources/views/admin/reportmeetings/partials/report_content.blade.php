@@ -50,7 +50,7 @@
     <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
         <div>
             <h3 class="text-sm font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                <i class="fas fa-list-alt text-indigo-500"></i> បញ្ជីប្រវត្តិនៃការកក់សាលប្រជុំ
+                បញ្ជីប្រវត្តិនៃការកក់សាលប្រជុំ
             </h3>
             <p class="text-[10px] text-gray-400">សណ្ឋាគារ ភីអេនធី ផាលេស (P&T Palace Hotel)</p>
         </div>
@@ -152,4 +152,6 @@
         {{ $meetingBookings->links() }}
     </div>
 </div>
+
+@include('admin.partials.report_footer')
 

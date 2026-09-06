@@ -134,20 +134,7 @@
     </table>
 
     <!-- Signature Footer -->
-    <div class="grid grid-cols-2 gap-8 pt-8 border-t border-gray-300 mt-12 text-center text-xs">
-        <div>
-            <p class="font-bold text-gray-700">រៀបចំដោយ</p>
-            <div class="h-16"></div>
-            <p class="font-bold border-t border-gray-400 inline-block px-8 pt-1 text-gray-800">{{ auth()->user()->name ?? 'អ្នករៀបចំ' }}</p>
-            <p class="text-[10px] text-gray-500">បុគ្គលិកគ្រប់គ្រងទិន្នន័យ</p>
-        </div>
-        <div>
-            <p class="font-bold text-gray-700">បានពិនិត្យ & យល់ព្រមដោយ</p>
-            <div class="h-16"></div>
-            <p class="font-bold border-t border-gray-400 inline-block px-8 pt-1 text-gray-800">នាយកប្រតិបត្តិសណ្ឋាគារ</p>
-            <p class="text-[10px] text-gray-500">ប្រធានផ្នែកហិរញ្ញវត្ថុ / Manager</p>
-        </div>
-    </div>
+    @include('admin.partials.report_footer')
 
     <script>
         window.onload = function() {

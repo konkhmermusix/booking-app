@@ -139,3 +139,5 @@
         {{ $payments->links() }}
     </div>
 </div>
+
+@include('admin.partials.report_footer')

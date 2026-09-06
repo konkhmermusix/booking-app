@@ -210,6 +210,8 @@
     <div class="p-4 border-t border-gray-100 dark:border-gray-800 pagination">
         {{ $bookings->links() }}
     </div>
+
+    @include('admin.partials.report_footer')
 </div>
 
 <script>

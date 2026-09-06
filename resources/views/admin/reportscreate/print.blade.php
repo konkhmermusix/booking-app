@@ -177,16 +177,7 @@
         </table>
 
         {{-- Signature Section --}}
-        <div class="mt-12 flex justify-between items-center text-xs text-gray-500 pt-8 border-t border-gray-200">
-            <div class="text-center">
-                <p class="font-bold mb-10">អ្នករៀបចំរបាយការណ៍</p>
-                <p class="border-t border-gray-300 pt-1">ហត្ថលេខា & ឈ្មោះ</p>
-            </div>
-            <div class="text-center">
-                <p class="font-bold mb-10">អ្នកត្រួតពិនិត្យ</p>
-                <p class="border-t border-gray-300 pt-1">ហត្ថលេខា & ឈ្មោះ</p>
-            </div>
-        </div>
+        @include('admin.partials.report_footer')
 
     </div>
 
