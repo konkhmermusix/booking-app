@@ -298,6 +298,36 @@
 
                 <hr class="border-gray-100 dark:border-gray-800">
 
+                {{-- SECURITY & ACTIVITY LOGS --}}
+                <div class="bg-gray-50 dark:bg-gray-800/60 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/50 space-y-3">
+                    <div class="flex items-center justify-between border-b border-gray-200/60 dark:border-gray-700/60 pb-2">
+                        <span class="text-[11px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fas fa-shield-halved"></i> ព័ត៌មានសុវត្ថិភាព & សកម្មភាព (Security Logs)
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+                              x-text="'ចូល ' + (currentUser.login_count || 0) + ' ដង'"></span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="space-y-0.5">
+                            <span class="text-[10px] font-bold text-gray-400 block">IP Address ចុងក្រោយ</span>
+                            <span class="font-mono font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1"
+                                  x-text="currentUser.last_login_ip || 'មិនទាន់មានទិន្នន័យ'"></span>
+                        </div>
+                        <div class="space-y-0.5">
+                            <span class="text-[10px] font-bold text-gray-400 block">ឧបករណ៍ / Browser</span>
+                            <span class="font-medium text-gray-700 dark:text-gray-300 truncate block" :title="currentUser.last_login_device"
+                                  x-text="currentUser.last_login_device || 'មិនទាន់មានទិន្នន័យ'"></span>
+                        </div>
+                        <div class="space-y-0.5 col-span-2">
+                            <span class="text-[10px] font-bold text-gray-400 block">ពេលចូលប្រើប្រាស់ចុងក្រោយ</span>
+                            <span class="font-bold text-gray-700 dark:text-gray-300"
+                                  x-text="currentUser.last_login_at ? new Date(currentUser.last_login_at).toLocaleDateString('km-KH', {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'}) : (currentUser.updated_at ? new Date(currentUser.updated_at).toLocaleDateString('km-KH', {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'}) : 'មិនទាន់មាន')"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100 dark:border-gray-800">
+
                 <div class="flex items-center justify-between gap-4">
                     <div class="space-y-1">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">ស្ថានភាពគណនី</span>
@@ -318,11 +348,6 @@
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">ថ្ងៃចុះឈ្មោះ</span>
                         <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mt-1"
                             x-text="currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString('km-KH', {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'}) : 'មិនមាន'"></p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">ពេលចូលប្រើប្រាស់</span>
-                        <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mt-1"
-                            x-text="currentUser.updated_at ? new Date(currentUser.updated_at).toLocaleDateString('km-KH', {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric'}) : 'មិនមាន'"></p>
                     </div>
                 </div>
             </div>

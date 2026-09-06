@@ -59,6 +59,7 @@ class AuthWebController extends Controller
         ]);
 
         Auth::login($user);
+        $this->updateLoginLogs($user, $request);
 
         if ($request->has('redirect')) {
             return redirect()->to($request->input('redirect'))
@@ -96,6 +97,7 @@ class AuthWebController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+            $this->updateLoginLogs($user, $request);
 
             if ($user->role === 'admin' || $user->role === 'staff') {
                 return redirect()->intended('/admin/dashboard')->with('success', 'ស្វាគមន៍មកកាន់ប្រព័ន្ធគ្រប់គ្រង');
@@ -154,6 +156,7 @@ class AuthWebController extends Controller
             }
 
             Auth::login($user);
+            $this->updateLoginLogs($user, $request);
             $request->session()->regenerate();
 
             if ($user->role === 'admin' || $user->role === 'staff') {
@@ -220,6 +223,7 @@ class AuthWebController extends Controller
             }
 
             Auth::login($user);
+            $this->updateLoginLogs($user, $request);
             $request->session()->regenerate();
 
             if ($user->role === 'admin' || $user->role === 'staff') {
@@ -318,5 +322,40 @@ class AuthWebController extends Controller
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
         return redirect()->route('login')->with('success', 'លេខសម្ងាត់របស់អ្នកត្រូវបានផ្លាស់ប្តូរដោយជោគជ័យ សូមចូលប្រើ');
+    }
+
+    private function updateLoginLogs($user, Request $request)
+    {
+        try {
+            $ip = $request->ip();
+            if ($ip === '127.0.0.1' || $ip === '::1') {
+                $ip = '127.0.0.1 (Localhost)';
+            }
+
+            $userAgent = $request->header('User-Agent');
+            $device = 'Unknown Device';
+            if ($userAgent) {
+                if (str_contains($userAgent, 'Windows')) $device = 'Windows PC';
+                elseif (str_contains($userAgent, 'Macintosh')) $device = 'Mac OS';
+                elseif (str_contains($userAgent, 'iPhone')) $device = 'iPhone';
+                elseif (str_contains($userAgent, 'iPad')) $device = 'iPad';
+                elseif (str_contains($userAgent, 'Android')) $device = 'Android';
+                elseif (str_contains($userAgent, 'Linux')) $device = 'Linux PC';
+
+                if (str_contains($userAgent, 'Chrome')) $device .= ' / Chrome';
+                elseif (str_contains($userAgent, 'Safari')) $device .= ' / Safari';
+                elseif (str_contains($userAgent, 'Firefox')) $device .= ' / Firefox';
+                elseif (str_contains($userAgent, 'Edg')) $device .= ' / Edge';
+            }
+
+            $user->update([
+                'last_login_at' => now(),
+                'last_login_ip' => $ip,
+                'last_login_device' => $device,
+                'login_count' => ($user->login_count ?? 0) + 1,
+            ]);
+        } catch (\Exception $e) {
+            // Ignore logging errors
+        }
     }
 }
