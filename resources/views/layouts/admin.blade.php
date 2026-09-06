@@ -487,22 +487,25 @@ $dynSiteName = $contactSettings['site_name'];
                 {{-- Inline Dropdown --}}
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition x-cloak>
                     <a href="{{ route('reportsrevenue.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportsrevenue.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
-                        <i class="fas fa-[#002B5B] fa-sack-dollar mr-2 text-[10px]"></i>របាយការណ៍ចំណូល
+                        របាយការណ៍ចំណូល
                     </a>
                     <a href="{{ route('reportrooms.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportrooms.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
-                        <i class="fas fa-bed mr-2 text-[10px]"></i>របាយការណ៍កក់បន្ទប់
+                        របាយការណ៍កក់បន្ទប់
                     </a>
                     <a href="{{ route('reportmeetings.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportmeetings.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
-                        <i class="fas fa-users mr-2 text-[10px]"></i>របាយការណ៍កក់សាលប្រជុំ
+                        របាយការណ៍កក់សាលប្រជុំ
                     </a>
                     <a href="{{ route('reportpayments.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportpayments.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
-                        <i class="fas fa-credit-card mr-2 text-[10px]"></i>របាយការណ៍ការបង់ប្រាក់
+                        របាយការណ៍ការបង់ប្រាក់
                     </a>
                     <a href="{{ route('reportcustomers.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportcustomers.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
-                        <i class="fas fa-user-friends mr-2 text-[10px]"></i>របាយការណ៍អតិថិជន
+                       របាយការណ៍អតិថិជន
                     </a>
                     <a href="{{ route('reportroomstatus.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportroomstatus.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
-                        <i class="fas fa-door-open mr-2 text-[10px]"></i>របាយការណ៍ស្ថានភាពបន្ទប់
+                        របាយការណ៍ស្ថានភាពបន្ទប់
+                    </a>
+                    <a href="{{ route('reportscreate.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('reportscreate.index') ? 'text-blue-400 font-bold bg-white/5' : 'text-gray-400' }} hover:text-white">
+                        បង្កើតរបាយការណ៍
                     </a>
                 </div>
 
@@ -539,6 +542,9 @@ $dynSiteName = $contactSettings['site_name'];
                         </a>
                         <a href="{{ route('reportroomstatus.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportroomstatus.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
                             <i class="fas fa-door-open text-xs w-4"></i> របាយការណ៍ស្ថានភាពបន្ទប់
+                        </a>
+                        <a href="{{ route('reportscreate.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportscreate.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
+                            <i class="fas fa-plus-circle text-xs w-4"></i> បង្កើតរបាយការណ៍
                         </a>
                     </div>
                 </div>

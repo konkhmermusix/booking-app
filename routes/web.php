@@ -51,6 +51,7 @@ use App\Http\Controllers\Admin\ReportRevenueController;
 use App\Http\Controllers\Admin\ReportCustomerController;
 use App\Http\Controllers\Admin\ReportPaymentController;
 use App\Http\Controllers\Admin\ReportRoomStatusController;
+use App\Http\Controllers\Admin\ReportCreateController;
 use App\Http\Controllers\Admin\RoomBookingController;
 use App\Http\Controllers\Admin\MeetingBookingController;
 use App\Http\Controllers\Admin\PostController;
@@ -220,12 +221,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/reportroomstatus-export-excel', [ReportRoomStatusController::class, 'exportExcel'])->name('reportroomstatus.export-excel');
         Route::get('/reportroomstatus-export-pdf', [ReportRoomStatusController::class, 'exportPdf'])->name('reportroomstatus.export-pdf');
 
+        Route::get('/reportscreate-export-excel', [ReportCreateController::class, 'exportExcel'])->name('reportscreate.export-excel');
+        Route::get('/reportscreate-export-pdf', [ReportCreateController::class, 'exportPdf'])->name('reportscreate.export-pdf');
+
         Route::resource('reportrooms', ReportRoomController::class);
         Route::resource('reportmeetings', ReportMeetingController::class);
         Route::resource('reportsrevenue', ReportRevenueController::class);
         Route::resource('reportpayments', ReportPaymentController::class);
         Route::resource('reportcustomers', ReportCustomerController::class);
         Route::resource('reportroomstatus', ReportRoomStatusController::class);
+        Route::resource('reportscreate', ReportCreateController::class);
 
         Route::get('room-bookings/available-rooms', [RoomBookingController::class, 'getAvailableRooms'])->name('room-bookings.available-rooms');
         Route::get('meeting-bookings/available-rooms', [MeetingBookingController::class, 'getAvailableRooms'])->name('meeting-bookings.available-rooms');
