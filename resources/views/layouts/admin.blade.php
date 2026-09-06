@@ -261,13 +261,13 @@ $dynSiteName = $contactSettings['site_name'];
                 {{-- Inline Dropdown --}}
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition x-cloak>
                     <a href="{{ route('room-bookings.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('room-bookings.*') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">
-                        <i class="fas fa-bed mr-2 text-xs"></i> កក់បន្ទប់ស្នាក់នៅ
+                       កក់បន្ទប់ស្នាក់នៅ
                     </a>
                     <a href="{{ route('meeting-bookings.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('meeting-bookings.*') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">
-                        <i class="fas fa-users mr-2 text-xs"></i> កក់សាលប្រជុំ
+                        កក់សាលប្រជុំ
                     </a>
                     <a href="{{ route('bookings.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('bookings.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">
-                        <i class="fas fa-list-alt mr-2 text-xs"></i> បញ្ជីកក់បន្ទប់
+                       បញ្ជីកក់បន្ទប់
                     </a>
                 </div>
 
@@ -288,13 +288,13 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-calendar-check text-xs"></i>
                         </div>
                         <a href="{{ route('room-bookings.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('room-bookings.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-bed text-xs w-4"></i> កក់បន្ទប់ស្នាក់នៅ
+                           កក់បន្ទប់ស្នាក់នៅ
                         </a>
                         <a href="{{ route('meeting-bookings.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('meeting-bookings.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-users text-xs w-4"></i> កក់សាលប្រជុំ
+                           កក់សាលប្រជុំ
                         </a>
                         <a href="{{ route('bookings.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('bookings.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-list-alt text-xs w-4"></i> បញ្ជីកក់បន្ទប់
+                           បញ្ជីកក់បន្ទប់
                         </a>
                     </div>
                 </div>
@@ -342,16 +342,16 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-bed text-xs"></i>
                         </div>
                         <a href="{{ route('hotels.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('hotels.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-hotel text-xs w-4"></i> បញ្ជីសណ្ឋាគារ
+                            បញ្ជីសណ្ឋាគារ
                         </a>
                         <a href="{{ route('room_types.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('room_types.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-list text-xs w-4"></i> បញ្ជីប្រភេទបន្ទប់
+                            បញ្ជីប្រភេទបន្ទប់
                         </a>
                         <a href="{{ route('rooms.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('rooms.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-door-closed text-xs w-4"></i> បញ្ជីបន្ទប់
+                            បញ្ជីបន្ទប់
                         </a>
                         <a href="{{ route('facilities.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('facilities.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-concierge-bell text-xs w-4"></i> បញ្ជីគ្រឿងបរិក្ខារ
+                            បញ្ជីគ្រឿងបរិក្ខារ
                         </a>
                     </div>
                 </div>
@@ -401,22 +401,22 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-globe text-xs"></i>
                         </div>
                         <a href="{{ route('slideshows.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('slideshows.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-images text-xs w-4"></i> បញ្ជីបដារ
+                           បញ្ជីបដារ
                         </a>
                         <a href="{{ route('tours.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('tours.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-route text-xs w-4"></i> បញ្ជីទេសចរណ៍
+                           បញ្ជីទេសចរណ៍
                         </a>
                         <a href="{{ route('abouts.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('abouts.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-info-circle text-xs w-4"></i> បញ្ជីអំពីយើង
+                            បញ្ជីអំពីយើង
                         </a>
                         <a href="{{ route('contacts_sett.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('contacts_sett.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-sliders-h text-xs w-4"></i> ការកំណត់ប្រព័ន្ធ
+                            ការកំណត់ប្រព័ន្ធ
                         </a>
                         <a href="{{ route('galleries.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('galleries.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-photo-video text-xs w-4"></i> បញ្ជីរូបភាព
+                            បញ្ជីរូបភាព
                         </a>
                         <a href="{{ route('posts.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('posts.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-newspaper text-xs w-4"></i> បញ្ជីព័ត៌មានថ្មីៗ
+                            បញ្ជីព័ត៌មានថ្មីៗ
                         </a>
                     </div>
                 </div>
@@ -461,7 +461,7 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-tag text-xs"></i>
                         </div>
                         <a href="{{ route('promotions.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('promotions.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-tags text-xs w-4"></i> បញ្ជីបញ្ចុះតម្លៃ
+                            បញ្ជីបញ្ចុះតម្លៃ
                         </a>
                     </div>
                 </div>
@@ -523,22 +523,22 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-chart-line text-xs"></i>
                         </div>
                         <a href="{{ route('reportrooms.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportrooms.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-bed text-xs w-4"></i> របាយការណ៍កក់បន្ទប់
+                            របាយការណ៍កក់បន្ទប់
                         </a>
                         <a href="{{ route('reportmeetings.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportmeetings.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-users text-xs w-4"></i> របាយការណ៍កក់សាលប្រជុំ
+                            របាយការណ៍កក់សាលប្រជុំ
                         </a>
                         <a href="{{ route('reportpayments.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportpayments.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-credit-card text-xs w-4"></i> របាយការណ៍ការបង់ប្រាក់
+                           របាយការណ៍ការបង់ប្រាក់
                         </a>
                         <a href="{{ route('reportcustomers.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportcustomers.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-user-friends text-xs w-4"></i> របាយការណ៍អតិថិជន
+                            របាយការណ៍អតិថិជន
                         </a>
                         <a href="{{ route('reportroomstatus.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportroomstatus.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-door-open text-xs w-4"></i> របាយការណ៍ស្ថានភាពបន្ទប់
+                            របាយការណ៍ស្ថានភាពបន្ទប់
                         </a>
                         <a href="{{ route('reportscreate.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reportscreate.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-plus-circle text-xs w-4"></i> បង្កើតរបាយការណ៍
+                            បង្កើតរបាយការណ៍
                         </a>
                     </div>
                 </div>
@@ -587,19 +587,19 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-user-cog text-xs"></i>
                         </div>
                         <a href="{{ route('profile.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('profile.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-user-gear text-xs w-4"></i> ការកំណត់គណនី
+                            ការកំណត់គណនី
                         </a>
                         <a href="{{ route('notifications.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('notifications.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-bell text-xs w-4"></i> ការជូនដំណឹងក្នុងប្រព័ន្ធ
+                            ការជូនដំណឹងក្នុងប្រព័ន្ធ
                         </a>
                         <a href="{{ route('users.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('users.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-users-cog text-xs w-4"></i> បញ្ជីអ្នកប្រើប្រាស់
+                            បញ្ជីអ្នកប្រើប្រាស់
                         </a>
                         <a href="{{ route('contact.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('contact.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-comments text-xs w-4"></i> ការផ្ដល់មតិពីភ្ញៀវ
+                           ការផ្ដល់មតិពីភ្ញៀវ
                         </a>
                         <a href="{{ route('reviews.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('reviews.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-star text-xs w-4"></i> ការវាយតម្លៃពីភ្ញៀវ
+                            ការវាយតម្លៃពីភ្ញៀវ
                         </a>
                     </div>
                 </div>
@@ -683,16 +683,16 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-bed text-xs"></i>
                         </div>
                         <a href="{{ route('hotels.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('hotels.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-hotel text-xs w-4"></i> បញ្ជីសណ្ឋាគារ
+                            បញ្ជីសណ្ឋាគារ
                         </a>
                         <a href="{{ route('room_types.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('room_types.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-list text-xs w-4"></i> បញ្ជីប្រភេទបន្ទប់
+                            បញ្ជីប្រភេទបន្ទប់
                         </a>
                         <a href="{{ route('rooms.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('rooms.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-door-closed text-xs w-4"></i> បញ្ជីបន្ទប់
+                            បញ្ជីបន្ទប់
                         </a>
                         <a href="{{ route('facilities.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('facilities.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-concierge-bell text-xs w-4"></i> បញ្ជីគ្រឿងបរិក្ខារ
+                           បញ្ជីគ្រឿងបរិក្ខារ
                         </a>
                     </div>
                 </div>
@@ -718,13 +718,13 @@ $dynSiteName = $contactSettings['site_name'];
                 {{-- Inline Dropdown --}}
                 <div x-show="open && sidebarOpen" class="pl-12 mt-1 space-y-1" x-transition x-cloak>
                     <a href="{{ route('room-bookings.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('room-bookings.*') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">
-                        <i class="fas fa-bed mr-2 text-xs"></i> កក់បន្ទប់ស្នាក់នៅ
+                        កក់បន្ទប់ស្នាក់នៅ
                     </a>
                     <a href="{{ route('meeting-bookings.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('meeting-bookings.*') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">
-                        <i class="fas fa-users mr-2 text-xs"></i> កក់សាលប្រជុំ
+                        កក់សាលប្រជុំ
                     </a>
                     <a href="{{ route('bookings.index') }}" @click="if(window.innerWidth < 1024) mobileOpen = false" class="block p-2.5 text-sm rounded-lg transition-colors {{ request()->routeIs('bookings.index') ? 'text-white font-bold bg-white/10' : 'text-gray-400' }} hover:text-white hover:bg-white/5">
-                        <i class="fas fa-list-alt mr-2 text-xs"></i> បញ្ជីកក់បន្ទប់
+                        បញ្ជីកក់បន្ទប់
                     </a>
                 </div>
 
@@ -745,13 +745,13 @@ $dynSiteName = $contactSettings['site_name'];
                             <i class="fas fa-calendar-check text-xs"></i>
                         </div>
                         <a href="{{ route('room-bookings.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('room-bookings.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-bed text-xs w-4"></i> កក់បន្ទប់ស្នាក់នៅ
+                            កក់បន្ទប់ស្នាក់នៅ
                         </a>
                         <a href="{{ route('meeting-bookings.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('meeting-bookings.*') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-users text-xs w-4"></i> កក់សាលប្រជុំ
+                            កក់សាលប្រជុំ
                         </a>
                         <a href="{{ route('bookings.index') }}" class="block px-3 py-2 text-sm rounded-lg transition-colors {{ request()->routeIs('bookings.index') ? 'text-white font-bold bg-white/15' : 'text-gray-300' }} hover:text-white hover:bg-white/10 flex items-center gap-2">
-                            <i class="fas fa-list-alt text-xs w-4"></i> បញ្ជីកក់បន្ទប់
+                            បញ្ជីកក់បន្ទប់
                         </a>
                     </div>
                 </div>

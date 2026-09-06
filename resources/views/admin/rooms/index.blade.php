@@ -118,8 +118,11 @@
                     const link = e.target.closest('#rooms-container .pagination a, #rooms-container a.page-link, .pagination a');
                     if (link) {
                         e.preventDefault();
-                        const url = link.getAttribute('href');
+                        let url = link.getAttribute('href');
                         if (url && url !== '#') {
+                            if (window.location.protocol === 'https:' && url.startsWith('http://')) {
+                                url = url.replace('http://', 'https://');
+                            }
                             this.fetchRooms(url);
                         }
                     }
@@ -129,6 +132,9 @@
             async fetchRooms(url = null) {
                 this.loading = true;
                 let fetchUrl = url || '{{ route("rooms.index") }}';
+                if (window.location.protocol === 'https:' && fetchUrl.startsWith('http://')) {
+                    fetchUrl = fetchUrl.replace('http://', 'https://');
+                }
                 try {
                     const response = await axios.get(fetchUrl, {
                         params: { 

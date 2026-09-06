@@ -592,6 +592,9 @@
             async fetchBookings(url = null) {
                 this.loading = true;
                 let fetchUrl = url || '{{ route("room-bookings.index") }}';
+                if (window.location.protocol === 'https:' && fetchUrl.startsWith('http://')) {
+                    fetchUrl = fetchUrl.replace('http://', 'https://');
+                }
 
                 try {
                     const res = await axios.get(fetchUrl, {

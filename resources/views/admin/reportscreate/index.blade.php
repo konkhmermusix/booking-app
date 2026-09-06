@@ -195,6 +195,9 @@
             async fetchReport(url = null) {
                 this.loading = true;
                 let fetchUrl = url || '{{ route('reportscreate.index') }}';
+                if (window.location.protocol === 'https:' && fetchUrl.startsWith('http://')) {
+                    fetchUrl = fetchUrl.replace('http://', 'https://');
+                }
                 try {
                     const response = await axios.get(fetchUrl, {
                         params: {

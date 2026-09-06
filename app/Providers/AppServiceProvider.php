@@ -25,9 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
 
-        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            URL::forceScheme('https');
-        } elseif (str_starts_with(config('app.url'), 'http://')) {
+        if (app()->environment('production') || str_contains(config('app.url'), 'https://') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
             URL::forceScheme('https');
         }
 
