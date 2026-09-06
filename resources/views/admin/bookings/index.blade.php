@@ -13,6 +13,15 @@
         submitting: false,
         loading: false,
 
+        editType: 'room',
+        editingBooking: {},
+        currentBooking: null,
+        busyRoomIds: [],
+        rooms: @js($rooms),
+        meetingRooms: @js($meetingRooms),
+        min_date: '{{ date("Y-m-d") }}',
+        errors: {},
+
         viewSlip(url) {
             this.slipUrl = url;
             this.showSlipModal = true;
@@ -21,8 +30,6 @@
         search: '{{ request('search') }}',
         category: '{{ request('category', 'all') }}',
         status: '{{ request('status') }}',
-
-        currentBooking: null,
 
         newBooking: {
             booking_category: 'hotel',
@@ -50,8 +57,258 @@
             this.showDetailModal = true;
         },
 
+        formatDate(date) {
+            let yyyy = date.getFullYear();
+            let mm = String(date.getMonth() + 1).padStart(2, '0');
+            let dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        },
+
+        formatDateDisplay(d) {
+            if(!d) return 'N/A';
+            const clean = String(d).split('T')[0];
+            const parts = clean.split('-');
+            if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return clean;
+        },
+
+        getMinCheckOutDate(checkInStr) {
+            if (!checkInStr) {
+                let tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                return this.formatDate(tomorrow);
+            }
+            let d = new Date(checkInStr);
+            d.setDate(d.getDate() + 1);
+            return this.formatDate(d);
+        },
+
+        isRoomBusy(roomOrId) {
+            if (!roomOrId) return false;
+            let roomId = roomOrId;
+            let roomObj = null;
+
+            if (typeof roomOrId === 'object') {
+                roomId = roomOrId.id;
+                roomObj = roomOrId;
+            } else {
+                const pool = (this.editType === 'meeting') ? (this.meetingRooms || []) : (this.rooms || []);
+                roomObj = pool.find(r => String(r.id) === String(roomOrId));
+            }
+
+            if (roomObj && roomObj.status) {
+                const st = String(roomObj.status).toLowerCase();
+                if (st !== 'available' && st !== 'active') {
+                    return true;
+                }
+            }
+
+            if (!this.busyRoomIds || !Array.isArray(this.busyRoomIds)) return false;
+            return this.busyRoomIds.some(id => String(id) === String(roomId));
+        },
+
+        async checkAvailableRooms(excludeId = null) {
+            if (this.editType === 'meeting' || (this.editingBooking && this.editingBooking.meeting_room_id)) {
+                let sDate = this.editingBooking.start_date;
+                let eDate = this.editingBooking.end_date;
+                let sTime = this.editingBooking.start_time;
+                let eTime = this.editingBooking.end_time;
+                if (!sDate || !eDate) return;
+                try {
+                    let res = await axios.get('/admin/meeting-bookings/available-rooms', {
+                        params: { start_date: sDate, end_date: eDate, start_time: sTime, end_time: eTime, exclude_booking_id: excludeId }
+                    });
+                    if (res.data && res.data.success) {
+                        this.busyRoomIds = res.data.busy_room_ids || [];
+                        if (res.data.rooms && res.data.rooms.length > 0) {
+                            this.meetingRooms = res.data.rooms;
+                        }
+                    }
+                } catch(e) { console.error(e); }
+            } else {
+                let cIn = this.editingBooking.check_in;
+                let cOut = this.editingBooking.check_out;
+                if (!cIn || !cOut) return;
+                try {
+                    let res = await axios.get('/admin/room-bookings/available-rooms', {
+                        params: { check_in: cIn, check_out: cOut, exclude_booking_id: excludeId }
+                    });
+                    if (res.data && res.data.success) {
+                        this.busyRoomIds = res.data.busy_room_ids || [];
+                        if (res.data.rooms && res.data.rooms.length > 0) {
+                            this.rooms = res.data.rooms;
+                        }
+                    }
+                } catch(e) { console.error(e); }
+            }
+        },
+
+        toggleEditRoomSelection(roomId) {
+            if (!Array.isArray(this.editingBooking.room_ids)) {
+                this.editingBooking.room_ids = [];
+            }
+            let index = this.editingBooking.room_ids.indexOf(roomId);
+            if (index > -1) {
+                this.editingBooking.room_ids.splice(index, 1);
+            } else {
+                this.editingBooking.room_ids.push(roomId);
+            }
+            if (this.editingBooking.room_ids.length > 0) {
+                this.editingBooking.room_id = this.editingBooking.room_ids[0];
+            } else {
+                this.editingBooking.room_id = '';
+            }
+            this.calculateEditTotal();
+        },
+
+        calculateEditTotal() {
+            if (!this.editingBooking) return;
+            if (this.editType === 'meeting' || this.editingBooking.meeting_room_id) {
+                const room = (this.meetingRooms || []).find(r => r.id == this.editingBooking.meeting_room_id);
+                const basePrice = (room && room.room_type) ? parseFloat(room.room_type.base_price) : 0;
+                let hours = 1;
+                if (this.editingBooking.start_time && this.editingBooking.end_time) {
+                    const start = parseInt(this.editingBooking.start_time.split(':')[0]);
+                    const end = parseInt(this.editingBooking.end_time.split(':')[0]);
+                    if (end > start) hours = end - start;
+                }
+                let days = 1;
+                if (this.editingBooking.start_date && this.editingBooking.end_date) {
+                    const d1 = new Date(this.editingBooking.start_date);
+                    const d2 = new Date(this.editingBooking.end_date);
+                    if (d2 >= d1) days = Math.max(1, Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)) + 1);
+                }
+                this.editingBooking.total_hours = hours;
+                this.editingBooking.total_price = (basePrice * hours * days).toFixed(2);
+            } else {
+                let totalPricePerNight = 0;
+                let selectedIds = (Array.isArray(this.editingBooking.room_ids) && this.editingBooking.room_ids.length > 0) 
+                    ? this.editingBooking.room_ids 
+                    : (this.editingBooking.room_id ? [this.editingBooking.room_id] : []);
+
+                selectedIds.forEach(id => {
+                    const room = (this.rooms || []).find(r => r.id == id);
+                    if (room) {
+                        const price = (room.room_type && room.room_type.base_price) ? parseFloat(room.room_type.base_price) : 0;
+                        totalPricePerNight += price;
+                    }
+                });
+
+                if (this.editingBooking.check_in && this.editingBooking.check_out) {
+                    const start = new Date(this.editingBooking.check_in);
+                    const end = new Date(this.editingBooking.check_out);
+                    if (end >= start) {
+                        const diffTime = Math.abs(end - start);
+                        const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+                        this.editingBooking.total_price = (diffDays * totalPricePerNight).toFixed(2);
+                    }
+                }
+            }
+        },
+
+        handleEditDurationChange() {
+            let days = parseInt(this.editingBooking.duration) || 1;
+            if (!this.editingBooking.check_in) {
+                this.editingBooking.check_in = this.formatDate(new Date());
+            }
+            let start = new Date(this.editingBooking.check_in);
+            start.setDate(start.getDate() + days);
+            this.editingBooking.check_out = this.formatDate(start);
+            this.calculateEditTotal();
+            this.checkAvailableRooms(this.editingBooking.id);
+        },
+
+        handleEditDateOrDurationChange() {
+            if (!this.editingBooking.check_in) return;
+            let minOut = this.getMinCheckOutDate(this.editingBooking.check_in);
+            if (this.editingBooking.duration) {
+                this.handleEditDurationChange();
+            } else {
+                if (!this.editingBooking.check_out || this.editingBooking.check_out <= this.editingBooking.check_in) {
+                    this.editingBooking.check_out = minOut;
+                }
+                this.calculateEditTotal();
+                this.checkAvailableRooms(this.editingBooking.id);
+            }
+        },
+
+        handleEditDateTimeChange() {
+            this.calculateEditTotal();
+            this.checkAvailableRooms(this.editingBooking.id);
+        },
+
         openEditModal(booking) {
             this.currentBooking = JSON.parse(JSON.stringify(booking));
+            const isMeeting = booking.meeting_room_id || (booking.room && (booking.room.room_type?.category === 'meeting' || booking.room.roomType?.category === 'meeting'));
+            
+            if (isMeeting) {
+                this.editType = 'meeting';
+                let sDate = booking.start_date ? booking.start_date.split('T')[0] : (booking.check_in ? booking.check_in.split('T')[0] : '');
+                let eDate = booking.end_date ? booking.end_date.split('T')[0] : (booking.check_out ? booking.check_out.split('T')[0] : '');
+                
+                this.editingBooking = {
+                    id: booking.id,
+                    booking_code: booking.booking_code,
+                    booking_category: 'meeting_room',
+                    customer_name: booking.customer_name || (booking.user ? booking.user.name : ''),
+                    customer_phone: booking.customer_phone || (booking.user ? booking.user.phone : ''),
+                    customer_email: booking.customer_email || (booking.user ? booking.user.email : ''),
+                    meeting_room_id: booking.meeting_room_id || (booking.room_id ? booking.room_id : ''),
+                    start_date: sDate,
+                    end_date: eDate,
+                    start_time: booking.start_time || '08:00',
+                    end_time: booking.end_time || '17:00',
+                    total_hours: booking.total_hours || 9,
+                    attendees_count: booking.attendees_count || 10,
+                    setup_style: booking.setup_style || '',
+                    total_price: booking.total_price || 0,
+                    payment_status: booking.payment ? booking.payment.status : 'paid',
+                    payment_method: booking.payment_method || (booking.payment ? booking.payment.method : 'cash'),
+                    transaction_id: booking.payment ? booking.payment.transaction_id : '',
+                    status: booking.status || 'confirmed',
+                    special_requests: booking.special_requests || ''
+                };
+            } else {
+                this.editType = 'room';
+                let rIds = [];
+                if (booking.details && booking.details.length > 0) {
+                    rIds = booking.details.map(d => d.room_id);
+                } else if (booking.room_id) {
+                    rIds = [booking.room_id];
+                }
+                let cIn = booking.check_in ? booking.check_in.split('T')[0] : '';
+                let cOut = booking.check_out ? booking.check_out.split('T')[0] : '';
+                let durationDays = '1';
+                if (cIn && cOut) {
+                    let start = new Date(cIn);
+                    let end = new Date(cOut);
+                    let diffTime = end - start;
+                    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays > 0) durationDays = String(diffDays);
+                }
+
+                this.editingBooking = {
+                    id: booking.id,
+                    booking_code: booking.booking_code,
+                    booking_category: 'hotel',
+                    customer_name: booking.customer_name || (booking.user ? booking.user.name : ''),
+                    customer_phone: booking.customer_phone || (booking.user ? booking.user.phone : ''),
+                    customer_email: booking.customer_email || (booking.user ? booking.user.email : ''),
+                    room_id: booking.room_id || (rIds.length > 0 ? rIds[0] : ''),
+                    room_ids: rIds,
+                    check_in: cIn,
+                    check_out: cOut,
+                    duration: durationDays,
+                    total_price: booking.total_price || 0,
+                    payment_status: booking.payment ? booking.payment.status : 'paid',
+                    payment_method: booking.payment_method || (booking.payment ? booking.payment.method : 'cash'),
+                    transaction_id: booking.payment ? booking.payment.transaction_id : '',
+                    status: booking.status || 'confirmed',
+                    special_requests: booking.special_requests || ''
+                };
+            }
+
+            this.checkAvailableRooms(booking.id);
             this.showEditModal = true;
         },
 
@@ -68,24 +325,6 @@
                     const diffTime = checkOut - checkIn;
                     const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
                     this.newBooking.total_price = (basePrice * diffDays).toFixed(2);
-                }
-            }
-        },
-
-        calculateTotalEdit() {
-            if(!this.currentBooking) return;
-            if (this.currentBooking.room_id) {
-                const roomSelect = document.querySelector('[x-model=\'currentBooking.room_id\']');
-                if(!roomSelect) return;
-                const selectedOption = roomSelect.options[roomSelect.selectedIndex];
-                const basePrice = selectedOption ? parseFloat(selectedOption.getAttribute('data-price') || 0) : 0;
-                
-                if(this.currentBooking.check_in && this.currentBooking.check_out) {
-                    const checkIn = new Date(this.currentBooking.check_in);
-                    const checkOut = new Date(this.currentBooking.check_out);
-                    const diffTime = checkOut - checkIn;
-                    const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
-                    this.currentBooking.total_price = (basePrice * diffDays).toFixed(2);
                 }
             }
         },
@@ -131,18 +370,32 @@
         },
 
         async updateBooking() {
-            if(!this.currentBooking) return;
+            if (!this.editingBooking) return;
             this.submitting = true;
+            
+            let updateUrl = `/admin/bookings/${this.editingBooking.id}`;
+            if (this.editType === 'meeting' || this.editingBooking.meeting_room_id) {
+                updateUrl = `/admin/meeting-bookings/${this.editingBooking.id}`;
+            } else {
+                updateUrl = `/admin/room-bookings/${this.editingBooking.id}`;
+            }
+
             try {
-                const response = await axios.put(`/admin/bookings/${this.currentBooking.id}`, this.currentBooking, {
+                const response = await axios.put(updateUrl, this.editingBooking, {
                     headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
                 });
-                if(response.data.success) {
-                    Swal.fire('ជោគជ័យ', response.data.message, 'success');
+                if (response.data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ជោគជ័យ',
+                        text: response.data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     this.showEditModal = false;
                     this.fetchBookings();
                 }
-            } catch(error) {
+            } catch (error) {
                 const msg = error.response?.data?.message || 'មានបញ្ហាក្នុងការធ្វើបច្ចុប្បន្នភាព!';
                 Swal.fire('បរាជ័យ', msg, 'error');
             } finally {
@@ -152,7 +405,7 @@
 
         async quickUpdateStatus(bookingId, newStatus) {
             try {
-                const isMeeting = this.currentBooking && (this.currentBooking.meeting_room_id || this.category === 'meeting_room');
+                const isMeeting = this.editingBooking?.meeting_room_id || (this.currentBooking && (this.currentBooking.meeting_room_id || this.category === 'meeting_room'));
                 const response = await axios.patch(`/admin/bookings/${bookingId}/status`, {
                     status: newStatus,
                     category: isMeeting ? 'meeting_room' : 'hotel'
@@ -162,6 +415,9 @@
                 if(response.data.success) {
                     if(this.currentBooking && this.currentBooking.id === bookingId) {
                         this.currentBooking.status = newStatus;
+                    }
+                    if(this.editingBooking && this.editingBooking.id === bookingId) {
+                        this.editingBooking.status = newStatus;
                     }
                     Swal.fire('ជោគជ័យ', response.data.message, 'success');
                     this.fetchBookings();
@@ -196,14 +452,6 @@
                     Swal.fire('បរាជ័យ', 'មិនអាចលុបទិន្នន័យបានឡើយ!', 'error');
                 }
             }
-        },
-
-        formatDisplayDate(dateStr) {
-            if(!dateStr) return 'N/A';
-            const clean = dateStr.split('T')[0];
-            const parts = clean.split('-');
-            if(parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-            return clean;
         }
     }">
 

@@ -530,7 +530,7 @@ if (!function_exists('formatKhmerTimeCombined')) {
                                 <i class="fas fa-edit text-sm"></i>
                             </button>
                             <button type="button" @click="deleteBooking({{ $booking->id }})" class="p-2 text-gray-400 hover:text-rose-500 transition-colors cursor-pointer" title="លុប">
-                                <i class="fas fa-trash-alt text-sm"></i>
+                                <i class="fas fa-trash text-sm"></i>
                             </button>
                         </div>
                     </td>
