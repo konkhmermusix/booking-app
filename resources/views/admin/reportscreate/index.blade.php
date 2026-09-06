@@ -48,18 +48,18 @@
                     </label>
                     <select name="table" onchange="this.form.submit()"
                             class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold transition-all">
-                        <option value="room_bookings" {{ $tableType === 'room_bookings' ? 'selected' : '' }}>🏨 ការកក់បន្ទប់សណ្ឋាគារ (Room Bookings)</option>
-                        <option value="meeting_bookings" {{ $tableType === 'meeting_bookings' ? 'selected' : '' }}>🏛️ ការកក់សាលប្រជុំ (Meeting Bookings)</option>
-                        <option value="payments" {{ $tableType === 'payments' ? 'selected' : '' }}>💳 ប្រតិបត្តិការបង់ប្រាក់ (Payments)</option>
-                        <option value="customers" {{ $tableType === 'customers' ? 'selected' : '' }}>👥 អ្នកប្រើប្រាស់ និងអតិថិជន (Customers)</option>
-                        <option value="rooms" {{ $tableType === 'rooms' ? 'selected' : '' }}>🔑 ស្ថានភាពបន្ទប់ (Rooms)</option>
-                        <option value="promotions" {{ $tableType === 'promotions' ? 'selected' : '' }}>🏷️ កម្មវិធីបញ្ចុះតម្លៃ (Promotions)</option>
-                        <option value="reviews" {{ $tableType === 'reviews' ? 'selected' : '' }}>⭐ ការវាយតម្លៃភ្ញៀវ (Reviews)</option>
-                        <option value="contacts" {{ $tableType === 'contacts' ? 'selected' : '' }}>📩 សារទំនាក់ទំនង (Contacts)</option>
-                        <option value="tours" {{ $tableType === 'tours' ? 'selected' : '' }}>🗺️ កញ្ចប់ទស្សនកិច្ច (Tours)</option>
-                        <option value="posts" {{ $tableType === 'posts' ? 'selected' : '' }}>📰 ព័ត៌មាននិងអត្ថបទ (Posts)</option>
-                        <option value="facilities" {{ $tableType === 'facilities' ? 'selected' : '' }}>🏊‍♂️ បរិក្ខារ (Facilities)</option>
-                        <option value="room_types" {{ $tableType === 'room_types' ? 'selected' : '' }}>🛋️ ប្រភេទបន្ទប់ (Room Types)</option>
+                        <option value="room_bookings" {{ $tableType === 'room_bookings' ? 'selected' : '' }}>🏨 ការកក់បន្ទប់សណ្ឋាគារ</option>
+                        <option value="meeting_bookings" {{ $tableType === 'meeting_bookings' ? 'selected' : '' }}>🏛️ ការកក់សាលប្រជុំ</option>
+                        <option value="payments" {{ $tableType === 'payments' ? 'selected' : '' }}>💳 ប្រតិបត្តិការបង់ប្រាក់</option>
+                        <option value="customers" {{ $tableType === 'customers' ? 'selected' : '' }}>👥 អ្នកប្រើប្រាស់ និងអតិថិជន</option>
+                        <option value="rooms" {{ $tableType === 'rooms' ? 'selected' : '' }}>🔑 ស្ថានភាពបន្ទប់</option>
+                        <option value="promotions" {{ $tableType === 'promotions' ? 'selected' : '' }}>🏷️ កម្មវិធីបញ្ចុះតម្លៃ</option>
+                        <option value="reviews" {{ $tableType === 'reviews' ? 'selected' : '' }}>⭐ ការវាយតម្លៃភ្ញៀវ</option>
+                        <option value="contacts" {{ $tableType === 'contacts' ? 'selected' : '' }}>📩 សារទំនាក់ទំនង</option>
+                        <option value="tours" {{ $tableType === 'tours' ? 'selected' : '' }}>🗺️ កញ្ចប់ទស្សនកិច្ច</option>
+                        <option value="posts" {{ $tableType === 'posts' ? 'selected' : '' }}>📰 ព័ត៌មាននិងអត្ថបទ</option>
+                        <option value="facilities" {{ $tableType === 'facilities' ? 'selected' : '' }}>🏊‍♂️ បរិក្ខារ</option>
+                        <option value="room_types" {{ $tableType === 'room_types' ? 'selected' : '' }}>🛋️ ប្រភេទបន្ទប់</option>
                     </select>
                 </div>
 
@@ -70,42 +70,42 @@
                     </label>
                     <select name="period" onchange="toggleCustomDates(this.value); this.form.submit()" id="periodSelect"
                             class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold transition-all">
-                        <option value="today" {{ $period === 'today' ? 'selected' : '' }}>📅 ថ្ងៃនេះ (Today)</option>
-                        <option value="yesterday" {{ $period === 'yesterday' ? 'selected' : '' }}>⏪ ម្សិលមិញ (Yesterday)</option>
-                        <option value="this_week" {{ $period === 'this_week' ? 'selected' : '' }}>📊 សប្ដាហ៍នេះ (This Week)</option>
-                        <option value="last_7_days" {{ $period === 'last_7_days' ? 'selected' : '' }}>🗓️ ៧ ថ្ងៃចុងក្រោយ (Last 7 Days)</option>
-                        <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>📈 ខែនេះ (This Month)</option>
-                        <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>📉 ខែមុន (Last Month)</option>
-                        <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>📆 ឆ្នាំនេះ (This Year)</option>
-                        <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>⚙️ កំណត់ថ្ងៃដោយខ្លួនឯង (Custom Date)</option>
+                        <option value="today" {{ $period === 'today' ? 'selected' : '' }}>ថ្ងៃនេះ</option>
+                        <option value="yesterday" {{ $period === 'yesterday' ? 'selected' : '' }}>⏪ ម្សិលមិញ</option>
+                        <option value="this_week" {{ $period === 'this_week' ? 'selected' : '' }}>📊 សប្ដាហ៍នេះ</option>
+                        <option value="last_7_days" {{ $period === 'last_7_days' ? 'selected' : '' }}>🗓️ ៧ ថ្ងៃចុងក្រោយ</option>
+                        <option value="this_month" {{ $period === 'this_month' ? 'selected' : '' }}>📈 ខែនេះ</option>
+                        <option value="last_month" {{ $period === 'last_month' ? 'selected' : '' }}>📉 ខែមុន</option>
+                        <option value="this_year" {{ $period === 'this_year' ? 'selected' : '' }}>📆 ឆ្នាំនេះ</option>
+                        <option value="custom" {{ $period === 'custom' ? 'selected' : '' }}>⚙️ កំណត់ថ្ងៃដោយខ្លួនឯង</option>
                     </select>
                 </div>
 
                 {{-- 3. Status Filter --}}
                 <div>
                     <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wider">
-                        <i class="fas fa-filter text-purple-500 mr-1"></i> ស្ថានភាព (Status)
+                        <i class="fas fa-filter text-purple-500 mr-1"></i> ស្ថានភាព
                     </label>
                     <select name="status" onchange="this.form.submit()"
                             class="w-full h-11 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none text-sm font-semibold transition-all">
-                        <option value="all" {{ $status === 'all' ? 'selected' : '' }}>ទាំងអស់ (All Status)</option>
+                        <option value="all" {{ $status === 'all' ? 'selected' : '' }}>ទាំងអស់</option>
                         @if($tableType === 'customers')
-                            <option value="customer" {{ $status === 'customer' ? 'selected' : '' }}>អតិថិជន (Customer)</option>
-                            <option value="admin" {{ $status === 'admin' ? 'selected' : '' }}>អ្នកគ្រប់គ្រង (Admin)</option>
-                            <option value="staff" {{ $status === 'staff' ? 'selected' : '' }}>បុគ្គលិក (Staff)</option>
+                            <option value="customer" {{ $status === 'customer' ? 'selected' : '' }}>អតិថិជន</option>
+                            <option value="admin" {{ $status === 'admin' ? 'selected' : '' }}>អ្នកគ្រប់គ្រង</option>
+                            <option value="staff" {{ $status === 'staff' ? 'selected' : '' }}>បុគ្គលិក</option>
                         @elseif($tableType === 'rooms')
-                            <option value="available" {{ $status === 'available' ? 'selected' : '' }}>ទំនេរ (Available)</option>
-                            <option value="booked" {{ $status === 'booked' ? 'selected' : '' }}>បានកក់ (Booked)</option>
-                            <option value="maintenance" {{ $status === 'maintenance' ? 'selected' : '' }}>ជួសជុល (Maintenance)</option>
+                            <option value="available" {{ $status === 'available' ? 'selected' : '' }}>ទំនេរ</option>
+                            <option value="booked" {{ $status === 'booked' ? 'selected' : '' }}>បានកក់</option>
+                            <option value="maintenance" {{ $status === 'maintenance' ? 'selected' : '' }}>ជួសជុល</option>
                         @elseif($tableType === 'payments')
-                            <option value="paid" {{ $status === 'paid' ? 'selected' : '' }}>បានបង់ (Paid)</option>
-                            <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>រង់ចាំ (Pending)</option>
-                            <option value="failed" {{ $status === 'failed' ? 'selected' : '' }}>បរាជ័យ (Failed)</option>
+                            <option value="paid" {{ $status === 'paid' ? 'selected' : '' }}>បានបង់</option>
+                            <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>រង់ចាំ</option>
+                            <option value="failed" {{ $status === 'failed' ? 'selected' : '' }}>បរាជ័យ</option>
                         @else
-                            <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>រង់ចាំពិនិត្យ (Pending)</option>
-                            <option value="confirmed" {{ $status === 'confirmed' ? 'selected' : '' }}>បានបញ្ជាក់ (Confirmed)</option>
-                            <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>បានបញ្ចប់ (Completed)</option>
-                            <option value="cancelled" {{ $status === 'cancelled' ? 'selected' : '' }}>បានបោះបង់ (Cancelled)</option>
+                            <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>រង់ចាំពិនិត្យ</option>
+                            <option value="confirmed" {{ $status === 'confirmed' ? 'selected' : '' }}>បានបញ្ជាក់</option>
+                            <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>បានបញ្ចប់</option>
+                            <option value="cancelled" {{ $status === 'cancelled' ? 'selected' : '' }}>បានបោះបង់</option>
                         @endif
                     </select>
                 </div>
@@ -127,12 +127,12 @@
             {{-- Custom Date Inputs (shown only if period == custom) --}}
             <div id="customDateFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-gray-100 dark:border-gray-800 {{ $period === 'custom' ? '' : 'hidden' }}">
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">ចាប់ពីថ្ងៃទី (Start Date)</label>
+                    <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">ចាប់ពីថ្ងៃទី</label>
                     <input type="date" name="start_date" value="{{ $startDate }}" 
                            class="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white text-sm font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">ដល់ថ្ងៃទី (End Date)</label>
+                    <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">ដល់ថ្ងៃទី</label>
                     <div class="flex gap-2">
                         <input type="date" name="end_date" value="{{ $endDate }}" 
                                class="w-full h-10 px-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 dark:text-white text-sm font-medium">
@@ -160,7 +160,7 @@
 
         <div class="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
             <div>
-                <p class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់សរុប (USD)</p>
+                <p class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់សរុបជាដុល្លារ</p>
                 <h3 class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">${{ number_format($summary['total_amount_usd'], 2) }}</h3>
             </div>
             <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl font-bold">
@@ -170,7 +170,7 @@
 
         <div class="bg-white dark:bg-gray-900 p-5 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
             <div>
-                <p class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់ជាប្រាក់រៀល (KHR)</p>
+                <p class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់សរុបជាប្រាក់រៀល</p>
                 <h3 class="text-2xl font-black text-purple-600 dark:text-purple-400 mt-1">៛{{ number_format($summary['total_amount_usd'] * $exchangeRate) }}</h3>
                 <p class="text-[10px] text-gray-400 mt-0.5">អត្រាប្តូរប្រាក់: $1 = {{ number_format($exchangeRate) }} ៛</p>
             </div>

@@ -33,7 +33,7 @@
             ⬅️ ត្រឡប់ក្រោយ
         </button>
         <button onclick="window.print()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold shadow-lg transition-all">
-            🖨️ បោះពុម្ព (Print PDF)
+            🖨️ បោះពុម្ពរបាយការណ៍
         </button>
     </div>
 
@@ -56,7 +56,7 @@
                         @endswitch
                     </span>
                 </p>
-                <p class="text-xs text-gray-400 mt-0.5">រយៈពេល: {{ strtoupper($period) }} @if($startDate && $endDate) ({{ $startDate }} ដល់ {{ $endDate }}) @endif</p>
+                <p class="text-xs text-gray-400 mt-0.5">រយៈពេល: {{ $period }} @if($startDate && $endDate) ({{ $startDate }} ដល់ {{ $endDate }}) @endif</p>
             </div>
             <div class="text-right">
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">កាលបរិច្ឆេទបង្កើត</p>
@@ -71,11 +71,11 @@
                 <p class="text-xl font-bold text-gray-900">{{ number_format($summary['total_records']) }} ជួរ</p>
             </div>
             <div>
-                <span class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់សរុប ($)</span>
+                <span class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់សរុបជាដុល្លារ</span>
                 <p class="text-xl font-bold text-emerald-600">${{ number_format($summary['total_amount_usd'], 2) }}</p>
             </div>
             <div>
-                <span class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់សរុប (៛)</span>
+                <span class="text-xs text-gray-400 uppercase font-semibold">ទឹកប្រាក់សរុបជាប្រាក់រៀល</span>
                 <p class="text-xl font-bold text-purple-600">៛{{ number_format($summary['total_amount_usd'] * $exchangeRate) }}</p>
             </div>
         </div>
