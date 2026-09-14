@@ -954,7 +954,7 @@
 
                             <button type="submit" :disabled="isSubmitting"
                                 class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
-                                <span x-text="isSubmitting ? 'កំពុងបញ្ចូល...' : 'បន្ថែមទៅក្នុងបញ្ជីកក់'"></span>
+                                <span x-text="isSubmitting ? 'កំពុងបញ្ចូល...' : 'ទូទាត់ប្រាក់'"></span>
                             </button>
                         </div>
                     </form>
@@ -1023,7 +1023,7 @@
 
                             <button type="submit" :disabled="isSubmitting"
                                 class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
-                                <span x-text="isSubmitting ? 'កំពុងបញ្ចូល...' : 'បន្ថែមទៅក្នុងបញ្ជីកក់'"></span>
+                                <span x-text="isSubmitting ? 'កំពុងបញ្ចូល...' : 'ទូទាត់ប្រាក់'"></span>
                             </button>
                         </div>
                     </form>
