@@ -407,6 +407,8 @@
                     selectedMeetingRoomTypeId: null,
                     startDate: '',
                     endDate: '',
+                    startTime: '07:00',
+                    endTime: '17:00',
 
                     init() {
                         let searchStart = document.getElementById('check_in')?.value || '{{ request("check_in") }}';
@@ -414,6 +416,8 @@
                         let todayStr = new Date().toISOString().split('T')[0];
                         this.startDate = searchStart || todayStr;
                         this.endDate = (searchEnd && searchEnd >= this.startDate) ? searchEnd : this.startDate;
+                        this.startTime = '07:00';
+                        this.endTime = '17:00';
                     },
 
                     openMeetingModal(id) {
@@ -434,6 +438,8 @@
                             this.endDate = this.startDate;
                         }
 
+                        this.startTime = '07:00';
+                        this.endTime = '17:00';
                         this.isMeetingModalOpen = true;
                     }
                 }">
@@ -595,7 +601,7 @@
                                                         <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                                             <i class="fas fa-clock alt text-blue-600 mr-1"></i> ម៉ោងចាប់ផ្តើម (រាល់ថ្ងៃ)
                                                         </label>
-                                                        <input type="time" name="start_time" required
+                                                        <input type="time" name="start_time" x-model="startTime" required
                                                             class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                                                     </div>
 
@@ -603,7 +609,7 @@
                                                         <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                                             <i class="fas fa-clock alt text-blue-600 mr-1"></i> ម៉ោងបញ្ចប់ (រាល់ថ្ងៃ)
                                                         </label>
-                                                        <input type="time" name="end_time" required
+                                                        <input type="time" name="end_time" x-model="endTime" required
                                                             class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                                                     </div>
                                                 </div>
@@ -712,6 +718,8 @@
             } else {
                 this.startDate = searchCheckIn || localToday;
                 this.endDate = (searchCheckOut && searchCheckOut >= this.startDate) ? searchCheckOut : localToday;
+                this.startTime = '07:00';
+                this.endTime = '17:00';
                 this.isMeetingModalOpen = true;
                 this.meetingSpecialRequests = '';
             }
