@@ -137,6 +137,10 @@ class RoomWebController extends Controller
         $check_in  = $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d')));
         $check_out = $request->input('check_out', session('search_check_out', Carbon::tomorrow()->format('Y-m-d')));
 
+        if (Carbon::parse($check_out)->lte(Carbon::parse($check_in))) {
+            $check_out = Carbon::parse($check_in)->addDay()->format('Y-m-d');
+        }
+
         $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
             ->withAvg('reviews', 'rating')
             ->withCount('reviews')

@@ -12,7 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'កក់បន្ទប់ស្នាក់នៅ និងសាលប្រជុំ') | {{ $dynSiteName }}</title>
+    <title>@yield('title') | {{ $dynSiteName }}</title>
 
     <!-- Primary SEO Meta Tags -->
     <meta name="description" content="@yield('meta_description', $dynSiteName . ' ផ្តល់សេវាកម្មកក់បន្ទប់ស្នាក់នៅ និងសាលប្រជុំអនឡាញ ងាយស្រួល រហ័ស ទាន់ចិត្ត ជាមួយបន្ទប់ស្នាក់នៅប្រណិត និងតម្លៃសមរម្យ។')">
@@ -882,8 +882,35 @@
                         .replace(/"/g, "&quot;")
                         .replace(/'/g, "&#039;");
                 }
-            }));
         });
+    </script>
+
+    <script>
+        function redirectToLogin() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'សូមចូលប្រើប្រាស់គណនី!',
+                    text: 'សូមចូលប្រើប្រាស់គណនីជាមុនសិន ដើម្បីបន្តទៅកាន់ការទូទាត់ប្រាក់។',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'ចូលប្រើប្រាស់គណនី',
+                    cancelButtonText: 'បោះបង់',
+                    customClass: {
+                        popup: 'rounded-2xl',
+                        confirmButton: 'rounded-xl font-bold px-4 py-2 text-xs',
+                        cancelButton: 'rounded-xl font-bold px-4 py-2 text-xs'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href);
+                    }
+                });
+            } else {
+                window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href);
+            }
+        }
     </script>
 
 </body>

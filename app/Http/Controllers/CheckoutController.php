@@ -14,6 +14,10 @@ class CheckoutController extends Controller
 
     public function index()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('warning', 'សូមចូលប្រើប្រាស់គណនីជាមុនសិន ដើម្បីបន្តទៅកាន់ការទូទាត់ប្រាក់');
+        }
+
         $cart = session()->get('cart', []);
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'កន្ត្រករបស់អ្នកទំនេរ សូមជ្រើសរើសបន្ទប់សិន');
@@ -431,6 +435,10 @@ class CheckoutController extends Controller
 
         $checkIn  = $request->input('check_in', now()->format('Y-m-d'));
         $checkOut = $request->input('check_out', now()->addDay()->format('Y-m-d'));
+
+        if (\Carbon\Carbon::parse($checkOut)->lte(\Carbon\Carbon::parse($checkIn))) {
+            $checkOut = \Carbon\Carbon::parse($checkIn)->addDay()->format('Y-m-d');
+        }
 
         $isBooked = DB::table('hotel_bookings')
             ->where('room_id', $id)

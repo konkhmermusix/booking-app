@@ -202,7 +202,7 @@
                                     <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                         <i class="fas fa-clock alt text-blue-600 mr-1"></i> ម៉ោងចាប់ផ្តើម (រាល់ថ្ងៃ)
                                     </label>
-                                    <input type="time" name="start_time" required
+                                    <input type="time" name="start_time" value="07:00" required
                                         class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                                 </div>
 
@@ -210,7 +210,7 @@
                                     <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                                         <i class="fas fa-clock alt text-blue-600 mr-1"></i> ម៉ោងបញ្ចប់ (រាល់ថ្ងៃ)
                                     </label>
-                                    <input type="time" name="end_time" required
+                                    <input type="time" name="end_time" value="17:00" required
                                         class="w-full bg-gray-50 dark:bg-gray-800 border-none p-3.5 rounded-xl focus:ring-2 ring-blue-500 outline-none dark:text-white text-sm h-[52px]">
                                 </div>
                             </div>
@@ -223,12 +223,21 @@
                                 បោះបង់
                             </button>
 
+                            @auth
                             <button type="submit"
                                 class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
                                 <div class="flex items-center gap-2">
-                                    <span>បន្តទៅការទូទាត់ប្រាក់</span>
+                                    <span>ទូទាត់ប្រាក់</span>
                                 </div>
                             </button>
+                            @else
+                            <button type="button" onclick="redirectToLogin()"
+                                class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
+                                <div class="flex items-center gap-2">
+                                    <span>ទូទាត់ប្រាក់</span>
+                                </div>
+                            </button>
+                            @endauth
                         </div>
                     </form>
                 </div>

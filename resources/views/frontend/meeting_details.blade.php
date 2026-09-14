@@ -161,7 +161,7 @@
                                     <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                         <i class="fas fa-clock text-blue-600 mr-1"></i> ម៉ោងផ្តើម
                                     </label>
-                                    <input type="time" name="start_time" id="start_time" value="08:00" required
+                                    <input type="time" name="start_time" id="start_time" value="07:00" required
                                         class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]">
                                 </div>
 
@@ -189,8 +189,8 @@
                         <button type="submit" id="bookNowBtn"
                             @if(($availableRoomsCount ?? 1) <= 0) disabled @endif
                             class="w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-md {{ ($availableRoomsCount ?? 1) <= 0 ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none' : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95 shadow-blue-500/20' }}">
-                            <i id="btnIcon" class="fas {{ ($availableRoomsCount ?? 1) <= 0 ? 'fa-calendar-times' : 'fa-check' }}"></i>
-                            <span id="btnText">{{ ($availableRoomsCount ?? 1) <= 0 ? 'ពេញ (កក់អស់ហើយ)' : 'កក់ឥឡូវនេះ' }}</span>
+                            <i id="btnIcon" class="fas {{ ($availableRoomsCount ?? 1) <= 0 ? 'fa-calendar-times' : 'fa-cart-plus' }}"></i>
+                            <span id="btnText">{{ ($availableRoomsCount ?? 1) <= 0 ? 'ពេញ (កក់អស់ហើយ)' : 'បន្ថែមទៅក្នុងកន្ត្រក' }}</span>
                         </button>
                     </form>
                 </div>
@@ -207,11 +207,6 @@
                 <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium">
                     <i class="fas fa-users mr-2 text-blue-600 dark:text-blue-400"></i>ចំណុះ៖ {{ $roomType->max_guests }} នាក់
                 </span>
-                @if($roomType->beds)
-                <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-xl text-sm font-medium">
-                    <i class="fas fa-chair mr-2 text-blue-600 dark:text-blue-400"></i>តុ/កៅអី៖ {{ $roomType->beds }}
-                </span>
-                @endif
             </div>
 
             <h2 class="text-xl md:text-2xl font-bold mb-3 border-l-4 border-blue-600 dark:border-blue-500 pl-3 text-gray-900 dark:text-white">
@@ -489,15 +484,75 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const inputs = ['start_date', 'end_date', 'start_time', 'end_time'].map(id => document.getElementById(id));
-        inputs.forEach(input => {
-            if (input) {
-                input.addEventListener('change', calculateMeetingPrice);
-                input.addEventListener('input', calculateMeetingPrice);
-            }
-        });
+        const startDate = document.getElementById('start_date');
+        const endDate = document.getElementById('end_date');
+        const startTime = document.getElementById('start_time');
+        const endTime = document.getElementById('end_time');
+
+        if (startDate) {
+            startDate.addEventListener('change', function() {
+                updateMeetingEndDateMin();
+                calculateMeetingPrice();
+            });
+            startDate.addEventListener('input', function() {
+                updateMeetingEndDateMin();
+                calculateMeetingPrice();
+            });
+        }
+        if (endDate) {
+            endDate.addEventListener('change', calculateMeetingPrice);
+            endDate.addEventListener('input', calculateMeetingPrice);
+        }
+        if (startTime) {
+            startTime.addEventListener('change', function() {
+                autoAdjustEndTime();
+                calculateMeetingPrice();
+            });
+            startTime.addEventListener('input', function() {
+                autoAdjustEndTime();
+                calculateMeetingPrice();
+            });
+        }
+        if (endTime) {
+            endTime.addEventListener('change', calculateMeetingPrice);
+            endTime.addEventListener('input', calculateMeetingPrice);
+        }
+
+        updateMeetingEndDateMin();
         calculateMeetingPrice();
     });
+
+    function updateMeetingEndDateMin() {
+        const startDate = document.getElementById('start_date');
+        const endDate = document.getElementById('end_date');
+        if (!startDate || !endDate || !startDate.value) return;
+
+        endDate.min = startDate.value;
+        if (!endDate.value || endDate.value < startDate.value) {
+            endDate.value = startDate.value;
+        }
+    }
+
+    function autoAdjustEndTime() {
+        const startTime = document.getElementById('start_time');
+        const endTime = document.getElementById('end_time');
+        if (!startTime || !endTime || !startTime.value) return;
+
+        const [h1, m1] = startTime.value.split(':').map(Number);
+        const [h2, m2] = (endTime.value || '').split(':').map(Number);
+
+        if (isNaN(h1) || isNaN(m1)) return;
+
+        const startMins = h1 * 60 + m1;
+        const endMins = isNaN(h2) || isNaN(m2) ? 0 : h2 * 60 + m2;
+
+        if (endMins <= startMins) {
+            let nextH = Math.min(h1 + 1, 23);
+            let nextHStr = String(nextH).padStart(2, '0');
+            let mStr = String(m1).padStart(2, '0');
+            endTime.value = `${nextHStr}:${mStr}`;
+        }
+    }
 
     function calculateMeetingPrice() {
         const startDate = document.getElementById('start_date');
@@ -512,8 +567,8 @@
         const availStatus = document.getElementById('availabilityStatus');
         if (!startDate || !endDate || !startTime || !endTime || !wrapper || !display) return;
 
-        const d1 = new Date(startDate.value);
-        const d2 = new Date(endDate.value);
+        const d1 = new Date(startDate.value + 'T00:00:00');
+        const d2 = new Date(endDate.value + 'T00:00:00');
         if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2 < d1) {
             wrapper.classList.add('hidden');
             if (bookNowBtn && btnText && btnIcon) {
@@ -565,8 +620,8 @@
                     if (data.available && data.count > 0) {
                         bookNowBtn.disabled = false;
                         bookNowBtn.className = "w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-md bg-blue-600 hover:bg-blue-700 text-white active:scale-95 shadow-blue-500/20";
-                        btnIcon.className = "fas fa-check";
-                        btnText.textContent = "កក់ឥឡូវនេះ";
+                        btnIcon.className = "fas fa-cart-plus";
+                        btnText.textContent = "បន្ថែមទៅក្នុងកន្ត្រក";
                         availStatus.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/50"><i class="fas fa-check-circle text-emerald-500"></i> ទំនេរសម្រាប់កក់ ${data.count} សាលប្រជុំ</span>`;
                     } else {
                         bookNowBtn.disabled = true;

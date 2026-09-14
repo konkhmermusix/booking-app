@@ -174,8 +174,8 @@
                             <button type="submit" id="bookNowBtn"
                                 @if(($availableRoomsCount ?? 1) <= 0) disabled @endif
                                 class="w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-md {{ ($availableRoomsCount ?? 1) <= 0 ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed shadow-none' : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95 shadow-blue-500/20' }}">
-                                <i id="btnIcon" class="fas {{ ($availableRoomsCount ?? 1) <= 0 ? 'fa-calendar-times' : 'fa-check' }}"></i>
-                                <span id="btnText">{{ ($availableRoomsCount ?? 1) <= 0 ? 'ពេញ (កក់អស់ហើយ)' : 'កក់ឥឡូវនេះ' }}</span>
+                                <i id="btnIcon" class="fas {{ ($availableRoomsCount ?? 1) <= 0 ? 'fa-calendar-times' : 'fa-cart-plus' }}"></i>
+                                <span id="btnText">{{ ($availableRoomsCount ?? 1) <= 0 ? 'ពេញ (កក់អស់ហើយ)' : 'បន្ថែមទៅក្នុងកន្ត្រក' }}</span>
                             </button>
                         </form>
                     </div>
@@ -478,11 +478,44 @@
         const checkOutInput = document.getElementById('check_out');
 
         if (checkInInput && checkOutInput) {
-            checkInInput.addEventListener('change', calculateStayPrice);
+            checkInInput.addEventListener('change', function() {
+                updateCheckOutMin();
+                calculateStayPrice();
+            });
+            checkInInput.addEventListener('input', function() {
+                updateCheckOutMin();
+                calculateStayPrice();
+            });
             checkOutInput.addEventListener('change', calculateStayPrice);
+            checkOutInput.addEventListener('input', calculateStayPrice);
+            
+            updateCheckOutMin();
             calculateStayPrice();
         }
     });
+
+    function updateCheckOutMin() {
+        const checkIn = document.getElementById('check_in');
+        const checkOut = document.getElementById('check_out');
+        if (!checkIn || !checkOut || !checkIn.value) return;
+
+        const d1 = new Date(checkIn.value + 'T00:00:00');
+        if (isNaN(d1.getTime())) return;
+
+        const nextDay = new Date(d1);
+        nextDay.setDate(nextDay.getDate() + 1);
+
+        const yyyy = nextDay.getFullYear();
+        const mm = String(nextDay.getMonth() + 1).padStart(2, '0');
+        const dd = String(nextDay.getDate()).padStart(2, '0');
+        const minStr = `${yyyy}-${mm}-${dd}`;
+
+        checkOut.min = minStr;
+
+        if (!checkOut.value || checkOut.value <= checkIn.value) {
+            checkOut.value = minStr;
+        }
+    }
 
     function calculateStayPrice() {
         const checkIn = document.getElementById('check_in');
@@ -495,9 +528,9 @@
         const availStatus = document.getElementById('availabilityStatus');
         if (!checkIn || !checkOut || !wrapper || !display) return;
 
-        const d1 = new Date(checkIn.value);
-        const d2 = new Date(checkOut.value);
-        if (isNaN(d1) || isNaN(d2) || d2 <= d1) {
+        const d1 = new Date(checkIn.value + 'T00:00:00');
+        const d2 = new Date(checkOut.value + 'T00:00:00');
+        if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2 <= d1) {
             wrapper.classList.add('hidden');
             if (bookNowBtn && btnText && btnIcon) {
                 bookNowBtn.disabled = true;
@@ -526,8 +559,8 @@
                     if (data.available && data.count > 0) {
                         bookNowBtn.disabled = false;
                         bookNowBtn.className = "w-full h-12 flex items-center justify-center gap-2 font-bold rounded-2xl text-sm transition-all shadow-md bg-blue-600 hover:bg-blue-700 text-white active:scale-95 shadow-blue-500/20";
-                        btnIcon.className = "fas fa-check";
-                        btnText.textContent = "កក់ឥឡូវនេះ";
+                        btnIcon.className = "fas fa-cart-plus";
+                        btnText.textContent = "បន្ថែមទៅក្នុងកន្ត្រក";
                         availStatus.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/50"><i class="fas fa-check-circle text-emerald-500"></i> ទំនេរសម្រាប់កក់ ${data.count} បន្ទប់</span>`;
                     } else {
                         bookNowBtn.disabled = true;

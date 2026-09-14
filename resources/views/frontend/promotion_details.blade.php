@@ -184,7 +184,7 @@
                                     <label class="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase ml-1">
                                         <i class="fas fa-clock text-blue-600 mr-1"></i> ម៉ោងផ្តើម
                                     </label>
-                                    <input type="time" name="start_time" id="start_time" value="08:00" required
+                                    <input type="time" name="start_time" id="start_time" value="07:00" required
                                         class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-3 rounded-xl focus:ring-2 ring-blue-500 outline-none text-gray-900 dark:text-white text-sm h-[52px]">
                                 </div>
 
@@ -201,7 +201,7 @@
 
                         <button type="submit"
                             class="w-full h-12 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95">
-                            ទទួលយកប្រូម៉ូសិន និងកក់ឥឡូវនេះ
+                            <i class="fas fa-cart-plus mr-1"></i> បន្ថែមទៅក្នុងកន្ត្រក
                         </button>
                     </form>
                 </div>
@@ -518,20 +518,83 @@
             const checkIn = document.getElementById('check_in');
             const checkOut = document.getElementById('check_out');
             if (checkIn && checkOut) {
-                checkIn.addEventListener('change', calculatePromoPrice);
+                checkIn.addEventListener('change', function() {
+                    updateStayMin();
+                    calculatePromoPrice();
+                });
+                checkIn.addEventListener('input', function() {
+                    updateStayMin();
+                    calculatePromoPrice();
+                });
                 checkOut.addEventListener('change', calculatePromoPrice);
+                checkOut.addEventListener('input', calculatePromoPrice);
+                updateStayMin();
             }
         } else {
-            ['start_date', 'end_date', 'start_time', 'end_time'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('change', calculatePromoPrice);
-                    el.addEventListener('input', calculatePromoPrice);
-                }
-            });
+            const startDate = document.getElementById('start_date');
+            const endDate = document.getElementById('end_date');
+            const startTime = document.getElementById('start_time');
+            const endTime = document.getElementById('end_time');
+
+            if (startDate) {
+                startDate.addEventListener('change', function() {
+                    updateMeetingMin();
+                    calculatePromoPrice();
+                });
+                startDate.addEventListener('input', function() {
+                    updateMeetingMin();
+                    calculatePromoPrice();
+                });
+            }
+            if (endDate) {
+                endDate.addEventListener('change', calculatePromoPrice);
+                endDate.addEventListener('input', calculatePromoPrice);
+            }
+            if (startTime) {
+                startTime.addEventListener('change', calculatePromoPrice);
+                startTime.addEventListener('input', calculatePromoPrice);
+            }
+            if (endTime) {
+                endTime.addEventListener('change', calculatePromoPrice);
+                endTime.addEventListener('input', calculatePromoPrice);
+            }
+            updateMeetingMin();
         }
         calculatePromoPrice();
     });
+
+    function updateStayMin() {
+        const checkIn = document.getElementById('check_in');
+        const checkOut = document.getElementById('check_out');
+        if (!checkIn || !checkOut || !checkIn.value) return;
+
+        const d1 = new Date(checkIn.value + 'T00:00:00');
+        if (isNaN(d1.getTime())) return;
+
+        const nextDay = new Date(d1);
+        nextDay.setDate(nextDay.getDate() + 1);
+
+        const yyyy = nextDay.getFullYear();
+        const mm = String(nextDay.getMonth() + 1).padStart(2, '0');
+        const dd = String(nextDay.getDate()).padStart(2, '0');
+        const minStr = `${yyyy}-${mm}-${dd}`;
+
+        checkOut.min = minStr;
+        if (!checkOut.value || checkOut.value <= checkIn.value) {
+            checkOut.value = minStr;
+        }
+    }
+
+    function updateMeetingMin() {
+        const startDate = document.getElementById('start_date');
+        const endDate = document.getElementById('end_date');
+        if (!startDate || !endDate || !startDate.value) return;
+
+        endDate.min = startDate.value;
+        if (!endDate.value || endDate.value < startDate.value) {
+            endDate.value = startDate.value;
+        }
+    }
 
     function calculatePromoPrice() {
         const category = "{{ $roomType->category }}";
@@ -546,8 +609,8 @@
             const checkOut = document.getElementById('check_out');
             if (!checkIn || !checkOut) return;
 
-            const d1 = new Date(checkIn.value);
-            const d2 = new Date(checkOut.value);
+            const d1 = new Date(checkIn.value + 'T00:00:00');
+            const d2 = new Date(checkOut.value + 'T00:00:00');
             if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2 <= d1) {
                 wrapper.classList.add('hidden');
                 return;
@@ -563,8 +626,8 @@
             const endTime = document.getElementById('end_time');
             if (!startDate || !endDate || !startTime || !endTime) return;
 
-            const d1 = new Date(startDate.value);
-            const d2 = new Date(endDate.value);
+            const d1 = new Date(startDate.value + 'T00:00:00');
+            const d2 = new Date(endDate.value + 'T00:00:00');
             if (isNaN(d1.getTime()) || isNaN(d2.getTime()) || d2 < d1) {
                 wrapper.classList.add('hidden');
                 return;

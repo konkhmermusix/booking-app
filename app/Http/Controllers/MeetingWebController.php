@@ -119,8 +119,12 @@ class MeetingWebController extends Controller
 
         $startDate = $request->input('start_date', $request->input('check_in', session('search_check_in', Carbon::today()->format('Y-m-d'))));
         $endDate   = $request->input('end_date', $request->input('check_out', session('search_check_out', $startDate)));
-        $startTime = $request->input('start_time', '08:00');
+        $startTime = $request->input('start_time', '07:00');
         $endTime   = $request->input('end_time', '17:00');
+
+        if (Carbon::parse($endDate)->lt(Carbon::parse($startDate))) {
+            $endDate = $startDate;
+        }
 
         $roomType = RoomType::with(['images', 'facilities:id,name,icon', 'rooms', 'hotel'])
             ->withAvg('reviews', 'rating')

@@ -6,7 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\RoomType;
 use App\Models\Room;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -54,6 +55,17 @@ class CartController extends Controller
     // សម្រាប់ថែម "បន្ទប់ស្នាក់នៅ" ចូលកន្ត្រក (គិតជាយប់)
     public function addHotel(Request $request)
     {
+        if (!Auth::check() && $request->has('direct_checkout')) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status'       => 'require_login',
+                    'message'      => 'សូមចូលប្រើប្រាស់គណនីជាមុនសិន ដើម្បីបន្តទៅកាន់ការទូទាត់ប្រាក់',
+                    'redirect_url' => route('login') . '?redirect=' . urlencode(route('checkout.index'))
+                ]);
+            }
+            return redirect()->route('login')->with('warning', 'សូមចូលប្រើប្រាស់គណនីជាមុនសិន ដើម្បីបន្តទៅកាន់ការទូទាត់ប្រាក់');
+        }
+
         $request->validate([
             'room_type_id' => 'required|exists:room_types,id',
             'promo_price'  => 'nullable|numeric|min:0',
@@ -140,6 +152,17 @@ class CartController extends Controller
     // សម្រាប់ថែម "សាលប្រជុំ" ចូលកន្ត្រក (គិតជាម៉ោង)
     public function addMeeting(Request $request)
     {
+        if (!Auth::check() && $request->has('direct_checkout')) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status'       => 'require_login',
+                    'message'      => 'សូមចូលប្រើប្រាស់គណនីជាមុនសិន ដើម្បីបន្តទៅកាន់ការទូទាត់ប្រាក់',
+                    'redirect_url' => route('login') . '?redirect=' . urlencode(route('checkout.index'))
+                ]);
+            }
+            return redirect()->route('login')->with('warning', 'សូមចូលប្រើប្រាស់គណនីជាមុនសិន ដើម្បីបន្តទៅកាន់ការទូទាត់ប្រាក់');
+        }
+
         $request->validate([
             'room_type_id' => 'required|exists:room_types,id',
             'promo_price'  => 'nullable|numeric|min:0',

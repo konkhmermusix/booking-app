@@ -356,12 +356,21 @@
                                                     បោះបង់
                                                 </button>
 
+                                                @auth
                                                 <button type="submit"
                                                     class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
                                                     <div class="flex items-center gap-2">
                                                         <span>ទូទាត់ប្រាក់</span>
                                                     </div>
                                                 </button>
+                                                @else
+                                                <button type="button" onclick="redirectToLogin()"
+                                                    class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
+                                                    <div class="flex items-center gap-2">
+                                                        <span>ទូទាត់ប្រាក់</span>
+                                                    </div>
+                                                </button>
+                                                @endauth
                                             </div>
                                         </form>
                                     </div>
@@ -607,12 +616,21 @@
                                                     បោះបង់
                                                 </button>
 
+                                                @auth
                                                 <button type="submit"
                                                     class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
                                                     <div class="flex items-center gap-2">
                                                         <span>ទូទាត់ប្រាក់</span>
                                                     </div>
                                                 </button>
+                                                @else
+                                                <button type="button" onclick="redirectToLogin()"
+                                                    class="px-6 h-11 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none">
+                                                    <div class="flex items-center gap-2">
+                                                        <span>ទូទាត់ប្រាក់</span>
+                                                    </div>
+                                                </button>
+                                                @endauth
                                             </div>
                                         </form>
                                     </div>
@@ -658,7 +676,7 @@
             let t = new Date();
             return new Date(t.getTime() - (t.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
         })(),
-        startTime: '08:00',
+        startTime: '07:00',
         endTime: '17:00',
         meetingSpecialRequests: '',
         
