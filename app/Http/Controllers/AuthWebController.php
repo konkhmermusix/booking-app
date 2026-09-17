@@ -198,10 +198,12 @@ class AuthWebController extends Controller
         }
 
         try {
-            $driver = Socialite::driver('facebook');
-            if (request()->getHost() === '127.0.0.1' || request()->getHost() === 'localhost') {
-                $driver->redirectUrl(url('/auth/facebook/callback'));
+            $driver = Socialite::driver('facebook')->stateless();
+            $callbackUrl = url('/auth/facebook/callback');
+            if (request()->getHost() !== '127.0.0.1' && request()->getHost() !== 'localhost') {
+                $callbackUrl = secure_url('/auth/facebook/callback');
             }
+            $driver->redirectUrl($callbackUrl);
             return $driver->redirect();
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Facebook Redirect Error: ' . $e->getMessage());
@@ -218,9 +220,12 @@ class AuthWebController extends Controller
 
         try {
             $driver = Socialite::driver('facebook')->stateless();
-            if (request()->getHost() === '127.0.0.1' || request()->getHost() === 'localhost') {
-                $driver->redirectUrl(url('/auth/facebook/callback'));
+            $callbackUrl = url('/auth/facebook/callback');
+            if (request()->getHost() !== '127.0.0.1' && request()->getHost() !== 'localhost') {
+                $callbackUrl = secure_url('/auth/facebook/callback');
             }
+            $driver->redirectUrl($callbackUrl);
+
             $facebookUser = $driver->user();
 
             $user = User::where('facebook_id', $facebookUser->id)->first();
@@ -268,7 +273,7 @@ class AuthWebController extends Controller
             return redirect()->intended('/')->with('success', 'ចូលប្រើជាមួយ Facebook ជោគជ័យ');
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Facebook Login Error: ' . $e->getMessage());
-            return redirect('/login')->with('error', 'មានបញ្ហាក្នុងការចូលប្រើជាមួយ Facebook សូមព្យាយាមម្តងទៀត។');
+            return redirect('/login')->with('error', 'មានបញ្ហាក្នុងការចូលប្រើជាមួយ Facebook ៖ ' . $e->getMessage());
         }
     }
 
