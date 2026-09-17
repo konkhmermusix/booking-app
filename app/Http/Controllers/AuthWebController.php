@@ -282,6 +282,8 @@ class AuthWebController extends Controller
         $request->validate([
             'email' => 'required|email|exists:users,email'
         ], [
+            'email.required' => 'សូមបញ្ចូលអាសយដ្ឋានអ៊ីមែល',
+            'email.email' => 'ទម្រង់អាសយដ្ឋានអ៊ីមែលមិនត្រឹមត្រូវឡើយ',
             'email.exists' => 'អ៊ីមែលនេះមិនទាន់បានចុះឈ្មោះក្នុងប្រព័ន្ធឡើយ'
         ]);
 
@@ -295,12 +297,17 @@ class AuthWebController extends Controller
             ]
         );
 
-        Mail::send('auth.emails.password-reset', ['token' => $token, 'email' => $request->email], function ($message) use ($request) {
-            $message->to($request->email);
-            $message->subject('កំណត់លេខសម្ងាត់ឡើងវិញ - ' . config('app.name'));
-        });
+        try {
+            Mail::send('auth.emails.password-reset', ['token' => $token, 'email' => $request->email], function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject('កំណត់លេខសម្ងាត់ឡើងវិញ - ' . config('app.name'));
+            });
 
-        return back()->with('success', 'យើងបានផ្ញើតំណភ្ជាប់ទៅកាន់អ៊ីមែលរបស់អ្នករួចរាល់ហើយ សូមពិនិត្យប្រអប់សំបុត្រ។');
+            return back()->with('success', 'យើងបានផ្ញើតំណភ្ជាប់ទៅកាន់អ៊ីមែលរបស់អ្នករួចរាល់ហើយ សូមពិនិត្យប្រអប់សំបុត្រ។');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Password Reset Mail Error: ' . $e->getMessage());
+            return back()->with('error', 'មិនអាចផ្ញើអ៊ីមែលបានឡើយ សូមពិនិត្យមើលការកំណត់ SMTP / Mail ៖ ' . $e->getMessage());
+        }
     }
 
     // បង្ហាញទំព័រវាយ Password ថ្មី
