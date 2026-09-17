@@ -172,6 +172,8 @@
             showAddModal: false,
             showMeetingAddModal: false,
             showDetailModal: false,
+            showCancelConfirmModal: false,
+            pendingCancelStatus: null,
             loading: false,
             meetingLoading: false,
             actionLoading: false,
@@ -605,6 +607,16 @@
                 } finally {
                     this.actionLoading = false;
                 }
+            },
+
+            openCancelConfirmModal(status = 'cancelled') {
+                this.pendingCancelStatus = status;
+                this.showCancelConfirmModal = true;
+            },
+
+            executeCancelBooking() {
+                this.showCancelConfirmModal = false;
+                this.quickUpdateStatus(this.pendingCancelStatus || 'cancelled');
             }
         }
     }

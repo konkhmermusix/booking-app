@@ -623,7 +623,7 @@
                             </div>
                         </div>
 
-                        <button type="button" @click="quickUpdateStatus(selectedBooking.status)" :disabled="actionLoading"
+                        <button type="button" @click="selectedBooking.status === 'cancelled' ? openCancelConfirmModal('cancelled') : quickUpdateStatus(selectedBooking.status)" :disabled="actionLoading"
                             class="px-6 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-md shadow-blue-500/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer shrink-0">
                             <i class="fas fa-save" x-show="!actionLoading"></i>
                             <i class="fas fa-spinner fa-spin" x-show="actionLoading"></i>
@@ -650,7 +650,7 @@
                                 class="px-3.5 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300 rounded-xl font-bold text-xs flex items-center gap-1.5 transition cursor-pointer">
                                 <i class="fas fa-sign-out-alt"></i> បានបញ្ចប់
                             </button>
-                            <button type="button" @click="if(confirm('តើអ្នកពិតជាចង់បោះបង់ការកក់នេះមែនទេ?')) quickUpdateStatus('cancelled')" :disabled="actionLoading"
+                            <button type="button" @click="openCancelConfirmModal('cancelled')" :disabled="actionLoading"
                                 :class="selectedBooking?.status === 'cancelled' ? 'ring-2 ring-red-500 font-black' : ''"
                                 class="px-3.5 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300 rounded-xl font-bold text-xs flex items-center gap-1.5 transition cursor-pointer">
                                 <i class="fas fa-times"></i> បោះបង់
@@ -667,12 +667,62 @@
                             ? `/admin/meeting-bookings?search=${selectedBooking.booking_code || ''}`
                             : `/admin/room-bookings?search=${selectedBooking.booking_code || ''}`"
                         class="px-4 h-9 bg-gray-800 hover:bg-gray-900 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all">
-                        <i class="fas fa-external-link-alt text-[10px]"></i> មើលលម្អិតពេញលេញ
+                        <i class="fas fa-external-link-alt text-[10px]"></i> មើលលម្អិត
                     </a>
                 </template>
                 <button type="button" @click="showDetailModal = false"
                     class="px-6 h-9 rounded-xl font-bold text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-200/60 dark:text-gray-400 dark:hover:bg-gray-700 transition-all ml-auto cursor-pointer">
                     បិទ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- 4. CUSTOM CONFIRMATION POPUP MODAL (NO BROWSER NATIVE ALERT) --}}
+<div x-show="showCancelConfirmModal" class="fixed inset-0 z-[100] overflow-y-auto" x-cloak>
+    <div class="flex items-center justify-center min-h-screen px-4 py-6 text-center">
+        {{-- Backdrop --}}
+        <div class="fixed inset-0 bg-gray-900/70 backdrop-blur-md transition-opacity" 
+            @click="showCancelConfirmModal = false"
+            x-transition:enter="ease-out duration-300" 
+            x-transition:enter-start="opacity-0" 
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"></div>
+
+        {{-- Modal Card --}}
+        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 relative border border-gray-100 dark:border-gray-800 transform transition-all z-10"
+            x-transition:enter="ease-out duration-300" 
+            x-transition:enter-start="opacity-0 scale-90 translate-y-4" 
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+            x-transition:leave-end="opacity-0 scale-90 translate-y-4">
+            
+            {{-- Warning Icon Container --}}
+            <div class="w-20 h-20 rounded-full bg-red-100 dark:bg-red-950/50 border-4 border-red-50 dark:border-red-900/30 text-red-500 mx-auto flex items-center justify-center text-3xl mb-5 shadow-inner">
+                <i class="fas fa-exclamation-triangle animate-bounce"></i>
+            </div>
+
+            {{-- Title & Text --}}
+            <h3 class="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-2">តើអ្នកប្រាកដទេ?</h3>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed mb-7">
+                តើអ្នកពិតជាចង់បោះបង់ការកក់នេះមែនទេ? ស្ថានភាពការកក់នឹងត្រូវផ្លាស់ប្តូរទៅជា <span class="font-bold text-red-500">«បោះបង់»</span>។
+            </p>
+
+            {{-- Action Buttons --}}
+            <div class="flex items-center gap-3">
+                <button type="button" @click="showCancelConfirmModal = false"
+                    class="flex-1 h-12 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs rounded-2xl transition-all cursor-pointer">
+                    មិនបោះបង់
+                </button>
+                <button type="button" @click="executeCancelBooking()" :disabled="actionLoading"
+                    class="flex-1 h-12 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold text-xs rounded-2xl shadow-lg shadow-red-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fas fa-trash-alt" x-show="!actionLoading"></i>
+                    <i class="fas fa-spinner fa-spin" x-show="actionLoading"></i>
+                    <span>យល់ព្រម, បោះបង់</span>
                 </button>
             </div>
         </div>
