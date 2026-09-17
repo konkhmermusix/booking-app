@@ -122,14 +122,27 @@ class AuthWebController extends Controller
             session(['google_redirect_url' => $request->input('redirect')]);
         }
 
-        return Socialite::driver('google')->redirect();
+        try {
+            $driver = Socialite::driver('google');
+            if (request()->getHost() === '127.0.0.1' || request()->getHost() === 'localhost') {
+                $driver->redirectUrl(url('/auth/google/callback'));
+            }
+            return $driver->redirect();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Google Redirect Error: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'មិនអាចភ្ជាប់ទៅកាន់ Google ៖ ' . $e->getMessage());
+        }
     }
 
     // ទទួលព័ត៌មានពី Google ត្រឡប់មកវិញ
     public function handleGoogleCallback(Request $request)
     {
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+            $driver = Socialite::driver('google')->stateless();
+            if (request()->getHost() === '127.0.0.1' || request()->getHost() === 'localhost') {
+                $driver->redirectUrl(url('/auth/google/callback'));
+            }
+            $googleUser = $driver->user();
 
             $user = User::where('google_id', $googleUser->id)->first();
 
@@ -171,7 +184,8 @@ class AuthWebController extends Controller
             }
 
             return redirect()->intended('/')->with('success', 'ចូលប្រើជាមួយ Google ជោគជ័យ');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Google Callback Error: ' . $e->getMessage());
             return redirect('/login')->with('error', 'មានបញ្ហាក្នុងការចូលប្រើជាមួយ Google សូមព្យាយាមម្តងទៀត។');
         }
     }
@@ -183,7 +197,16 @@ class AuthWebController extends Controller
             session(['facebook_redirect_url' => $request->input('redirect')]);
         }
 
-        return Socialite::driver('facebook')->redirect();
+        try {
+            $driver = Socialite::driver('facebook');
+            if (request()->getHost() === '127.0.0.1' || request()->getHost() === 'localhost') {
+                $driver->redirectUrl(url('/auth/facebook/callback'));
+            }
+            return $driver->redirect();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Facebook Redirect Error: ' . $e->getMessage());
+            return redirect('/login')->with('error', 'មិនអាចភ្ជាប់ទៅកាន់ Facebook ៖ ' . $e->getMessage());
+        }
     }
 
     // ទទួលព័ត៌មានពី Facebook ត្រឡប់មកវិញ
@@ -194,7 +217,11 @@ class AuthWebController extends Controller
         }
 
         try {
-            $facebookUser = Socialite::driver('facebook')->stateless()->user();
+            $driver = Socialite::driver('facebook')->stateless();
+            if (request()->getHost() === '127.0.0.1' || request()->getHost() === 'localhost') {
+                $driver->redirectUrl(url('/auth/facebook/callback'));
+            }
+            $facebookUser = $driver->user();
 
             $user = User::where('facebook_id', $facebookUser->id)->first();
 
@@ -239,7 +266,7 @@ class AuthWebController extends Controller
 
             // ៣. បើគ្មានទេ ឲ្យទៅទំព័រដើមធម្មតា
             return redirect()->intended('/')->with('success', 'ចូលប្រើជាមួយ Facebook ជោគជ័យ');
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Facebook Login Error: ' . $e->getMessage());
             return redirect('/login')->with('error', 'មានបញ្ហាក្នុងការចូលប្រើជាមួយ Facebook សូមព្យាយាមម្តងទៀត។');
         }
